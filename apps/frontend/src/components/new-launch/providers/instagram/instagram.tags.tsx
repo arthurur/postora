@@ -6,6 +6,7 @@ import { ReactTags } from 'react-tag-autocomplete';
 import { useIntegration } from '@gitroom/frontend/components/launches/helpers/use.integration';
 import clsx from 'clsx';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
+import { TranslatedLabel } from '@gitroom/react/translation/translated-label';
 
 export const InstagramCollaboratorsTags: FC<{
   name: string;
@@ -71,7 +72,9 @@ export const InstagramCollaboratorsTags: FC<{
   return (
     <div>
       <div>
-        <div className={clsx(`text-[14px] mb-[6px]`)}>{label}</div>
+        <div className={clsx(`text-[14px] mb-[6px]`)}>
+          <TranslatedLabel label={label} />
+        </div>
         <ReactTags
           placeholderText={t('add_a_tag', 'Add a tag')}
           suggestions={suggestionsArray}

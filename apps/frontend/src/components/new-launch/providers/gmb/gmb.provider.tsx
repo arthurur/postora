@@ -10,6 +10,8 @@ import { useSettings } from '@gitroom/frontend/components/launches/helpers/use.v
 import { Input } from '@gitroom/react/form/input';
 import { Select } from '@gitroom/react/form/select';
 import { useWatch } from 'react-hook-form';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
+import { getLabelTranslationKey } from '@gitroom/react/translation/translated-label';
 
 const topicTypes = [
   {
@@ -63,6 +65,7 @@ const callToActionTypes = [
 
 const GmbSettings: FC = () => {
   const { register, control } = useSettings();
+  const t = useT();
   const topicType = useWatch({ control, name: 'topicType' });
   const callToActionType = useWatch({ control, name: 'callToActionType' });
 
@@ -74,9 +77,9 @@ const GmbSettings: FC = () => {
           value: 'STANDARD',
         })}
       >
-        {topicTypes.map((t) => (
-          <option key={t.value} value={t.value}>
-            {t.label}
+        {topicTypes.map((item) => (
+          <option key={item.value} value={item.value}>
+            {t(getLabelTranslationKey(item.label), item.label)}
           </option>
         ))}
       </Select>
@@ -87,9 +90,9 @@ const GmbSettings: FC = () => {
           value: 'NONE',
         })}
       >
-        {callToActionTypes.map((t) => (
-          <option key={t.value} value={t.value}>
-            {t.label}
+        {callToActionTypes.map((item) => (
+          <option key={item.value} value={item.value}>
+            {t(getLabelTranslationKey(item.label), item.label)}
           </option>
         ))}
       </Select>
@@ -106,7 +109,9 @@ const GmbSettings: FC = () => {
 
       {topicType === 'EVENT' && (
         <div className="flex flex-col gap-[10px] mt-[10px] p-[15px] border border-input rounded-[8px]">
-          <div className="text-[14px] font-medium mb-[5px]">Event Details</div>
+          <div className="text-[14px] font-medium mb-[5px]">
+            {t('event_details', 'Event Details')}
+          </div>
           <Input
             label="Event Title"
             placeholder="Event name"
@@ -137,7 +142,9 @@ const GmbSettings: FC = () => {
 
       {topicType === 'OFFER' && (
         <div className="flex flex-col gap-[10px] mt-[10px] p-[15px] border border-input rounded-[8px]">
-          <div className="text-[14px] font-medium mb-[5px]">Offer Details</div>
+          <div className="text-[14px] font-medium mb-[5px]">
+            {t('offer_details', 'Offer Details')}
+          </div>
           <Input
             label="Coupon Code (optional)"
             placeholder="SAVE20"

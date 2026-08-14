@@ -124,7 +124,7 @@ export const ContinueIntegration: FC<{
         navigateOrShow(
           `/launches?precondition=true`,
           returnURL,
-          'Precondition failed'
+          t('precondition_failed', 'Precondition failed')
         );
         return;
       }
@@ -141,7 +141,9 @@ export const ContinueIntegration: FC<{
       ) {
         const errorData = await data.json().catch(() => ({}));
         setErrorMessage(
-          errorData.message || errorData.msg || 'Could not add provider'
+          errorData.message ||
+            errorData.msg ||
+            t('could_not_add_provider', 'Could not add provider')
         );
         setError(true);
         return;
@@ -197,7 +199,7 @@ export const ContinueIntegration: FC<{
           onboarding ? '&onboarding=true' : ''
         }`,
         returnURL,
-        'Channel Updated'
+        t('channel_updated', 'Channel Updated')
       );
     })();
   }, []);
@@ -225,7 +227,11 @@ export const ContinueIntegration: FC<{
         ) {
           const errorData = await response.json().catch(() => ({}));
           setErrorMessage(
-            errorData.message || 'Failed to save channel configuration'
+            errorData.message ||
+              t(
+                'failed_to_save_channel_configuration',
+                'Failed to save channel configuration'
+              )
           );
           setError(true);
           return;
@@ -236,7 +242,7 @@ export const ContinueIntegration: FC<{
             twoStepState.onboarding ? '&onboarding=true' : ''
           }`,
           twoStepState.returnURL,
-          'Channel Added'
+          t('channel_added', 'Channel Added')
         );
       } finally {
         setIsSaving(false);
@@ -295,7 +301,8 @@ export const ContinueIntegration: FC<{
             {successState.message ||
               t(
                 'channel_connected_description',
-                `Your ${providerDisplayName} channel has been successfully connected. You can close this window now.`
+                `Your ${providerDisplayName} channel has been successfully connected. You can close this window now.`,
+                { provider: providerDisplayName }
               )}
           </div>
         </div>
@@ -323,7 +330,8 @@ export const ContinueIntegration: FC<{
               <p className="text-[14px] text-gray-400">
                 {t(
                   'select_the_page_or_account',
-                  `Select the ${providerDisplayName} page or account you want to connect.`
+                  `Select the ${providerDisplayName} page or account you want to connect.`,
+                  { provider: providerDisplayName }
                 )}
               </p>
             </div>

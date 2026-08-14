@@ -6,6 +6,7 @@ import { textSlicer } from '@gitroom/helpers/utils/count.length';
 import { FC } from 'react';
 import { VideoOrImage } from '@gitroom/react/helpers/video.or.image';
 import { SliderComponent } from '@gitroom/frontend/components/third-parties/slider.component';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 
 export const InstagramPreview: FC<{
   maximumCharacters?: number;
@@ -13,6 +14,7 @@ export const InstagramPreview: FC<{
   const { value: topValue, integration } = useIntegration();
   const current = useLaunchStore((state) => state.current);
   const mediaDir = useMediaDirectory();
+  const t = useT();
 
   const renderContent = topValue.map((p) => {
     const newContent = stripHtmlValidation(
@@ -39,7 +41,10 @@ export const InstagramPreview: FC<{
         .replace(/\[\[\[([.\s\S]*?)]]]/, (match, match1) => {
           return `<span class="font-bold font-[arial]" style="color: #ae8afc">${match1}</span>`;
         }) +
-      `<mark class="bg-red-500" data-tooltip-id="tooltip" data-tooltip-content="This text will be cropped">` +
+      `<mark class="bg-red-500" data-tooltip-id="tooltip" data-tooltip-content="${t(
+        'text_will_be_cropped',
+        'This text will be cropped'
+      )}">` +
       newContent.slice(end).replace(/\[\[\[([.\s\S]*?)]]]/, (match, match1) => {
         return `<span class="font-bold font-[arial]" style="color: #ae8afc">${match1}</span>`;
       }) +
@@ -53,7 +58,7 @@ export const InstagramPreview: FC<{
         <div className="w-[36px] h-[36px]">
           <img
             src={integration?.picture || '/no-picture.jpg'}
-            alt="social"
+            alt={t('social_media_profile', 'Social media profile')}
             className="rounded-full relative z-[2] w-[36px] h-[36px]"
           />
         </div>
@@ -174,7 +179,7 @@ export const InstagramPreview: FC<{
                 <div className="h-[34px]">
                   <img
                     src={integration?.picture || '/no-picture.jpg'}
-                    alt="social"
+                    alt={t('social_media_profile', 'Social media profile')}
                     className="rounded-full relative z-[2] h-[34px] w-[34px]"
                   />
                 </div>
@@ -207,8 +212,10 @@ export const InstagramPreview: FC<{
                   <div className="flex font-[400] text-[12px] text-textLinkedin items-center">
                     <div className="flex gap-[16px] flex-1">
                       <div className="font-[700]">30m</div>
-                      <div className="font-[700]">8 Likes</div>
-                      <div className="font-[700]">Reply</div>
+                      <div className="font-[700]">
+                        {t('likes_count', '{{count}} Likes', { count: 8 })}
+                      </div>
+                      <div className="font-[700]">{t('reply', 'Reply')}</div>
                     </div>
                   </div>
                 </div>

@@ -54,7 +54,7 @@ export class UsersController {
     @GetOrgFromRequest() organization: Organization
   ) {
     if (!process.env.CHATBASE_TOKEN) {
-      throw new HttpException('Chatbase SSO is not configured', 400);
+      throw new HttpException('O SSO do Chatbase não está configurado', 400);
     }
 
     const token = sign(
@@ -85,7 +85,7 @@ export class UsersController {
     @GetOrgFromRequest() organization: Organization
   ) {
     if (!process.env.AGENT_MEDIA_SSO_KEY) {
-      throw new HttpException('Agent Media SSO is not configured', 400);
+      throw new HttpException('O SSO do Agent Media não está configurado', 400);
     }
 
     const token = sign(
@@ -151,7 +151,7 @@ export class UsersController {
     @Query('name') name: string
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     return this._userService.getImpersonateUser(name);
@@ -164,7 +164,7 @@ export class UsersController {
     @Res({ passthrough: true }) response: Response
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     response.cookie('impersonate', id, {
@@ -191,7 +191,7 @@ export class UsersController {
     @Req() req: Request
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     // `user` is the impersonated account, so the admin id comes from the token.
@@ -205,7 +205,7 @@ export class UsersController {
       adminId === user.id ||
       adminId === id
     ) {
-      throw new HttpException('Invalid user to switch to', 400);
+      throw new HttpException('Usuário inválido para alternar', 400);
     }
 
     const { kept, switched } = await this._userService.switchUser(

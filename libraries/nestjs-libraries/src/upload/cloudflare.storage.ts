@@ -85,7 +85,7 @@ class CloudflareStorage implements IUploadProvider {
       body = dataUrl.buffer;
     } else {
       if (!(await isSafePublicHttpsUrl(path))) {
-        throw new Error('Unsafe URL');
+        throw new Error('URL não segura');
       }
       const loadImage = await fetch(path, {
         // @ts-ignore — undici option, not in lib.dom fetch types
@@ -95,7 +95,7 @@ class CloudflareStorage implements IUploadProvider {
     }
     const detected = await fromBuffer(body);
     if (!detected || !ALLOWED_MIME_TYPES.has(detected.mime)) {
-      throw new Error('Unsupported file type.');
+      throw new Error('Tipo de arquivo não compatível.');
     }
     const extension = detected.ext;
     const safeContentType = detected.mime;
@@ -119,7 +119,7 @@ class CloudflareStorage implements IUploadProvider {
     try {
       const detected = await fromBuffer(file.buffer);
       if (!detected || !ALLOWED_MIME_TYPES.has(detected.mime)) {
-        throw new Error('Unsupported file type.');
+        throw new Error('Tipo de arquivo não compatível.');
       }
       const id = makeId(10);
       const extension = detected.ext;

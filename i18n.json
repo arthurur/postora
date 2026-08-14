@@ -3,7 +3,7 @@
   "provider": {
     "id": "openai",
     "model": "gpt-4.1",
-    "prompt": "Translate accurately from {source} to {target}, maintaining the original meaning.",
+    "prompt": "Translate accurately from {source} to {target}, maintaining the original meaning. When {target} is pt, always use natural Brazilian Portuguese (pt-BR).",
     "baseUrl": "https://api.openai.com/v1"
   },
   "locale": {
@@ -27,7 +27,9 @@
   },
   "buckets": {
     "json": {
-      "include": ["libraries/react-shared-libraries/src/translation/locales/[locale]/translation.json"]
+      "include": [
+        "libraries/react-shared-libraries/src/translation/locales/[locale]/translation.json"
+      ]
     }
   },
   "$schema": "https://lingo.dev/schema/i18n.json"

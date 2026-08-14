@@ -34,7 +34,7 @@ export class InstagramStandaloneProvider
     'instagram_business_manage_comments',
     'instagram_business_manage_insights',
   ];
-    override maxConcurrentJob = 200; // Instagram standalone has stricter limits
+  override maxConcurrentJob = 200; // Instagram standalone has stricter limits
   dto = InstagramDto;
 
   editor = 'normal' as const;
@@ -47,17 +47,17 @@ export class InstagramStandaloneProvider
     settings: any
   ): Promise<string | true> {
     if (!firstPost?.length) {
-      return 'Should have at least one media';
+      return 'Adicione pelo menos uma mídia.';
     }
     if (this.assetBoolean(settings?.is_trial_reel)) {
       if ((firstPost?.length ?? 0) > 1) {
-        return 'Trial Reels can only have one video';
+        return 'Reels de teste podem ter apenas um vídeo.';
       }
       const hasVideo = firstPost?.some(
         (f) => (f?.path?.indexOf?.('mp4') ?? -1) > -1
       );
       if (!hasVideo) {
-        return 'Trial Reels must be a video';
+        return 'Um Reel de teste precisa ser um vídeo.';
       }
     }
     return true;
@@ -224,7 +224,11 @@ export class InstagramStandaloneProvider
     pendingData: any,
     integration: Integration
   ) {
-    return instagramProvider.finalizePost(accessToken, pendingData, integration);
+    return instagramProvider.finalizePost(
+      accessToken,
+      pendingData,
+      integration
+    );
   }
 
   async comment(

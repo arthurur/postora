@@ -1,6 +1,7 @@
 'use client';
 
 import { withContinueProvider } from '../with-continue-provider';
+import { TranslatedLabel } from '@gitroom/react/translation/translated-label';
 
 interface YoutubeItem {
   id: string;
@@ -78,7 +79,11 @@ export const YoutubeContinue = withContinueProvider<
       )}
       {item.subscriberCount && (
         <div className="text-xs text-gray-400">
-          {parseInt(item.subscriberCount).toLocaleString()} subscribers
+          {parseInt(item.subscriberCount).toLocaleString('pt-BR')}{' '}
+          <TranslatedLabel
+            label="subscribers"
+            translationKey="youtube_subscribers"
+          />
         </div>
       )}
     </>

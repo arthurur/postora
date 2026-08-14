@@ -101,7 +101,7 @@ export class MeweProvider extends SocialAbstract implements SocialProvider {
     const loginRequestToken = params.code;
 
     if (!loginRequestToken) {
-      return 'No login request token received. Please try again.';
+      return 'Nenhum token de solicitação de login foi recebido. Tente novamente.';
     }
 
     try {
@@ -118,17 +118,17 @@ export class MeweProvider extends SocialAbstract implements SocialProvider {
       );
 
       if (!tokenResponse.ok) {
-        return 'Failed to exchange token. Please try again.';
+        return 'Não foi possível trocar o token. Tente novamente.';
       }
 
       const tokenData = await tokenResponse.json();
 
       if (tokenData.pending) {
-        return 'Login request is still pending. Please approve on MeWe and try again.';
+        return 'A solicitação de login ainda está pendente. Aprove-a no MeWe e tente novamente.';
       }
 
       if (!tokenData.apiToken) {
-        return 'No API token received. Please try again.';
+        return 'Nenhum token de API foi recebido. Tente novamente.';
       }
 
       const apiToken = tokenData.apiToken;
@@ -141,7 +141,7 @@ export class MeweProvider extends SocialAbstract implements SocialProvider {
       });
 
       if (!profileResponse.ok) {
-        return 'Failed to fetch MeWe profile.';
+        return 'Não foi possível buscar o perfil do MeWe.';
       }
 
       const profile = await profileResponse.json();
@@ -163,7 +163,7 @@ export class MeweProvider extends SocialAbstract implements SocialProvider {
       };
     } catch (e) {
       console.log(e);
-      return 'MeWe authentication failed. Please try again.';
+      return 'A autenticação do MeWe falhou. Tente novamente.';
     }
   }
 
@@ -277,12 +277,15 @@ export class MeweProvider extends SocialAbstract implements SocialProvider {
       if (handleError) {
         throw new Error(handleError.value);
       }
-      throw new Error('Failed to create MeWe post');
+      throw new Error('Não foi possível criar a publicação no MeWe');
     }
 
     const postId = makeId(12);
 
-    const releaseURL = postType === 'timeline' ? `https://mewe.com/${integration.profile}/posts` : `https://mewe.com/group/${firstPost.settings.group}`;
+    const releaseURL =
+      postType === 'timeline'
+        ? `https://mewe.com/${integration.profile}/posts`
+        : `https://mewe.com/group/${firstPost.settings.group}`;
 
     return [
       {

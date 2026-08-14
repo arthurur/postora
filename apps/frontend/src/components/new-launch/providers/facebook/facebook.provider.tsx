@@ -16,6 +16,7 @@ import { useIntegration } from '@gitroom/frontend/components/launches/helpers/us
 import { FacebookPreview } from '@gitroom/frontend/components/new-launch/providers/facebook/facebook.preview';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
 import { useEffect } from 'react';
+import { getLabelTranslationKey } from '@gitroom/react/translation/translated-label';
 
 const postType = [
   {
@@ -62,7 +63,7 @@ export const FacebookSettings = () => {
           </option>
           {postType.map((item) => (
             <option key={item.value} value={item.value}>
-              {item.label}
+              {t(getLabelTranslationKey(item.label), item.label)}
             </option>
           ))}
         </Select>
@@ -87,7 +88,10 @@ export const FacebookSettings = () => {
                 : undefined
             }
           >
-            <option value="" style={{ background: '#ffffff', color: '#1c1e21' }}>
+            <option
+              value=""
+              style={{ background: '#ffffff', color: '#1c1e21' }}
+            >
               {t('facebook_background_none', 'None (plain text)')}
             </option>
             {FACEBOOK_PRESETS.map((item) => {
@@ -97,7 +101,9 @@ export const FacebookSettings = () => {
                   key={item.id}
                   value={item.id}
                   style={
-                    bg ? { background: bg.background, color: bg.text } : undefined
+                    bg
+                      ? { background: bg.background, color: bg.text }
+                      : undefined
                   }
                 >
                   {item.name}

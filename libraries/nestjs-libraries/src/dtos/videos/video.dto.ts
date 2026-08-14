@@ -1,5 +1,9 @@
 import {
-  IsIn, Validate, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface
+  IsIn,
+  Validate,
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 import { VideoAbstract } from '@gitroom/nestjs-libraries/videos/video.interface';
 
@@ -19,7 +23,7 @@ export class ValidIn implements ValidatorConstraintInterface {
 
   defaultMessage(args: ValidationArguments) {
     // here you can provide default error message if validation failed
-    return 'type must be any of: ' + this._load().join(', ');
+    return 'O tipo deve ser um destes: ' + this._load().join(', ');
   }
 }
 

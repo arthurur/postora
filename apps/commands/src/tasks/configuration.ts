@@ -6,7 +6,7 @@ import { ConfigurationChecker } from '@gitroom/helpers/configuration/configurati
 export class ConfigurationTask {
   @Command({
     command: 'config:check',
-    describe: 'Checks your configuration (.env) file for issues.',
+    describe: 'Verifica se há problemas no arquivo de configuração (.env).',
   })
   create() {
     const checker = new ConfigurationChecker();
@@ -15,18 +15,18 @@ export class ConfigurationTask {
 
     if (checker.hasIssues()) {
       for (const issue of checker.getIssues()) {
-        console.warn('Configuration issue:', issue);
+        console.warn('Problema de configuração:', issue);
       }
 
       console.error(
-        'Configuration check complete, issues: ',
+        'Verificação da configuração concluída. Problemas: ',
         checker.getIssuesCount()
       );
     } else {
-      console.log('Configuration check complete, no issues found.');
+      console.log('Verificação da configuração concluída sem problemas.');
     }
 
-    console.log('Press Ctrl+C to exit.');
+    console.log('Pressione Ctrl+C para sair.');
     return true;
   }
 }

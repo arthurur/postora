@@ -7,6 +7,7 @@ import { useT } from '@gitroom/react/translation/get.transation.service.client';
 import { useLaunchStore } from '@gitroom/frontend/components/new-launch/store';
 import { useModals } from '@gitroom/frontend/components/layout/new-modal';
 import { useToaster } from '@gitroom/react/toaster/toaster';
+import { getLabelTranslationKey } from '@gitroom/react/translation/translated-label';
 const list = [
   'Realistic',
   'Cartoon',
@@ -103,7 +104,7 @@ ${style}
                   : 'bg-newColColor border-newBgLineColor'
               )}
             >
-              {p}
+              {t(getLabelTranslationKey(p), p)}
             </div>
           ))}
         </div>
@@ -186,7 +187,7 @@ export const AiImage: FC<{
             </svg>
           </div>
           <div className="text-[10px] font-[600] iconBreak:hidden block">
-            {t('ai', 'AI')} Image
+            {t('ai_image', 'AI Image')}
           </div>
         </div>
       </div>

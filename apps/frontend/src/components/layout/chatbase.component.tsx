@@ -13,6 +13,7 @@ import { useVariables } from '@gitroom/react/helpers/variable.context';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import useSWR from 'swr';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 
 export const ChatbaseComponent: FC = () => {
   const { isChatBase } = useVariables();
@@ -50,6 +51,7 @@ export const ChatbaseComponentLoad: FC = () => {
 
 const ChatBaseCode: FC<{ token: string }> = ({ token }) => {
   const fetch = useFetch();
+  const t = useT();
 
   useEffect(() => {
     if (!window.chatbase || window.chatbase('getState') !== 'initialized') {
@@ -92,12 +94,17 @@ const ChatBaseCode: FC<{ token: string }> = ({ token }) => {
     window.chatbase('registerTools', {
       stripe_refund: async () => {
         try {
-          const previewResponse = await fetch('/billing/chatbase-refund/preview');
+          const previewResponse = await fetch(
+            '/billing/chatbase-refund/preview'
+          );
 
           if (!previewResponse.ok) {
             return {
               status: 'error',
-              error: 'Could not process the refund request',
+              error: t(
+                'could_not_process_refund',
+                'Could not process the refund request'
+              ),
             };
           }
 
@@ -111,13 +118,17 @@ const ChatBaseCode: FC<{ token: string }> = ({ token }) => {
           }
 
           const approved = await deleteDialog(
-            `You are cancelling your ${
-              preview.tier || ''
-            } subscription and will receive a refund of ${preview.amount} ${(
-              preview.currency || ''
-            ).toUpperCase()}. Do you approve?`,
-            'Yes, cancel and refund',
-            'Cancel subscription'
+            t(
+              'confirm_cancel_with_refund',
+              'You are cancelling your {{tier}} subscription and will receive a refund of {{amount}} {{currency}}. Do you approve?',
+              {
+                tier: preview.tier || '',
+                amount: preview.amount,
+                currency: (preview.currency || '').toUpperCase(),
+              }
+            ),
+            t('yes_cancel_and_refund', 'Yes, cancel and refund'),
+            t('cancel_subscription', 'Cancel subscription')
           );
 
           if (!approved) {
@@ -125,7 +136,10 @@ const ChatBaseCode: FC<{ token: string }> = ({ token }) => {
               status: 'success',
               data: {
                 refunded: false,
-                reason: 'The user declined the refund confirmation',
+                reason: t(
+                  'user_declined_refund_confirmation',
+                  'The user declined the refund confirmation'
+                ),
               },
             };
           }
@@ -137,7 +151,10 @@ const ChatBaseCode: FC<{ token: string }> = ({ token }) => {
           if (!response.ok) {
             return {
               status: 'error',
-              error: 'Could not process the refund request',
+              error: t(
+                'could_not_process_refund',
+                'Could not process the refund request'
+              ),
             };
           }
 
@@ -148,7 +165,10 @@ const ChatBaseCode: FC<{ token: string }> = ({ token }) => {
         } catch (err) {
           return {
             status: 'error',
-            error: 'Could not process the refund request',
+            error: t(
+              'could_not_process_refund',
+              'Could not process the refund request'
+            ),
           };
         }
       },

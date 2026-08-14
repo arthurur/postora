@@ -58,7 +58,7 @@ export class WordpressProvider
     if (body.indexOf('rest_cannot_create') > -1) {
       return {
         type: 'bad-body',
-        value: 'The connect user has insufficient permissions to create posts',
+        value: 'O usuário conectado não tem permissão para criar publicações',
       };
     }
     return undefined;
@@ -121,7 +121,7 @@ export class WordpressProvider
     } catch (err) {
       // DNS failure, connection refused, TLS error, site unreachable, etc.
       console.log(err);
-      return 'Could not reach your WordPress site. Check the Domain URL and that the site is publicly accessible.';
+      return 'Não foi possível acessar seu site WordPress. Verifique a URL do domínio e confirme que o site está acessível publicamente.';
     }
 
     // A security plugin (e.g. Wordfence), a WAF, or the server config commonly
@@ -150,10 +150,10 @@ export class WordpressProvider
       );
 
       if (response.status === 401 || response.status === 403) {
-        return 'WordPress rejected the login. A security plugin or server setting may be blocking the REST API or stripping the Authorization header, or the username / Application Password is incorrect.';
+        return 'O WordPress recusou o login. Um plugin de segurança ou uma configuração do servidor pode estar bloqueando a API REST ou removendo o cabeçalho de autorização; também verifique o nome de usuário e a senha de aplicativo.';
       }
 
-      return `WordPress returned an unexpected error (HTTP ${response.status}). Make sure the REST API is enabled and Application Passwords are available.`;
+      return `O WordPress retornou um erro inesperado (HTTP ${response.status}). Confirme que a API REST está ativada e que as senhas de aplicativo estão disponíveis.`;
     }
 
     // Even on a 200, a security plugin / maintenance page can return HTML
@@ -163,13 +163,13 @@ export class WordpressProvider
       data = await response.json();
     } catch (err) {
       console.log(err);
-      return 'WordPress did not return a valid response. The REST API may be disabled or blocked by a security plugin.';
+      return 'O WordPress não retornou uma resposta válida. A API REST pode estar desativada ou bloqueada por um plugin de segurança.';
     }
 
     const { id, name, avatar_urls, code } = data || {};
 
     if (code) {
-      return 'Invalid credentials';
+      return 'Credenciais inválidas';
     }
 
     const biggestImage = Object.entries(avatar_urls || {}).reduce(

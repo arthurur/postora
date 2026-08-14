@@ -147,12 +147,14 @@ export async function postWorkflowV107({
 
   // in case doesn't exists for some reason, fail it
   if (!firstPost) {
-    await changeState(postId, 'ERROR', 'No Post');
+    await changeState(postId, 'ERROR', 'Publicação não encontrada');
     return;
   }
 
   if (!postNow && firstPost.state !== 'QUEUE') {
-    await changeState(firstPost.id, 'ERROR', 'Already posted', [firstPost]);
+    await changeState(firstPost.id, 'ERROR', 'Publicação já enviada', [
+      firstPost,
+    ]);
     return;
   }
 
@@ -169,7 +171,7 @@ export async function postWorkflowV107({
   const [post] = postsListBefore;
 
   if (!post) {
-    await changeState(postId, 'ERROR', 'No Post');
+    await changeState(postId, 'ERROR', 'Publicação não encontrada');
     return;
   }
 
@@ -177,8 +179,8 @@ export async function postWorkflowV107({
   if (post.integration?.refreshNeeded) {
     await inAppNotification(
       post.organizationId,
-      `We couldn't post to ${post.integration?.providerIdentifier} for ${post?.integration?.name}`,
-      `We couldn't post to ${post.integration?.providerIdentifier} for ${post?.integration?.name} because you need to reconnect it. Please enable it and try again.`,
+      `Não foi possível publicar em ${post.integration?.providerIdentifier} para ${post?.integration?.name}`,
+      `Não foi possível publicar em ${post.integration?.providerIdentifier} para ${post?.integration?.name} porque você precisa reconectar o canal. Ative-o e tente novamente.`,
       true,
       false,
       'info'
@@ -187,7 +189,7 @@ export async function postWorkflowV107({
     await changeState(
       postsListBefore[0].id,
       'ERROR',
-      'Refresh channel needed',
+      'É necessário reconectar o canal',
       postsListBefore
     );
     return;
@@ -197,8 +199,8 @@ export async function postWorkflowV107({
   if (post.integration?.disabled) {
     await inAppNotification(
       post.organizationId,
-      `We couldn't post to ${post.integration?.providerIdentifier} for ${post?.integration?.name}`,
-      `We couldn't post to ${post.integration?.providerIdentifier} for ${post?.integration?.name} because it's disabled. Please enable it and try again.`,
+      `Não foi possível publicar em ${post.integration?.providerIdentifier} para ${post?.integration?.name}`,
+      `Não foi possível publicar em ${post.integration?.providerIdentifier} para ${post?.integration?.name} porque o canal está desativado. Ative-o e tente novamente.`,
       true,
       false,
       'info'
@@ -207,7 +209,7 @@ export async function postWorkflowV107({
     await changeState(
       postsListBefore[0].id,
       'ERROR',
-      'Channel disabled',
+      'Canal desativado',
       postsListBefore
     );
     return;
@@ -239,10 +241,7 @@ export async function postWorkflowV107({
     type: 'retry' | 'stop' | 'bad-body' | 'timeout' | 'unknown';
     message: string;
   }> => {
-    if (
-      err instanceof ActivityFailure &&
-      err.cause instanceof TimeoutFailure
-    ) {
+    if (err instanceof ActivityFailure && err.cause instanceof TimeoutFailure) {
       return { type: 'timeout', message: '' };
     }
 
@@ -281,14 +280,14 @@ export async function postWorkflowV107({
     await changeState(postsList[0].id, 'ERROR', err, postsList);
     await inAppNotification(
       post.organizationId,
-      `We couldn't confirm your post on ${capitalize(
+      `Não foi possível confirmar sua publicação em ${capitalize(
         post.integration?.providerIdentifier
       )}`,
-      `Your post was sent to ${capitalize(
+      `Sua publicação foi enviada para ${capitalize(
         post.integration?.providerIdentifier
-      )}, but we couldn't confirm it was published. Please check your ${
+      )}, mas não foi possível confirmar a publicação. Verifique sua conta ${
         post?.integration?.name
-      } account before posting again to avoid duplicates.`,
+      } antes de publicar novamente para evitar duplicações.`,
       true,
       false,
       'fail'
@@ -357,8 +356,8 @@ export async function postWorkflowV107({
           await changeState(postsList[0].id, 'ERROR', err, postsList);
           await inAppNotification(
             post.organizationId,
-            `Error posting on ${post.integration?.providerIdentifier} for ${post?.integration?.name}`,
-            `An error occurred while posting on ${
+            `Erro ao publicar em ${post.integration?.providerIdentifier} para ${post?.integration?.name}`,
+            `Ocorreu um erro ao publicar em ${
               post.integration?.providerIdentifier
             }${handle.message ? `: ${handle.message}` : ``}`,
             true,
@@ -380,7 +379,7 @@ export async function postWorkflowV107({
     }
 
     // no verdict from the platform after all the checks
-    await markUnconfirmed('Could not confirm the post status');
+    await markUnconfirmed('Não foi possível confirmar o status da publicação');
     return false;
   };
 
@@ -460,12 +459,12 @@ export async function postWorkflowV107({
           // send notification on a sucessful post
           await inAppNotification(
             post.integration.organizationId,
-            `Your post has been published on ${capitalize(
+            `Sua publicação foi publicada em ${capitalize(
               post.integration.providerIdentifier
             )}`,
-            `Your post has been published on ${capitalize(
+            `Sua publicação foi publicada em ${capitalize(
               post.integration.providerIdentifier
-            )} at ${postsResults[0].releaseURL}`,
+            )}: ${postsResults[0].releaseURL}`,
             true,
             true
           );
@@ -521,10 +520,10 @@ export async function postWorkflowV107({
         if (handle.type === 'bad-body') {
           await inAppNotification(
             post.organizationId,
-            `Error posting${i === 0 ? ' ' : ' comments '}on ${
+            `Erro ao publicar${i === 0 ? '' : ' comentários'} em ${
               post.integration?.providerIdentifier
             } for ${post?.integration?.name}`,
-            `An error occurred while posting${i === 0 ? ' ' : ' comments '}on ${
+            `Ocorreu um erro ao publicar${i === 0 ? '' : ' comentários'} em ${
               post.integration?.providerIdentifier
             }${handle.message ? `: ${handle.message}` : ``}`,
             true,

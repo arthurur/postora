@@ -85,8 +85,11 @@ export async function simpleUpload(
   _contentType: string
 ) {
   const detected = await fromBuffer(data);
-  if (!detected || !Object.values(ALLOWED_EXT_TO_MIME).includes(detected.mime)) {
-    throw new Error('Unsupported file type.');
+  if (
+    !detected ||
+    !Object.values(ALLOWED_EXT_TO_MIME).includes(detected.mime)
+  ) {
+    throw new Error('Tipo de arquivo não compatível.');
   }
   const fileExtension = `.${detected.ext}`;
   const safeContentType = detected.mime;
@@ -109,7 +112,7 @@ export async function createMultipartUpload(req: Request, res: Response) {
   const { file, fileHash } = req.body;
   const safeExt = normalizeExtension(file?.name || '');
   if (!safeExt) {
-    return res.status(400).json({ message: 'Unsupported file type.' });
+    return res.status(400).json({ message: 'Tipo de arquivo não compatível.' });
   }
   const safeContentType = ALLOWED_EXT_TO_MIME[safeExt];
   const randomFilename = generateRandomString() + safeExt;
@@ -203,7 +206,9 @@ export async function completeMultipartUpload(req: Request, res: Response) {
       await R2.send(
         new DeleteObjectCommand({ Bucket: CLOUDFLARE_BUCKETNAME, Key: key })
       );
-      return res.status(400).json({ message: 'Unsupported file type.' });
+      return res
+        .status(400)
+        .json({ message: 'Tipo de arquivo não compatível.' });
     }
     const expectedMime = ALLOWED_EXT_TO_MIME[safeExt];
 
@@ -226,9 +231,9 @@ export async function completeMultipartUpload(req: Request, res: Response) {
       await R2.send(
         new DeleteObjectCommand({ Bucket: CLOUDFLARE_BUCKETNAME, Key: key })
       );
-      return res
-        .status(400)
-        .json({ message: 'File contents do not match declared type.' });
+      return res.status(400).json({
+        message: 'O conteúdo do arquivo não corresponde ao tipo declarado.',
+      });
     }
 
     response.Location =

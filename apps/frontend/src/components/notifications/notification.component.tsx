@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import { FC, useCallback, useState } from 'react';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
 import { useClickAway } from '@uidotdev/usehooks';
 import ReactLoading from '@gitroom/frontend/components/layout/loading';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
@@ -27,9 +28,12 @@ export const ShowNotification: FC<{
   const [newNotification] = useState(
     new Date(notification.createdAt) > new Date(props.lastReadNotification)
   );
-  const createdAt = dayjs(notification.createdAt);
+  const createdAt = dayjs(notification.createdAt).locale('pt-br');
   const isWithin24h = dayjs().diff(createdAt, 'hour') < 24;
-  const fullDate = createdAt.format('MMM D, YYYY h:mm A');
+  const fullDate = createdAt.toDate().toLocaleString('pt-BR', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
   return (
     <div
       className={clsx(
@@ -65,9 +69,7 @@ export const NotificationOpenComponent = () => {
       id="notification-popup"
       className="opacity-0 animate-normalFadeDown mt-[10px] absolute w-[420px] min-h-[200px] top-[100%] end-0 bg-third text-textColor rounded-[16px] flex flex-col border border-tableBorder z-[600]"
     >
-      <div
-        className={`p-[16px] border-b border-tableBorder font-bold`}
-      >
+      <div className={`p-[16px] border-b border-tableBorder font-bold`}>
         {t('notifications', 'Notifications')}
       </div>
 

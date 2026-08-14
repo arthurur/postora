@@ -29,7 +29,12 @@ export const ThirdPartyMenuComponent: FC<{
   const deleteChannel = (id: string) => async () => {
     setShow(false);
     if (
-      !(await deleteDialog('Are you sure you want to delete this integration?'))
+      !(await deleteDialog(
+        t(
+          'are_you_sure_delete_integration',
+          'Are you sure you want to delete this integration?'
+        )
+      ))
     ) {
       return;
     }
@@ -39,7 +44,13 @@ export const ThirdPartyMenuComponent: FC<{
     });
 
     if (res.ok) {
-      toaster.show('Integration deleted successfully', 'success');
+      toaster.show(
+        t(
+          'integration_deleted_successfully',
+          'Integration deleted successfully'
+        ),
+        'success'
+      );
       reload();
     } else {
       const error = await res.json();
@@ -154,12 +165,14 @@ export const ThirdPartyComponent = () => {
                 )}
               >
                 {!isLoading && !data?.length ? (
-                  <div>No Integrations Yet</div>
+                  <div>{t('no_integrations_yet', 'No Integrations Yet')}</div>
                 ) : (
                   data?.map((p: any) => (
                     <div
                       key={p.id}
-                      className={clsx('flex gap-[8px] items-center group/profile hover:bg-boxHover')}
+                      className={clsx(
+                        'flex gap-[8px] items-center group/profile hover:bg-boxHover'
+                      )}
                     >
                       <div className="h-full w-[4px] rounded-s-[3px] opacity-0 group-hover/profile:opacity-100 transition-opacity">
                         <SVGLine />

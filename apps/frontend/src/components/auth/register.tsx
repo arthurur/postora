@@ -75,11 +75,11 @@ export function Register() {
 function getHelpfulReasonForRegistrationFailure(httpCode: number) {
   switch (httpCode) {
     case 400:
-      return 'Email already exists';
+      return 'Este e-mail já está cadastrado';
     case 404:
-      return 'Your browser got a 404 when trying to contact the API, the most likely reasons for this are the NEXT_PUBLIC_BACKEND_URL is set incorrectly, or the backend is not running.';
+      return 'O navegador recebeu um erro 404 ao tentar acessar a API. Provavelmente a variável NEXT_PUBLIC_BACKEND_URL está incorreta ou o backend não está em execução.';
   }
-  return 'Unhandled error: ' + httpCode;
+  return 'Erro não tratado: ' + httpCode;
 }
 export function RegisterAfter({
   token,
@@ -139,9 +139,11 @@ export function RegisterAfter({
       .catch((e) => {
         form.setError('email', {
           message:
-            'General error: ' +
+            t('general_error', 'General error:') +
+            ' ' +
             e.toString() +
-            '. Please check your browser console.',
+            ' ' +
+            t('check_browser_console', 'Please check your browser console.'),
         });
       });
   };

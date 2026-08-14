@@ -20,9 +20,7 @@ const client = new NeynarAPIClient({
   apiKey: process.env.NEYNAR_SECRET_KEY || '00000000-000-0000-000-000000000000',
 });
 
-@Rules(
-  'Farcaster/Warpcast can only accept pictures'
-)
+@Rules('Farcaster/Warpcast can only accept pictures')
 export class FarcasterProvider
   extends SocialAbstract
   implements SocialProvider
@@ -47,7 +45,7 @@ export class FarcasterProvider
         item?.some((field) => (field?.path?.indexOf?.('mp4') ?? -1) > -1)
       )
     ) {
-      return 'Can only accept images';
+      return 'Apenas imagens são aceitas.';
     }
     return true;
   }

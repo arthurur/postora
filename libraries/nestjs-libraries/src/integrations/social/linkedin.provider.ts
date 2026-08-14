@@ -88,17 +88,17 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
       ((firstPost?.length ?? 0) < 2 ||
         firstPost?.some((p) => (p?.path?.indexOf?.('mp4') ?? -1) > -1))
     ) {
-      return 'Carousel can only be created with 2 or more images and no videos.';
+      return 'O carrossel precisa ter pelo menos 2 imagens e não pode conter vídeos.';
     }
 
     if (
       (firstPost?.length ?? 0) > 1 &&
       firstPost?.some((p) => (p?.path?.indexOf?.('mp4') ?? -1) > -1)
     ) {
-      return 'Can have maximum 1 media when selecting a video.';
+      return 'Ao selecionar um vídeo, você pode adicionar apenas uma mídia.';
     }
     if (restPosts?.some((p) => (p?.length ?? 0) > 0)) {
-      return 'Comments can only contain text.';
+      return 'Comentários podem conter apenas texto.';
     }
     return true;
   }
@@ -111,11 +111,14 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
     if (body.indexOf('Unable to obtain activity') > -1) {
       return {
         type: 'retry',
-        value: 'Unable to obtain activity',
+        value: 'Não foi possível obter a atividade.',
       };
     }
 
-    if (body.indexOf('resource is forbidden') > -1 || body.indexOf('Service Unavailable') > -1) {
+    if (
+      body.indexOf('resource is forbidden') > -1 ||
+      body.indexOf('Service Unavailable') > -1
+    ) {
       return {
         type: 'retry',
         value: 'Resource is forbidden',
@@ -262,7 +265,7 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
       /^https?:\/\/(?:www\.)?linkedin\.com\/company\/([^/]+)\/?$/
     );
     if (!getCompanyVanity || !getCompanyVanity?.length) {
-      throw new Error('Invalid LinkedIn company URL');
+      throw new Error('URL da empresa no LinkedIn inválida');
     }
 
     const { elements } = await (
@@ -554,10 +557,10 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
 
     // Create a PDF sized to the largest image; it fills the page,
     // smaller images are fitted and centered within the same dimensions
-    const pdfStream = imageToPDF(
-      imageBuffers,
-      [largest.width, largest.height]
-    ) as unknown as Readable;
+    const pdfStream = imageToPDF(imageBuffers, [
+      largest.width,
+      largest.height,
+    ]) as unknown as Readable;
     const pdfBuffer = await this.streamToBuffer(pdfStream);
 
     // Replace the first post's media with the single PDF
@@ -675,7 +678,9 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
     // DISABLE_IMAGE_COMPRESSION=true, where the frontend no longer shrinks
     // uploads and full-size images reach LinkedIn directly. Do not remove it on
     // the assumption that the frontend compression already caps dimensions.
-    const pipeline = sharp(await readOrFetch(mediaUrl), { animated: false }).resize({
+    const pipeline = sharp(await readOrFetch(mediaUrl), {
+      animated: false,
+    }).resize({
       width: 6000,
       height: 6000,
       fit: 'inside',
@@ -685,7 +690,11 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
     return await (keepFormat ? pipeline : pipeline.toFormat('jpeg')).toBuffer();
   }
 
-  private buildPostContent(isPdf: boolean, mediaIds: string[], pdfTitle?: string) {
+  private buildPostContent(
+    isPdf: boolean,
+    mediaIds: string[],
+    pdfTitle?: string
+  ) {
     if (mediaIds.length === 0) {
       return {};
     }
@@ -794,9 +803,9 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
       {
         method: 'POST',
         headers: {
-        'LinkedIn-Version': '202306',
-        'X-Restli-Protocol-Version': '2.0.0',
-        'Content-Type': 'application/json',
+          'LinkedIn-Version': '202306',
+          'X-Restli-Protocol-Version': '2.0.0',
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
@@ -839,7 +848,9 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
   ): Promise<PostResponse[]> {
     let processedPostDetails = postDetails;
     const [firstPost] = postDetails;
-    const isPdf = this.assetBoolean(firstPost.settings?.post_as_images_carousel);
+    const isPdf = this.assetBoolean(
+      firstPost.settings?.post_as_images_carousel
+    );
 
     // Check if we should convert images to PDF carousel
     if (isPdf) {
@@ -915,7 +926,9 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
         // A 200 without a status field can never reach AVAILABLE: count it
         // like a failed read instead of polling it forever.
         if (!status.status) {
-          throw new Error('LinkedIn answered without a media status');
+          throw new Error(
+            'O LinkedIn respondeu sem informar o status da mídia'
+          );
         }
       } catch (err) {
         if (err instanceof RefreshToken) {
@@ -1122,15 +1135,15 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
 
   @PostPlug({
     identifier: 'linkedin-add-comment',
-    title: 'Add comments by a different account',
-    description: 'Add accounts to comment on your post',
+    title: 'Adicionar comentários de outra conta',
+    description: 'Adicione contas para comentar na sua publicação',
     pickIntegration: ['linkedin', 'linkedin-page'],
     fields: [
       {
         name: 'comment',
-        description: 'The comment to add to the post',
+        description: 'Comentário que será adicionado à publicação',
         type: 'textarea',
-        placeholder: 'Enter your comment here',
+        placeholder: 'Digite seu comentário aqui',
       },
     ],
   })
@@ -1163,8 +1176,8 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
 
   @PostPlug({
     identifier: 'linkedin-repost-post-users',
-    title: 'Add Re-posters',
-    description: 'Add accounts to repost your post',
+    title: 'Adicionar contas para republicar',
+    description: 'Adicione contas que republicarão sua publicação',
     pickIntegration: ['linkedin', 'linkedin-page'],
     fields: [],
   })

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpException, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Param,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { SubscriptionService } from '@gitroom/nestjs-libraries/database/prisma/subscriptions/subscription.service';
 import { StripeService } from '@gitroom/nestjs-libraries/services/stripe.service';
 import { GetOrgFromRequest } from '@gitroom/nestjs-libraries/user/org.from.request';
@@ -137,8 +145,8 @@ export class BillingController {
   ) {
     await this._notificationService.sendEmail(
       process.env.EMAIL_FROM_ADDRESS,
-      'Subscription Cancelled',
-      `Organization ${org.name} has cancelled their subscription because: ${body.feedback}`,
+      'Assinatura cancelada',
+      `A organização ${org.name} cancelou a assinatura pelo seguinte motivo: ${body.feedback}`,
       user.email
     );
 
@@ -159,7 +167,7 @@ export class BillingController {
     @GetOrgFromRequest() org: Organization
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     return this._stripeService.getCharges(org.id);
@@ -172,7 +180,7 @@ export class BillingController {
     @Body() body: { chargeIds: string[] }
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     return this._stripeService.refundCharges(org.id, body.chargeIds);
@@ -184,7 +192,7 @@ export class BillingController {
     @GetOrgFromRequest() org: Organization
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     return this._stripeService.cancelSubscription(org.id);
@@ -196,7 +204,7 @@ export class BillingController {
     @GetOrgFromRequest() org: Organization
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     return this._stripeService.getCouponInfo(org.id);
@@ -209,7 +217,7 @@ export class BillingController {
     @Body() body: AdminApplyCouponDto
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     return this._stripeService.applyCoupon(org.id, body);
@@ -221,7 +229,7 @@ export class BillingController {
     @GetOrgFromRequest() org: Organization
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     return this._stripeService.cancelCoupon(org.id);
@@ -242,8 +250,8 @@ export class BillingController {
     if (refund.refunded) {
       await this._notificationService.sendEmail(
         process.env.EMAIL_FROM_ADDRESS,
-        'Refund issued from Chatbase',
-        `Organization ${org.name} received a refund of ${refund.amount} ${refund.currency} and their subscription was cancelled`,
+        'Reembolso emitido pelo Chatbase',
+        `A organização ${org.name} recebeu um reembolso de ${refund.amount} ${refund.currency}, e a assinatura foi cancelada`,
         user.email
       );
     }
@@ -258,7 +266,7 @@ export class BillingController {
     @GetOrgFromRequest() org: Organization
   ) {
     if (!user.isSuperAdmin) {
-      throw new Error('Unauthorized');
+      throw new Error('Não autorizado');
     }
 
     await this._subscriptionService.addSubscription(
@@ -267,5 +275,4 @@ export class BillingController {
       body.subscription
     );
   }
-
 }

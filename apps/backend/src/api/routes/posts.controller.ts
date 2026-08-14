@@ -153,13 +153,16 @@ export class PostsController {
     @Param('group') group: string
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Forbidden', 403);
+      throw new HttpException('Acesso negado', 403);
     }
     return this._postsService.getPostGroupDebugExport(org.id, group);
   }
 
   @Get('/group/:group')
-  getPostsByGroup(@GetOrgFromRequest() org: Organization, @Param('group') group: string) {
+  getPostsByGroup(
+    @GetOrgFromRequest() org: Organization,
+    @Param('group') group: string
+  ) {
     return this._postsService.getPostsByGroup(org.id, group);
   }
 

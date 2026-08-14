@@ -10,7 +10,11 @@ import {
 } from 'react';
 import { clsx } from 'clsx';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { TranslatedLabel } from '../translation/translated-label';
+import {
+  getTextTranslationKey,
+  TranslatedLabel,
+} from '../translation/translated-label';
+import { useT } from '../translation/get.transation.service.client';
 
 export const Input: FC<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
@@ -37,6 +41,14 @@ export const Input: FC<
     translationParams,
     ...rest
   } = props;
+  const t = useT();
+  const placeholder =
+    typeof rest.placeholder === 'string'
+      ? t(
+          getTextTranslationKey('placeholder', rest.placeholder),
+          rest.placeholder
+        )
+      : rest.placeholder;
   const form = useFormContext();
   const err = useMemo(() => {
     if (error) return error;
@@ -74,6 +86,7 @@ export const Input: FC<
           )}
           {...(disableForm ? {} : form.register(props.name))}
           {...rest}
+          placeholder={placeholder}
         />
       </div>
       {!removeError && (

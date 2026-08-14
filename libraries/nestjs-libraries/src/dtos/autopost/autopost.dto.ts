@@ -41,7 +41,7 @@ export class AutopostDto {
   @IsDefined()
   @IsSafeWebhookUrl({
     message:
-      'Autopost URL must be a public HTTPS URL and cannot point to internal network addresses',
+      'A URL da publicação automática deve ser HTTPS pública e não pode apontar para endereços de rede interna.',
   })
   url: string;
 

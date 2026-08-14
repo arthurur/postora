@@ -34,7 +34,7 @@ export const GET = async (
   // Confine reads to UPLOAD_DIRECTORY. resolve() collapses any `..` segments
   // (including URL-decoded ones), so this blocks every path-traversal variant.
   if (filePath !== base && !filePath.startsWith(base + sep)) {
-    return new NextResponse('Not found', { status: 404 });
+    return new NextResponse('Não encontrado', { status: 404 });
   }
   const response = createReadStream(filePath);
   const fileStats = statSync(filePath);

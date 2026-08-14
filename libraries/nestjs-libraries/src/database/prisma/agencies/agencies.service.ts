@@ -37,21 +37,21 @@ export class AgenciesService {
     if (action === 'approve') {
       await this._notificationService.sendEmail(
         agency?.user?.email!,
-        'Your Agency has been approved and added to Postiz 🚀',
+        'Sua agência foi aprovada e adicionada ao Postiz 🚀',
         `
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Agency has been approved and added to Postiz 🚀</title>
+    <title>Sua agência foi aprovada e adicionada ao Postiz 🚀</title>
 </head>
 
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
-  Hi there, <br /><br />
-  Your agency ${agency?.name} has been added to Postiz!<br />
-  You can <a href="https://postiz.com/agencies/${agency?.slug}">check it here</a><br />
-  It will appear on the main agency of Postiz in the next 24 hours.<br /><br />
+  Olá!<br /><br />
+  Sua agência ${agency?.name} foi adicionada ao Postiz!<br />
+  Você pode <a href="https://postiz.com/agencies/${agency?.slug}">conferir aqui</a>.<br />
+  Ela aparecerá na página principal de agências do Postiz em até 24 horas.<br /><br />
 </body>
 </html>`
       );
@@ -61,20 +61,20 @@ export class AgenciesService {
 
     await this._notificationService.sendEmail(
       agency?.user?.email!,
-      'Your Agency has been declined 😔',
+      'Sua agência não foi aprovada 😔',
       `
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Agency has been declined</title>
+    <title>Sua agência não foi aprovada</title>
 </head>
 
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
-  Hi there, <br /><br />
-  Your agency ${agency?.name} has been declined to Postiz!<br />
-  If you think we have made a mistake, please reply to this email and let us know
+  Olá!<br /><br />
+  Sua agência ${agency?.name} não foi aprovada no Postiz.<br />
+  Se você acredita que houve um engano, responda a este e-mail e conte para a gente.
 </body>
 </html>`
     );
@@ -86,14 +86,14 @@ export class AgenciesService {
     const agency = await this._agenciesRepository.createAgency(user, body);
     await this._notificationService.sendEmail(
       'nevo@postiz.com',
-      'New agency created',
+      'Nova agência criada',
       `
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Template</title>
+    <title>Nova agência criada</title>
 </head>
 
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
@@ -112,7 +112,7 @@ export class AgenciesService {
             <td style="padding: 20px; text-align: center;">
                 <!-- Social Media Links -->
                 <p style="margin: 10px 0; font-size: 16px;">
-                    Social Medias:
+                    Redes sociais:
                     <a href="${
                       body.facebook
                     }" style="margin: 0 10px; text-decoration: none; color: #007bff;">${
@@ -158,7 +158,7 @@ export class AgenciesService {
         <tr>
             <td style="padding: 20px;">
                 <!-- Short Description -->
-                <h2 style="text-align: center; color: #333;">Name</h2>
+                <h2 style="text-align: center; color: #333;">Nome</h2>
                 <p style="text-align: center; color: #555; font-size: 16px;">${
                   body.name
                 }</p>
@@ -167,7 +167,7 @@ export class AgenciesService {
         <tr>
             <td style="padding: 20px;">
                 <!-- Short Description -->
-                <h2 style="text-align: center; color: #333;">Short Description</h2>
+                <h2 style="text-align: center; color: #333;">Descrição curta</h2>
                 <p style="text-align: center; color: #555; font-size: 16px;">${
                   body.shortDescription
                 }</p>
@@ -176,7 +176,7 @@ export class AgenciesService {
         <tr>
             <td style="padding: 20px;">
                 <!-- Description -->
-                <h2 style="text-align: center; color: #333;">Description</h2>
+                <h2 style="text-align: center; color: #333;">Descrição</h2>
                 <p style="text-align: center; color: #555; font-size: 16px;">${
                   body.description
                 }</p>
@@ -185,7 +185,7 @@ export class AgenciesService {
         <tr>
             <td style="padding: 20px;">
                 <!-- Niches -->
-                <h2 style="text-align: center; color: #333;">Niches</h2>
+                <h2 style="text-align: center; color: #333;">Nichos</h2>
                 <p style="text-align: center; color: #555; font-size: 16px;">${body.niches.join(
                   ','
                 )}</p>
@@ -195,15 +195,15 @@ export class AgenciesService {
             <td style="padding: 20px; text-align: center; background-color: #000;">
                 <a href="https://postiz.com/agencies/action/approve/${
                   agency.id
-                }" style="margin: 0 10px; text-decoration: none; color: #007bff;">To approve click here</a><br /><br /><br />
+                }" style="margin: 0 10px; text-decoration: none; color: #007bff;">Clique aqui para aprovar</a><br /><br /><br />
                 <a href="https://postiz.com/agencies/action/decline/${
                   agency.id
-                }" style="margin: 0 10px; text-decoration: none; color: #007bff;">To decline click here</a><br /><br /><br />
+                }" style="margin: 0 10px; text-decoration: none; color: #007bff;">Clique aqui para recusar</a><br /><br /><br />
             </td>
         </tr>
         <tr>
             <td style="padding: 20px; text-align: center; background-color: #f4f4f4;">
-                <p style="color: #777; font-size: 14px;">&copy; 2024 Your Gitroom Limited All rights reserved.</p>
+                <p style="color: #777; font-size: 14px;">&copy; 2024 Your Gitroom Limited. Todos os direitos reservados.</p>
             </td>
         </tr>
     </table>

@@ -103,7 +103,7 @@ export const CustomSelect: FC<{
             </div>
           )}
 
-          {option.label}
+          <TranslatedLabel label={option.label || ''} />
         </div>
         <div className="pe-[16px] flex gap-[8px]">
           <div>
@@ -156,7 +156,9 @@ export const CustomSelect: FC<{
                   {option.icon}
                 </div>
               )}
-              <div className="flex-1 text-[14px]">{option.label}</div>
+              <div className="flex-1 text-[14px]">
+                <TranslatedLabel label={option.label} />
+              </div>
             </div>
           ))}
         </div>

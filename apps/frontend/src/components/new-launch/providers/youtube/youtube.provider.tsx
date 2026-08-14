@@ -12,6 +12,8 @@ import { MediumTags } from '@gitroom/frontend/components/new-launch/providers/me
 import { MediaComponent } from '@gitroom/frontend/components/media/media.component';
 import { Select } from '@gitroom/react/form/select';
 import { YoutubePreview } from '@gitroom/frontend/components/new-launch/providers/youtube/youtube.preview';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
+import { getLabelTranslationKey } from '@gitroom/react/translation/translated-label';
 const type = [
   {
     label: 'Public',
@@ -38,6 +40,7 @@ const madeForKids = [
   },
 ];
 const YoutubeSettings: FC = () => {
+  const t = useT();
   const { register, control } = useSettings();
   return (
     <div className="flex flex-col">
@@ -48,9 +51,9 @@ const YoutubeSettings: FC = () => {
           value: 'public',
         })}
       >
-        {type.map((t) => (
-          <option key={t.value} value={t.value}>
-            {t.label}
+        {type.map((item) => (
+          <option key={item.value} value={item.value}>
+            {t(getLabelTranslationKey(item.label), item.label)}
           </option>
         ))}
       </Select>
@@ -60,9 +63,9 @@ const YoutubeSettings: FC = () => {
           value: 'no',
         })}
       >
-        {madeForKids.map((t) => (
-          <option key={t.value} value={t.value}>
-            {t.label}
+        {madeForKids.map((item) => (
+          <option key={item.value} value={item.value}>
+            {t(getLabelTranslationKey(item.label), item.label)}
           </option>
         ))}
       </Select>

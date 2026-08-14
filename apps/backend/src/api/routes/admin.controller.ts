@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  HttpException,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, HttpException, Query } from '@nestjs/common';
 import { GetUserFromRequest } from '@gitroom/nestjs-libraries/user/user.from.request';
 import { User } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
@@ -21,7 +16,7 @@ export class AdminController {
 
   private assertSuperAdmin(user: User) {
     if (!user?.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
   }
 

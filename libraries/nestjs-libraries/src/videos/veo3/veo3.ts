@@ -4,7 +4,12 @@ import {
   VideoAbstract,
 } from '@gitroom/nestjs-libraries/videos/video.interface';
 import { timer } from '@gitroom/helpers/utils/timer';
-import { ArrayMaxSize, IsArray, IsString, ValidateNested } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsArray,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 class Image {
@@ -28,7 +33,7 @@ class Veo3Params {
 @Video({
   identifier: 'veo3',
   title: 'Veo3 (Audio + Video)',
-  description: 'Generate videos with the most advanced video model.',
+  description: 'Gere vídeos com o modelo de vídeo mais avançado.',
   placement: 'text-to-image',
   dto: Veo3Params,
   tools: [],
@@ -68,7 +73,7 @@ export class Veo3 extends VideoAbstract<Veo3Params> {
     const maxAttempts = 180; // ~30 minutes at 10s interval
     while (true) {
       if (attempts++ >= maxAttempts) {
-        throw new Error('Video generation timed out');
+        throw new Error('A geração do vídeo excedeu o tempo limite');
       }
 
       console.log('waiting for video to be ready');
@@ -104,7 +109,7 @@ export class Veo3 extends VideoAbstract<Veo3Params> {
       }
 
       if (successFlag === 1) {
-        throw new Error('Video generation succeeded but no video URL returned');
+        throw new Error('O vídeo foi gerado, mas nenhuma URL foi retornada');
       }
 
       await timer(10000);

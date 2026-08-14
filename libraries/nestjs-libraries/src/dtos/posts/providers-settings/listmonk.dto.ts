@@ -11,14 +11,14 @@ export class ListmonkDto {
 
   @IsString()
   @JSONSchema({
-    description: 'List must be an id',
+    description: 'A lista deve ser informada por ID',
   })
   list: string;
 
   @IsString()
   @IsOptional()
   @JSONSchema({
-    description: 'Template must be an id',
+    description: 'O modelo deve ser informado por ID',
   })
   template: string;
 }

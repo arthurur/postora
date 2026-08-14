@@ -19,6 +19,7 @@ import { GoogleTagManagerComponent } from '@gitroom/frontend/components/layout/g
 import { cookies } from 'next/headers';
 import {
   cookieName,
+  defaultDocumentLanguage,
   fallbackLng,
 } from '@gitroom/react/translation/i18n.config';
 import { HtmlComponent } from '@gitroom/frontend/components/layout/html.component';
@@ -38,7 +39,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     ? PlausibleProvider
     : Fragment;
   return (
-    <html>
+    <html lang={language === 'pt' ? defaultDocumentLanguage : language}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         {!!process.env.DATAFAST_WEBSITE_ID && (

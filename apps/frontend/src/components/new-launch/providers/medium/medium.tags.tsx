@@ -4,6 +4,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSettings } from '@gitroom/frontend/components/launches/helpers/use.values';
 import { ReactTags } from 'react-tag-autocomplete';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
+import { TranslatedLabel } from '@gitroom/react/translation/translated-label';
 
 export const MediumTags: FC<{
   name: string;
@@ -67,7 +68,9 @@ export const MediumTags: FC<{
   }, [suggestions, tagValue]);
   return (
     <div className="medium-tags">
-      <div className={`text-[14px] mb-[6px]`}>{label}</div>
+      <div className={`text-[14px] mb-[6px]`}>
+        <TranslatedLabel label={label} />
+      </div>
       <ReactTags
         placeholderText={t('add_a_tag', 'Add a tag')}
         suggestions={suggestionsArray}

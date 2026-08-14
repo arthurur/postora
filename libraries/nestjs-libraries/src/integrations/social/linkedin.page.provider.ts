@@ -94,7 +94,7 @@ export class LinkedinPageProvider
     integration: Integration,
     originalIntegration: Integration,
     postId: string,
-    information: any,
+    information: any
   ) {
     return super.addComment(
       integration,
@@ -452,7 +452,9 @@ export class LinkedinPageProvider
     // Fetch share statistics for the specific post
     const shareStatsUrl = `https://api.linkedin.com/v2/organizationalEntityShareStatistics?q=organizationalEntity&organizationalEntity=${encodeURIComponent(
       `urn:li:organization:${integrationId}`
-    )}&shares=List(${encodeURIComponent(postId)})&timeIntervals=(timeRange:(start:${startDate},end:${endDate}),timeGranularityType:DAY)`;
+    )}&shares=List(${encodeURIComponent(
+      postId
+    )})&timeIntervals=(timeRange:(start:${startDate},end:${endDate}),timeGranularityType:DAY)`;
 
     const { elements: shareElements }: { elements: PostShareStatElement[] } =
       await (
@@ -568,17 +570,17 @@ export class LinkedinPageProvider
 
   @Plug({
     identifier: 'linkedin-page-autoRepostPost',
-    title: 'Auto Repost Posts',
+    title: 'Republicar automaticamente',
     description:
-      'When a post reached a certain number of likes, repost it to increase engagement (1 week old posts)',
+      'Quando uma publicação atingir certo número de curtidas, republique-a para aumentar o engajamento (publicações de até 1 semana)',
     runEveryMilliseconds: 21600000,
     totalRuns: 3,
     fields: [
       {
         name: 'likesAmount',
         type: 'number',
-        placeholder: 'Amount of likes',
-        description: 'The amount of likes to trigger the repost',
+        placeholder: 'Número de curtidas',
+        description: 'Número de curtidas necessário para republicar',
         validation: /^\d+$/,
       },
     ],
@@ -639,24 +641,24 @@ export class LinkedinPageProvider
 
   @Plug({
     identifier: 'linkedin-page-autoPlugPost',
-    title: 'Auto plug post',
+    title: 'Adicionar promoção automaticamente',
     description:
-      'When a post reached a certain number of likes, add another post to it so you followers get a notification about your promotion',
+      'Quando uma publicação atingir certo número de curtidas, adicione uma resposta para que seus seguidores recebam uma notificação sobre sua promoção',
     runEveryMilliseconds: 21600000,
     totalRuns: 3,
     fields: [
       {
         name: 'likesAmount',
         type: 'number',
-        placeholder: 'Amount of likes',
-        description: 'The amount of likes to trigger the repost',
+        placeholder: 'Número de curtidas',
+        description: 'Número de curtidas necessário para adicionar a promoção',
         validation: /^\d+$/,
       },
       {
         name: 'post',
         type: 'richtext',
-        placeholder: 'Post to plug',
-        description: 'Message content to plug',
+        placeholder: 'Publicação promocional',
+        description: 'Conteúdo da mensagem promocional',
         validation: /^[\s\S]{3,}$/g,
       },
     ],

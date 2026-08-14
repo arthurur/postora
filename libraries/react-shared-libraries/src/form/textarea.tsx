@@ -3,7 +3,11 @@
 import { DetailedHTMLProps, FC, InputHTMLAttributes, useMemo } from 'react';
 import clsx from 'clsx';
 import { useFormContext } from 'react-hook-form';
-import { TranslatedLabel } from '../translation/translated-label';
+import {
+  getTextTranslationKey,
+  TranslatedLabel,
+} from '../translation/translated-label';
+import { useT } from '../translation/get.transation.service.client';
 
 export const Textarea: FC<
   DetailedHTMLProps<
@@ -27,6 +31,14 @@ export const Textarea: FC<
     translationParams,
     ...rest
   } = props;
+  const t = useT();
+  const placeholder =
+    typeof rest.placeholder === 'string'
+      ? t(
+          getTextTranslationKey('placeholder', rest.placeholder),
+          rest.placeholder
+        )
+      : rest.placeholder;
   const form = useFormContext();
   const err = useMemo(() => {
     if (error) return error;
@@ -54,6 +66,7 @@ export const Textarea: FC<
           className
         )}
         {...rest}
+        placeholder={placeholder}
       />
       <div className="text-red-400 text-[12px]">{err || <>&nbsp;</>}</div>
     </div>

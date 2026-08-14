@@ -79,10 +79,10 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
   ): Promise<string | true> {
     const [firstItems] = items ?? [];
     if (items?.[0]?.length !== 1) {
-      return 'You need one media';
+      return 'Adicione uma mídia.';
     }
     if ((firstItems?.[0]?.path?.indexOf?.('mp4') ?? -1) === -1) {
-      return 'Item must be a video';
+      return 'O item precisa ser um vídeo.';
     }
     return true;
   }
@@ -96,7 +96,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
     if (body.includes('invalidTags')) {
       return {
         type: 'bad-body',
-        value: 'The maximum allowed is 500 characters in total.',
+        value: 'O limite máximo é de 500 caracteres no total.',
       };
     }
 
@@ -104,7 +104,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'We have uploaded your video but we could not set the title. Title is too long.',
+          'Seu vídeo foi enviado, mas não foi possível definir o título porque ele é muito longo.',
       };
     }
 
@@ -112,42 +112,42 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'Your video description is invalid, it may contain disallowed characters such as < or >.',
+          'A descrição do vídeo é inválida e pode conter caracteres não permitidos, como < ou >.',
       };
     }
 
     if (body.includes('invalidCategoryId')) {
       return {
         type: 'bad-body',
-        value: 'The selected video category is invalid.',
+        value: 'A categoria de vídeo selecionada é inválida.',
       };
     }
 
     if (body.includes('invalidPublishAt')) {
       return {
         type: 'bad-body',
-        value: 'The scheduled publishing time is invalid.',
+        value: 'O horário de publicação agendada é inválido.',
       };
     }
 
     if (body.includes('invalidRecordingDetails')) {
       return {
         type: 'bad-body',
-        value: 'The recording details for the video are invalid.',
+        value: 'Os detalhes de gravação do vídeo são inválidos.',
       };
     }
 
     if (body.includes('invalidVideoGameRating')) {
       return {
         type: 'bad-body',
-        value: 'The video game rating is invalid.',
+        value: 'A classificação do videogame é inválida.',
       };
     }
 
     if (body.includes('invalidFilename')) {
       return {
         type: 'bad-body',
-        value: 'The video file name is invalid.',
+        value: 'O nome do arquivo de vídeo é inválido.',
       };
     }
 
@@ -155,7 +155,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'We could not set the localized video details because no default language is set.',
+          'Não foi possível definir os detalhes localizados do vídeo porque nenhum idioma padrão foi configurado.',
       };
     }
 
@@ -163,7 +163,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'Some of the video details are invalid, please review the title, description and tags.',
+          'Alguns detalhes do vídeo são inválidos. Revise o título, a descrição e as tags.',
       };
     }
 
@@ -171,7 +171,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'The video file is missing or could not be read, please re-upload the video.',
+          'O arquivo de vídeo está ausente ou não pôde ser lido. Envie o vídeo novamente.',
       };
     }
 
@@ -179,7 +179,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'We have uploaded your video but the thumbnail format is not supported, please use JPEG or PNG.',
+          'Seu vídeo foi enviado, mas o formato da miniatura não é compatível. Use JPEG ou PNG.',
       };
     }
 
@@ -187,7 +187,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'We have uploaded your video but the thumbnail image is too tall.',
+          'Seu vídeo foi enviado, mas a imagem da miniatura é alta demais.',
       };
     }
 
@@ -195,7 +195,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'We have uploaded your video but the thumbnail image is too wide.',
+          'Seu vídeo foi enviado, mas a imagem da miniatura é larga demais.',
       };
     }
 
@@ -203,7 +203,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'You are sending requests too quickly, please wait a little while and try again.',
+          'Você está enviando solicitações rápido demais. Aguarde um pouco e tente novamente.',
       };
     }
 
@@ -211,7 +211,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'We have uploaded your video but we could not set the thumbnail. Thumbnail size is too large.',
+          'Seu vídeo foi enviado, mas não foi possível definir a miniatura porque o arquivo é grande demais.',
       };
     }
 
@@ -219,15 +219,14 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'You have reached your daily upload limit, please try again tomorrow.',
+          'Você atingiu o limite diário de envios. Tente novamente amanhã.',
       };
     }
 
     if (body.includes('youtubeSignupRequired')) {
       return {
         type: 'bad-body',
-        value:
-          'You have to link your youtube account to your google account first.',
+        value: 'Primeiro, vincule sua conta do YouTube à sua Conta do Google.',
       };
     }
 
@@ -235,22 +234,21 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'Your account is not verified, we have uploaded your video but we could not set the thumbnail. Please verify your account and try again.',
+          'Sua conta não está verificada. O vídeo foi enviado, mas não foi possível definir a miniatura. Verifique sua conta e tente novamente.',
       };
     }
 
     if (body.includes('Unauthorized')) {
       return {
         type: 'refresh-token',
-        value:
-          'Token expired or invalid, please reconnect your YouTube account.',
+        value: 'O token expirou ou é inválido. Reconecte sua conta do YouTube.',
       };
     }
 
     if (body.includes('UNAUTHENTICATED') || body.includes('invalid_grant')) {
       return {
         type: 'refresh-token',
-        value: 'Please re-authenticate your YouTube account',
+        value: 'Autentique novamente sua conta do YouTube.',
       };
     }
 
@@ -371,7 +369,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
       const channel = response.data.items?.[0];
 
       if (!channel) {
-        throw new Error('Channel not found');
+        throw new Error('Canal não encontrado');
       }
 
       return {
@@ -396,7 +394,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
     const findPage = pages.find((p) => p.id === requiredId);
 
     if (!findPage) {
-      throw new Error('Channel not found');
+      throw new Error('Canal não encontrado');
     }
 
     const information = await this.fetchPageInformation(accessToken, {

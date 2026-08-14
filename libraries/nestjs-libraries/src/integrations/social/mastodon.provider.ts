@@ -50,7 +50,7 @@ export class MastodonProvider extends SocialAbstract implements SocialProvider {
     if (body.includes('Your login is currently disabled')) {
       return {
         type: 'refresh-token',
-        value: 'Your login is currently disabled',
+        value: 'Seu login está desativado no momento.',
       };
     }
 
@@ -58,7 +58,7 @@ export class MastodonProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'The media was still processing when the post was published, please try again',
+          'A mídia ainda estava sendo processada quando a publicação foi enviada. Tente novamente',
       };
     }
 
@@ -66,7 +66,7 @@ export class MastodonProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'The uploaded media expired before the post was published, please post again',
+          'A mídia enviada expirou antes da publicação. Publique novamente',
       };
     }
 

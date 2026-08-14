@@ -46,35 +46,37 @@ export class ThreadsProvider extends SocialAbstract implements SocialProvider {
     | undefined {
     console.log(body);
     if (body.includes('Error validating access token')) {
-      return { type: 'refresh-token', value: 'Threads access token expired' };
+      return {
+        type: 'refresh-token',
+        value: 'O token de acesso do Threads expirou.',
+      };
     }
 
     if (body.includes('2207051')) {
       return {
         type: 'bad-body',
         value:
-          'Error from Meta: We restrict certain activity to protect our community',
+          'Erro da Meta: algumas atividades são restritas para proteger a comunidade',
       };
     }
 
     if (body.includes('4279013')) {
       return {
         type: 'bad-body',
-        value:
-          'User restricted',
+        value: 'Usuário com restrições',
       };
     }
     if (body.includes('The media could not be fetched from this URI')) {
       return {
         type: 'bad-body',
         value:
-          "One of the media URLs is invalid or inaccessible, make sure it's being uploaded to Postiz first",
+          'Uma das URLs de mídia é inválida ou está inacessível. Envie a mídia primeiro para o Postiz',
       };
     }
     if (body.includes('text must be at most 500 characters')) {
       return {
         type: 'bad-body',
-        value: 'Post text exceeds 500 characters limit',
+        value: 'O texto da publicação ultrapassa o limite de 500 caracteres',
       };
     }
 
@@ -570,7 +572,9 @@ export class ThreadsProvider extends SocialAbstract implements SocialProvider {
 
       const { id: containerId } = await (
         await this.fetch(
-          `https://graph.threads.net/v1.0/${integration.internalId}/threads?${params.toString()}`,
+          `https://graph.threads.net/v1.0/${
+            integration.internalId
+          }/threads?${params.toString()}`,
           {
             method: 'POST',
           }
@@ -595,7 +599,11 @@ export class ThreadsProvider extends SocialAbstract implements SocialProvider {
     return {
       status: 'completed',
       postId: threadId,
-      releaseURL: await this.threadPermalink(threadId, accessToken, integration),
+      releaseURL: await this.threadPermalink(
+        threadId,
+        accessToken,
+        integration
+      ),
     };
   }
 
@@ -745,24 +753,24 @@ export class ThreadsProvider extends SocialAbstract implements SocialProvider {
 
   @Plug({
     identifier: 'threads-autoPlugPost',
-    title: 'Auto plug post',
+    title: 'Adicionar promoção automaticamente',
     description:
-      'When a post reached a certain number of likes, add another post to it so you followers get a notification about your promotion',
+      'Quando uma publicação atingir certo número de curtidas, adicione uma resposta para que seus seguidores recebam uma notificação sobre sua promoção',
     runEveryMilliseconds: 21600000,
     totalRuns: 3,
     fields: [
       {
         name: 'likesAmount',
         type: 'number',
-        placeholder: 'Amount of likes',
-        description: 'The amount of likes to trigger the repost',
+        placeholder: 'Número de curtidas',
+        description: 'Número de curtidas necessário para adicionar a promoção',
         validation: /^\d+$/,
       },
       {
         name: 'post',
         type: 'richtext',
-        placeholder: 'Post to plug',
-        description: 'Message content to plug',
+        placeholder: 'Publicação promocional',
+        description: 'Conteúdo da mensagem promocional',
         validation: /^[\s\S]{3,}$/g,
       },
     ],

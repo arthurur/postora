@@ -10,7 +10,7 @@ export class DribbbleDto {
   @IsString()
   @IsDefined()
   @MinLength(1, {
-    message: 'Title is required',
+    message: 'O título é obrigatório',
   })
   title: string;
 

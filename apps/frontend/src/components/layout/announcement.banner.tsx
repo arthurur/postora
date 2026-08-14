@@ -27,13 +27,17 @@ const colorStyles: Record<AnnouncementColor, { bg: string; hover: string }> = {
 
 const useAnnouncements = () => {
   const fetch = useFetch();
-  return useSWR<Announcement[]>('/announcements', async () => {
-    return (await fetch('/announcements')).json();
-  }, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    revalidateIfStale: false,
-  });
+  return useSWR<Announcement[]>(
+    '/announcements',
+    async () => {
+      return (await fetch('/announcements')).json();
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    }
+  );
 };
 
 const AnnouncementDetailModal: FC<{
@@ -71,7 +75,7 @@ const AnnouncementDetailModal: FC<{
   return (
     <div className="flex flex-col gap-[16px] min-w-[500px]">
       <div className="text-newTextColor/60 text-[13px]">
-        {new Date(announcement.createdAt).toLocaleDateString()}
+        {new Date(announcement.createdAt).toLocaleDateString('pt-BR')}
       </div>
       <div className="whitespace-pre-wrap text-newTextColor">
         {announcement.description}
@@ -141,7 +145,9 @@ export const AnnouncementBanner: FC = () => {
           (+{announcements.length - 1} {t('more', 'more')})
         </span>
       )}
-      <style>{`#left-menu {padding-top: ${user?.isSuperAdmin ? '100px !important;' : '60px !important;'}`}</style>
+      <style>{`#left-menu {padding-top: ${
+        user?.isSuperAdmin ? '100px !important;' : '60px !important;'
+      }`}</style>
     </div>
   );
 };

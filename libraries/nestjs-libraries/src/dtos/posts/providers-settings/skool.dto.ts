@@ -6,7 +6,7 @@ export class SkoolDto {
   @IsDefined()
   @IsString()
   @JSONSchema({
-    description: 'Group must be an id',
+    description: 'O grupo deve ser informado por ID',
   })
   group: string;
 
@@ -14,7 +14,7 @@ export class SkoolDto {
   @IsDefined()
   @IsString()
   @JSONSchema({
-    description: 'Label must be an id',
+    description: 'O rótulo deve ser informado por ID',
   })
   label: string;
 
@@ -22,7 +22,7 @@ export class SkoolDto {
   @IsDefined()
   @IsString()
   @JSONSchema({
-    description: 'Title of the post',
+    description: 'Título da publicação',
   })
   title: string;
 }

@@ -57,8 +57,18 @@ export class MediaService {
     }
   }
 
-  saveFile(org: string, fileName: string, filePath: string, originalName?: string) {
-    return this._mediaRepository.saveFile(org, fileName, filePath, originalName);
+  saveFile(
+    org: string,
+    fileName: string,
+    filePath: string,
+    originalName?: string
+  ) {
+    return this._mediaRepository.saveFile(
+      org,
+      fileName,
+      filePath,
+      originalName
+    );
   }
 
   getMedia(org: string, page: number, search?: string) {
@@ -80,7 +90,10 @@ export class MediaService {
     }
 
     if (!video.trial && org.isTrailing) {
-      throw new HttpException('This video is not available in trial mode', 406);
+      throw new HttpException(
+        'Este vídeo não está disponível durante o período de teste',
+        406
+      );
     }
 
     return true;

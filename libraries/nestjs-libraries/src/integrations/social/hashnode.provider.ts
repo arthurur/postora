@@ -100,7 +100,7 @@ export class HashnodeProvider extends SocialAbstract implements SocialProvider {
         username,
       };
     } catch (err) {
-      return 'Invalid credentials';
+      return 'Credenciais inválidas';
     }
   }
 

@@ -80,7 +80,9 @@ export const MultiSelect: FC<{
               checked={isSelected(option.value)}
               onChange={() => toggle(option.value)}
             />
-            <span>{option.label}</span>
+            <span>
+              <TranslatedLabel label={option.label} />
+            </span>
           </label>
         ))}
       </div>

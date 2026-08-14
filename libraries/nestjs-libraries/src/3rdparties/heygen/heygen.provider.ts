@@ -8,7 +8,8 @@ import { timer } from '@gitroom/helpers/utils/timer';
 @ThirdParty({
   identifier: 'heygen',
   title: 'HeyGen',
-  description: 'HeyGen is a platform for creating AI-generated avatars videos.',
+  description:
+    'A HeyGen é uma plataforma para criar vídeos com avatares gerados por IA.',
   position: 'media',
   fields: [],
 })
@@ -171,7 +172,7 @@ export class HeygenProvider extends ThirdPartyAbstract<{
     const maxAttempts = 180; // ~9 minutes at 3s interval
     while (true) {
       if (attempts++ >= maxAttempts) {
-        throw new Error('Video generation timed out');
+        throw new Error('A geração do vídeo excedeu o tempo limite');
       }
 
       const {
@@ -192,7 +193,7 @@ export class HeygenProvider extends ThirdPartyAbstract<{
       if (status === 'completed') {
         return video_url;
       } else if (status === 'failed') {
-        throw new Error('Video generation failed');
+        throw new Error('Falha ao gerar o vídeo');
       }
 
       await timer(3000);

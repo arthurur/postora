@@ -72,7 +72,9 @@ export const AgentChat: FC = () => {
             className="w-full h-full"
             labels={{
               title: t('your_assistant', 'Your Assistant'),
-              initial: t('agent_welcome_message', `Hello, I am your Postiz agent 🙌🏻.
+              initial: t(
+                'agent_welcome_message',
+                `Hello, I am your Postiz agent 🙌🏻.
               
 I can schedule a post or multiple posts to multiple channels and generate pictures and videos.
 
@@ -81,7 +83,8 @@ You can select the channels you want to use from the left menu.
 You can see your previous conversations from the right menu.
 
 You can also use me as an MCP Server, check Settings >> Public API
-`),
+`
+              ),
             }}
             UserMessage={Message}
             Input={NewInput}
@@ -152,7 +155,7 @@ const Message: FC<UserMessageProps> = (props) => {
   const convertContentToImagesAndVideo = useMemo(() => {
     return (props.message?.content || '')
       .replace(/Video: (http.*mp4\n)/g, (match, p1) => {
-        return `<video controls class="h-[150px] w-[150px] rounded-[8px] mb-[10px]"><source src="${p1.trim()}" type="video/mp4">Your browser does not support the video tag.</video>`;
+        return `<video controls class="h-[150px] w-[150px] rounded-[8px] mb-[10px]"><source src="${p1.trim()}" type="video/mp4">Seu navegador não oferece suporte à reprodução de vídeo.</video>`;
       })
       .replace(/Image: (http.*\n)/g, (match, p1) => {
         return `<img src="${p1.trim()}" class="h-[150px] w-[150px] max-w-full border border-newBgColorInner" />`;
@@ -311,6 +314,7 @@ const OpenModal: FC<{
   };
 }> = ({ args, respond }) => {
   const modals = useModals();
+  const t = useT();
   const { properties } = useContext(PropertiesContext);
   const startModal = useCallback(async () => {
     for (const integration of args.list) {
@@ -381,7 +385,7 @@ const OpenModal: FC<{
       });
     }
 
-    respond('User scheduled all the posts');
+    respond(t('user_scheduled_all_posts', 'User scheduled all the posts'));
   }, [args, respond, properties]);
 
   useEffect(() => {
@@ -389,7 +393,7 @@ const OpenModal: FC<{
   }, []);
   return (
     <div onClick={() => respond('continue')}>
-      Opening manually ${JSON.stringify(args)}
+      {t('opening_manually', 'Opening manually')} {JSON.stringify(args)}
     </div>
   );
 };

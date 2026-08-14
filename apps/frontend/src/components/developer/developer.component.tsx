@@ -4,7 +4,10 @@ import { FC, useCallback, useState } from 'react';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import useSWR from 'swr';
 import { useToaster } from '@gitroom/react/toaster/toaster';
-import { useDecisionModal, useModals } from '@gitroom/frontend/components/layout/new-modal';
+import {
+  useDecisionModal,
+  useModals,
+} from '@gitroom/frontend/components/layout/new-modal';
 import { MediaBox } from '@gitroom/frontend/components/media/media.component';
 import copy from 'copy-to-clipboard';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
@@ -26,13 +29,7 @@ const useOAuthApp = () => {
   });
 };
 
-const CopyButton = ({
-  text,
-  label,
-}: {
-  text: string;
-  label: string;
-}) => {
+const CopyButton = ({ text, label }: { text: string; label: string }) => {
   const toaster = useToaster();
   return (
     <button
@@ -88,13 +85,16 @@ export const DeveloperComponent: FC = () => {
     setEditing(true);
   }, [app]);
 
-  const changeMedia = useCallback((selected: { id: string; path: string }[]) => {
-    const media = Array.isArray(selected) ? selected[0] : selected;
-    if (media) {
-      setPictureId(media.id);
-      setPicturePath(media.path);
-    }
-  }, []);
+  const changeMedia = useCallback(
+    (selected: { id: string; path: string }[]) => {
+      const media = Array.isArray(selected) ? selected[0] : selected;
+      if (media) {
+        setPictureId(media.id);
+        setPicturePath(media.path);
+      }
+    },
+    []
+  );
 
   const openMedia = useCallback(() => {
     modals.openModal({
@@ -105,17 +105,17 @@ export const DeveloperComponent: FC = () => {
       size: 'calc(100% - 80px)',
       height: 'calc(100% - 80px)',
       children: (close: () => void) => (
-        <MediaBox
-          setMedia={changeMedia}
-          closeModal={close}
-        />
+        <MediaBox setMedia={changeMedia} closeModal={close} />
       ),
     });
   }, [modals, t, changeMedia]);
 
   const createApp = useCallback(async () => {
     if (!name || !redirectUrl) {
-      toaster.show('Name and Redirect URL are required', 'warning');
+      toaster.show(
+        t('name_redirect_url_required', 'Name and Redirect URL are required'),
+        'warning'
+      );
       return;
     }
     try {
@@ -134,14 +134,20 @@ export const DeveloperComponent: FC = () => {
       if (result.clientSecret) {
         setPlaintextSecret(result.clientSecret);
         toaster.show(
-          'App created! Copy your client secret now - it will only be shown once.',
+          t(
+            'app_created_copy_secret_now',
+            'App created! Copy your client secret now - it will only be shown once.'
+          ),
           'success'
         );
       }
       setCreating(false);
       mutate();
     } catch {
-      toaster.show('Failed to create app', 'warning');
+      toaster.show(
+        t('failed_to_create_app', 'Failed to create app'),
+        'warning'
+      );
     }
   }, [name, description, redirectUrl, pictureId]);
 
@@ -156,21 +162,26 @@ export const DeveloperComponent: FC = () => {
           pictureId,
         }),
       });
-      toaster.show('App updated', 'success');
+      toaster.show(t('app_updated', 'App updated'), 'success');
       setEditing(false);
       mutate();
     } catch {
-      toaster.show('Failed to update app', 'warning');
+      toaster.show(
+        t('failed_to_update_app', 'Failed to update app'),
+        'warning'
+      );
     }
   }, [name, description, redirectUrl, pictureId]);
 
   const rotateSecret = useCallback(async () => {
     const approved = await decision.open({
-      title: 'Rotate Client Secret?',
-      description:
-        'This will generate a new client secret and invalidate the current one. Any integrations using the old secret will stop working.',
-      approveLabel: 'Rotate',
-      cancelLabel: 'Cancel',
+      title: t('rotate_client_secret', 'Rotate Client Secret?'),
+      description: t(
+        'rotate_client_secret_description',
+        'This will generate a new client secret and invalidate the current one. Any integrations using the old secret will stop working.'
+      ),
+      approveLabel: t('rotate', 'Rotate'),
+      cancelLabel: t('cancel', 'Cancel'),
     });
     if (!approved) return;
     try {
@@ -180,32 +191,43 @@ export const DeveloperComponent: FC = () => {
       if (result.clientSecret) {
         setPlaintextSecret(result.clientSecret);
         toaster.show(
-          'Secret rotated! Copy your new client secret now.',
+          t(
+            'secret_rotated_copy_now',
+            'Secret rotated! Copy your new client secret now.'
+          ),
           'success'
         );
         mutate();
       }
     } catch {
-      toaster.show('Failed to rotate secret', 'warning');
+      toaster.show(
+        t('failed_to_rotate_secret', 'Failed to rotate secret'),
+        'warning'
+      );
     }
   }, [decision]);
 
   const deleteApp = useCallback(async () => {
     const approved = await decision.open({
-      title: 'Delete OAuth App?',
-      description:
-        'This will delete the OAuth application and revoke all user authorizations. This action cannot be undone.',
-      approveLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('delete_oauth_app', 'Delete OAuth App?'),
+      description: t(
+        'delete_oauth_app_description',
+        'This will delete the OAuth application and revoke all user authorizations. This action cannot be undone.'
+      ),
+      approveLabel: t('delete', 'Delete'),
+      cancelLabel: t('cancel', 'Cancel'),
     });
     if (!approved) return;
     try {
       await fetch('/user/oauth-app', { method: 'DELETE' });
-      toaster.show('OAuth app deleted', 'success');
+      toaster.show(t('oauth_app_deleted', 'OAuth app deleted'), 'success');
       setPlaintextSecret(null);
       mutate();
     } catch {
-      toaster.show('Failed to delete app', 'warning');
+      toaster.show(
+        t('failed_to_delete_app', 'Failed to delete app'),
+        'warning'
+      );
     }
   }, [decision]);
 
@@ -247,7 +269,20 @@ export const DeveloperComponent: FC = () => {
                 href="https://docs.postiz.com/public-api/oauth"
                 target="_blank"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
                 {t('read_the_docs', 'Docs')}
               </a>
             </div>
@@ -302,7 +337,7 @@ export const DeveloperComponent: FC = () => {
                 className="bg-newBgColorInner border border-newBorder rounded-[8px] px-[16px] h-[44px] text-textColor outline-none"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="My Application"
+                placeholder={t('my_application', 'My Application')}
                 maxLength={100}
               />
             </div>
@@ -314,7 +349,10 @@ export const DeveloperComponent: FC = () => {
                 className="bg-newBgColorInner border border-newBorder rounded-[8px] p-[16px] text-textColor outline-none min-h-[80px]"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe what your app does"
+                placeholder={t(
+                  'describe_what_your_app_does',
+                  'Describe what your app does'
+                )}
                 maxLength={500}
               />
             </div>
@@ -326,7 +364,7 @@ export const DeveloperComponent: FC = () => {
                 {picturePath ? (
                   <img
                     src={picturePath}
-                    alt="App picture"
+                    alt={t('app_picture', 'App picture')}
                     className="w-[48px] h-[48px] rounded-full object-cover"
                   />
                 ) : (
@@ -410,7 +448,20 @@ export const DeveloperComponent: FC = () => {
               href="https://docs.postiz.com/public-api/oauth"
               target="_blank"
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
               {t('read_the_docs', 'Docs')}
             </a>
           </div>
@@ -426,7 +477,7 @@ export const DeveloperComponent: FC = () => {
                 className="bg-newBgColorInner border border-newBorder rounded-[8px] px-[16px] h-[44px] text-textColor outline-none"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="My Application"
+                placeholder={t('my_application', 'My Application')}
                 maxLength={100}
               />
             </div>
@@ -438,7 +489,10 @@ export const DeveloperComponent: FC = () => {
                 className="bg-newBgColorInner border border-newBorder rounded-[8px] p-[16px] text-textColor outline-none min-h-[80px]"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe what your app does"
+                placeholder={t(
+                  'describe_what_your_app_does',
+                  'Describe what your app does'
+                )}
                 maxLength={500}
               />
             </div>
@@ -450,7 +504,7 @@ export const DeveloperComponent: FC = () => {
                 {picturePath ? (
                   <img
                     src={picturePath}
-                    alt="App picture"
+                    alt={t('app_picture', 'App picture')}
                     className="w-[48px] h-[48px] rounded-full object-cover"
                   />
                 ) : (
@@ -530,7 +584,19 @@ export const DeveloperComponent: FC = () => {
                 onClick={startEditing}
                 className="cursor-pointer px-[16px] h-[36px] bg-btnSimple hover:bg-boxHover transition-colors rounded-[8px] text-[13px] font-[600] flex items-center gap-[6px]"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
                 {t('edit_app', 'Edit App')}
               </button>
             </div>
@@ -551,7 +617,9 @@ export const DeveloperComponent: FC = () => {
               {t('client_id', 'Client ID')}
             </div>
             <div className="bg-newBgColorInner border border-newBorder rounded-[8px] px-[16px] h-[44px] flex items-center overflow-hidden">
-              <code className="text-[14px] flex-1 truncate">{app.clientId}</code>
+              <code className="text-[14px] flex-1 truncate">
+                {app.clientId}
+              </code>
             </div>
           </div>
           <div className="flex flex-col gap-[6px]">
@@ -586,7 +654,19 @@ export const DeveloperComponent: FC = () => {
               onClick={rotateSecret}
               className="cursor-pointer px-[16px] h-[36px] bg-btnSimple hover:bg-boxHover transition-colors rounded-[8px] text-[13px] font-[600] flex items-center gap-[6px]"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6" /><path d="M21.34 15.57a10 10 0 11-.57-8.38L21.5 8" /></svg>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21.5 2v6h-6" />
+                <path d="M21.34 15.57a10 10 0 11-.57-8.38L21.5 8" />
+              </svg>
               {t('rotate_secret', 'Rotate Secret')}
             </button>
             <button
@@ -594,7 +674,19 @@ export const DeveloperComponent: FC = () => {
               onClick={deleteApp}
               className="cursor-pointer px-[16px] h-[36px] bg-red-600 hover:bg-red-700 text-white transition-colors rounded-[8px] text-[13px] font-[600] flex items-center gap-[6px]"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" /></svg>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+              </svg>
               {t('delete_app', 'Delete App')}
             </button>
           </div>

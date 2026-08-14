@@ -15,7 +15,9 @@ export class PublicAuthMiddleware implements NestMiddleware {
     const auth = (req.headers.authorization ||
       req.headers.Authorization) as string;
     if (!auth) {
-      res.status(HttpStatus.UNAUTHORIZED).json({ msg: 'No API Key found' });
+      res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ msg: 'Chave de API não encontrada' });
       return;
     }
     try {
@@ -24,7 +26,7 @@ export class PublicAuthMiddleware implements NestMiddleware {
         if (!authorization) {
           res
             .status(HttpStatus.UNAUTHORIZED)
-            .json({ msg: 'Invalid OAuth token' });
+            .json({ msg: 'Token OAuth inválido' });
           return;
         }
 
@@ -32,7 +34,7 @@ export class PublicAuthMiddleware implements NestMiddleware {
         if (!!process.env.STRIPE_SECRET_KEY && !org.subscription) {
           res
             .status(HttpStatus.UNAUTHORIZED)
-            .json({ msg: 'No subscription found' });
+            .json({ msg: 'Nenhuma assinatura encontrada' });
           return;
         }
 
@@ -43,14 +45,14 @@ export class PublicAuthMiddleware implements NestMiddleware {
         if (!org) {
           res
             .status(HttpStatus.UNAUTHORIZED)
-            .json({ msg: 'Invalid API key' });
+            .json({ msg: 'Chave de API inválida' });
           return;
         }
 
         if (!!process.env.STRIPE_SECRET_KEY && !org.subscription) {
           res
             .status(HttpStatus.UNAUTHORIZED)
-            .json({ msg: 'No subscription found' });
+            .json({ msg: 'Nenhuma assinatura encontrada' });
           return;
         }
 

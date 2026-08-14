@@ -15,7 +15,7 @@ export const useCustomProviderFunction = () => {
         }),
       });
       if (load.status > 299 && load.status < 200) {
-        throw new Error('Failed to fetch');
+        throw new Error('Não foi possível carregar os dados');
       }
       return load.json();
     },

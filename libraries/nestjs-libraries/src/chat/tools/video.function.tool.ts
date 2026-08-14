@@ -42,7 +42,7 @@ export class VideoFunctionTool implements AgentToolInterface {
         );
 
         if (!findVideo) {
-          throw new Error('Function not found');
+          throw new Error('Função não encontrada');
         }
 
         const func = await this._moduleRef

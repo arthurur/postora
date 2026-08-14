@@ -79,37 +79,54 @@ export const Features: FC<{
   pack: 'FREE' | 'STANDARD' | 'PRO';
 }> = (props) => {
   const { pack } = props;
+  const t = useT();
   const features = useMemo(() => {
     const currentPricing = pricing[pack];
     const channelsOr = currentPricing.channel;
     const list = [];
-    list.push(`${channelsOr} ${channelsOr === 1 ? 'channel' : 'channels'}`);
     list.push(
-      `${
-        currentPricing.posts_per_month > 10000
-          ? 'Unlimited'
-          : currentPricing.posts_per_month
-      } posts per month`
+      t('billing_channel_count', '{{count}} channel', { count: channelsOr })
+    );
+    list.push(
+      currentPricing.posts_per_month > 10000
+        ? t('billing_unlimited_posts_per_month', 'Unlimited posts per month')
+        : t('billing_posts_count_per_month', '{{count}} posts per month', {
+            count: currentPricing.posts_per_month,
+          })
     );
     if (currentPricing.team_members) {
-      list.push(`Unlimited team members`);
+      list.push(t('billing_unlimited_team_members', 'Unlimited team members'));
     }
     if (currentPricing?.ai) {
-      list.push(`AI auto-complete`);
-      list.push(`AI copilots`);
-      list.push(`AI Autocomplete`);
+      list.push(t('billing_ai_auto_complete', 'AI auto-complete'));
+      list.push(t('billing_ai_copilots', 'AI copilots'));
+      list.push(t('billing_ai_autocomplete', 'AI Autocomplete'));
     }
-    list.push(`Advanced Picture Editor`);
+    list.push(t('billing_advanced_picture_editor', 'Advanced Picture Editor'));
     if (currentPricing?.image_generator) {
       list.push(
-        `${currentPricing?.image_generation_count} AI Images per month`
+        t(
+          'billing_ai_images_count_per_month',
+          '{{count}} AI Images per month',
+          {
+            count: currentPricing?.image_generation_count,
+          }
+        )
       );
     }
     if (currentPricing?.generate_videos) {
-      list.push(`${currentPricing?.generate_videos} AI Videos per month`);
+      list.push(
+        t(
+          'billing_ai_videos_count_per_month',
+          '{{count}} AI Videos per month',
+          {
+            count: currentPricing?.generate_videos,
+          }
+        )
+      );
     }
     return list;
-  }, [pack]);
+  }, [pack, t]);
   return (
     <div className="flex flex-col gap-[10px] justify-center text-[16px] text-customColor18">
       {features.map((feature) => (
@@ -139,6 +156,7 @@ const Accept: FC<{ resolve: (res: boolean) => void }> = ({ resolve }) => {
   const [loading, setLoading] = useState(false);
   const fetch = useFetch();
   const toaster = useToaster();
+  const t = useT();
 
   const apply = useCallback(async () => {
     setLoading(true);
@@ -147,20 +165,28 @@ const Accept: FC<{ resolve: (res: boolean) => void }> = ({ resolve }) => {
     });
 
     resolve(true);
-    toaster.show('50% discount applied successfully');
+    toaster.show(
+      t('discount_applied_successfully', '50% discount applied successfully')
+    );
   }, []);
 
   return (
     <div>
       <div className="mb-[20px]">
-        Would you accept 50% discount for 3 months instead? 🙏🏻
+        {t(
+          'accept_discount_for_three_months',
+          'Would you accept a 50% discount for 3 months instead? 🙏🏻'
+        )}
       </div>
       <div className="flex gap-[10px]">
         <Button loading={loading} onClick={apply}>
-          Apply 50% discount for 3 months
+          {t(
+            'apply_discount_for_three_months',
+            'Apply 50% discount for 3 months'
+          )}
         </Button>
         <Button onClick={() => resolve(false)} className="!bg-red-800">
-          Cancel my subscription
+          {t('cancel_my_subscription', 'Cancel my subscription')}
         </Button>
       </div>
     </div>
@@ -290,7 +316,12 @@ export const MainBillingComponent: FC<{
             cancelAt: cancel_at,
           }));
 
-          toast.show('Subscription reactivated successfully');
+          toast.show(
+            t(
+              'subscription_reactivated_successfully',
+              'Subscription reactivated successfully'
+            )
+          );
           setLoading(false);
           return;
         }
@@ -301,17 +332,22 @@ export const MainBillingComponent: FC<{
           pricing[subscription?.subscriptionTier!]?.team_members
         ) {
           messages.push(
-            `Your team members will be removed from your organization`
+            t(
+              'team_members_will_be_removed',
+              'Your team members will be removed from your organization'
+            )
           );
         }
         if (billing === 'FREE') {
           if (
             subscription?.cancelAt ||
             (await deleteDialog(
-              `Are you sure you want to cancel your subscription?
-              ${messages.join(', ')}`,
-              'Yes, cancel',
-              'Cancel Subscription'
+              `${t(
+                'are_you_sure_cancel_subscription',
+                'Are you sure you want to cancel your subscription?'
+              )}\n${messages.join(', ')}`,
+              t('yes_cancel', 'Yes, cancel'),
+              t('cancel_subscription', 'Cancel Subscription')
             ))
           ) {
             const checkDiscount = await (
@@ -320,7 +356,7 @@ export const MainBillingComponent: FC<{
             if (checkDiscount.offerCoupon) {
               const info = await new Promise((res) => {
                 modal.openModal({
-                  title: 'Before you cancel',
+                  title: t('before_you_cancel', 'Before you cancel'),
                   withCloseButton: true,
                   classNames: {
                     modal: 'bg-transparent text-textColor',
@@ -367,14 +403,22 @@ export const MainBillingComponent: FC<{
               cancelAt: cancel_at,
             }));
             if (cancel_at)
-              toast.show('Subscription set to canceled successfully');
+              toast.show(
+                t(
+                  'subscription_canceled_successfully',
+                  'Subscription set to canceled successfully'
+                )
+              );
             setLoading(false);
           }
           return;
         }
         if (
           messages.length &&
-          !(await deleteDialog(messages.join(', '), 'Yes, continue'))
+          !(await deleteDialog(
+            messages.join(', '),
+            t('yes_continue', 'Yes, continue')
+          ))
         ) {
           return;
         }
@@ -415,9 +459,12 @@ export const MainBillingComponent: FC<{
         if (portal) {
           if (
             await deleteDialog(
-              'We could not charge your credit card, please update your payment method',
-              'Update',
-              'Payment Method Required'
+              t(
+                'credit_card_charge_failed',
+                'We could not charge your credit card. Please update your payment method.'
+              ),
+              t('update', 'Update'),
+              t('payment_method_required', 'Payment Method Required')
             )
           ) {
             window.open(portal);
@@ -439,7 +486,12 @@ export const MainBillingComponent: FC<{
               revalidate: false,
             }
           );
-          toast.show('Subscription updated successfully');
+          toast.show(
+            t(
+              'subscription_updated_successfully',
+              'Subscription updated successfully'
+            )
+          );
         }
         setLoading(false);
       },
@@ -517,20 +569,22 @@ export const MainBillingComponent: FC<{
                     )}
                   >
                     {currentPackage === name.toUpperCase()
-                      ? 'Current Plan'
+                      ? t('current_plan', 'Current Plan')
                       : name.toUpperCase() === 'FREE'
                       ? subscription?.cancelAt
-                        ? `Downgrade on ${dayjs
-                            .utc(subscription?.cancelAt)
-                            .local()
-                            .format('D MMM, YYYY')}`
-                        : 'Cancel subscription'
+                        ? t('downgrade_on_date', 'Downgrade on {{date}}', {
+                            date: dayjs
+                              .utc(subscription?.cancelAt)
+                              .local()
+                              .format('DD/MM/YYYY'),
+                          })
+                        : t('cancel_subscription', 'Cancel subscription')
                       : // @ts-ignore
                       (user?.tier === 'FREE' ||
                           user?.tier?.current === 'FREE') &&
                         user.allowTrial
                       ? t('start_7_days_free_trial', 'Start 7 days free trial')
-                      : 'Purchase'}
+                      : t('purchase', 'Purchase')}
                   </Button>
                 )}
                 {subscription &&
@@ -574,7 +628,10 @@ export const MainBillingComponent: FC<{
             'your_subscription_will_be_canceled_at',
             'Your subscription will be canceled at'
           )}{' '}
-          {newDayjs(subscription.cancelAt).local().format('D MMM, YYYY')}
+          {newDayjs(subscription.cancelAt)
+            .local()
+            .toDate()
+            .toLocaleDateString('pt-BR')}
           <br />
           {t(
             'you_will_never_be_charged_again',

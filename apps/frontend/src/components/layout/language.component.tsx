@@ -31,6 +31,7 @@ const getCountryCodeForFlag = (languageCode: string) => {
   if (languageCode === 'ja') return 'JP';
   if (languageCode === 'ko') return 'KR';
   if (languageCode === 'vi') return 'VN';
+  if (languageCode === 'pt') return 'BR';
 
   // Check if language code itself is a valid country code
   try {
@@ -79,6 +80,10 @@ export const ChangeLanguageComponent = () => {
 
   // Function to get language name in its native script
   const getLanguageName = useCallback((code: string) => {
+    if (code === 'pt') {
+      return 'Português (Brasil)';
+    }
+
     try {
       // Use browser's Intl API to get language name in native script
       const displayNames = new Intl.DisplayNames([code], {

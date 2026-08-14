@@ -21,7 +21,7 @@ import 'dayjs/locale/ru';
 import 'dayjs/locale/zh';
 import 'dayjs/locale/fr';
 import 'dayjs/locale/es';
-import 'dayjs/locale/pt';
+import 'dayjs/locale/pt-br';
 import 'dayjs/locale/de';
 import 'dayjs/locale/it';
 import 'dayjs/locale/ja';
@@ -58,6 +58,7 @@ import copy from 'copy-to-clipboard';
 import { stripHtmlValidation } from '@gitroom/helpers/utils/strip.html.validation';
 import { newDayjs } from '@gitroom/frontend/components/layout/set.timezone';
 import { Button } from '@gitroom/react/form/button';
+import { fallbackLng } from '@gitroom/react/translation/i18n.config';
 
 // Extend dayjs with necessary plugins
 extend(isSameOrAfter);
@@ -66,8 +67,8 @@ extend(localizedFormat);
 
 // Initialize language
 const updateDayjsLocale = () => {
-  const currentLanguage = i18next.resolvedLanguage || 'en';
-  dayjs.locale(currentLanguage);
+  const currentLanguage = i18next.resolvedLanguage || fallbackLng;
+  dayjs.locale(currentLanguage === 'pt' ? 'pt-br' : currentLanguage);
 };
 
 // Set dayjs locale whenever i18next language changes
@@ -117,9 +118,7 @@ const usePostActions = (onMutate?: () => void) => {
       const date = !isDuplicate
         ? null
         : (await (await fetch('/posts/find-slot')).json()).date;
-      const publishDate = dayjs
-        .utc(date || data.posts[0].publishDate)
-        .local();
+      const publishDate = dayjs.utc(date || data.posts[0].publishDate).local();
       const ExistingData = !isDuplicate
         ? ExistingDataContextProvider
         : Fragment;
@@ -243,16 +242,20 @@ const usePostActions = (onMutate?: () => void) => {
         classNames: {
           modal: 'w-[100%] max-w-[800px]',
         },
-        children: (
-          <MissingReleaseModal postId={id} onSuccess={mutate} />
-        ),
+        children: <MissingReleaseModal postId={id} onSuccess={mutate} />,
         size: '60%',
       });
     },
     [modal, t, mutate]
   );
 
-  return { editPost, deletePost, copyDebugJson, openStatistics, openMissingRelease };
+  return {
+    editPost,
+    deletePost,
+    copyDebugJson,
+    openStatistics,
+    openMissingRelease,
+  };
 };
 
 export const DayView = () => {
@@ -260,7 +263,7 @@ export const DayView = () => {
   const { integrations, posts, startDate } = calendar;
 
   // Set dayjs locale based on current language
-  const currentLanguage = i18next.resolvedLanguage || 'en';
+  const currentLanguage = i18next.resolvedLanguage || fallbackLng;
   dayjs.locale(currentLanguage);
 
   const currentDay = dayjs.utc(startDate);
@@ -342,7 +345,7 @@ export const WeekView = () => {
 
   // Use dayjs to get localized day names
   const localizedDays = useMemo(() => {
-    const currentLanguage = i18next.resolvedLanguage || 'en';
+    const currentLanguage = i18next.resolvedLanguage || fallbackLng;
     dayjs.locale(currentLanguage);
 
     const days = [];
@@ -414,7 +417,7 @@ export const MonthView = () => {
 
   // Use dayjs to get localized day names
   const localizedDays = useMemo(() => {
-    const currentLanguage = i18next.resolvedLanguage || 'en';
+    const currentLanguage = i18next.resolvedLanguage || fallbackLng;
     dayjs.locale(currentLanguage);
 
     const days = [];
@@ -499,7 +502,13 @@ export const ListView = () => {
       : t('no_posts', 'No posts');
 
   // Use shared post actions hook
-  const { editPost, deletePost, copyDebugJson, openStatistics, openMissingRelease } = usePostActions();
+  const {
+    editPost,
+    deletePost,
+    copyDebugJson,
+    openStatistics,
+    openMissingRelease,
+  } = usePostActions();
 
   // Group posts by date
   const groupedPosts = useMemo(() => {
@@ -536,7 +545,9 @@ export const ListView = () => {
         {groupedPosts.map(([dateKey, datePosts]) => (
           <Fragment key={dateKey}>
             <div className="text-center text-[14px] min-h-[21px] text-textColor font-[500] mt-[10px]">
-              {newDayjs(dateKey).format(isUSCitizen() ? 'dddd, MMMM D, YYYY' : 'dddd, D MMMM YYYY')}
+              {newDayjs(dateKey).format(
+                isUSCitizen() ? 'dddd, MMMM D, YYYY' : 'dddd, D MMMM YYYY'
+              )}
             </div>
             <div className="flex flex-col gap-[10px] mb-[20px] px-[10px]">
               {datePosts.map((post) => (
@@ -550,7 +561,9 @@ export const ListView = () => {
                   missingRelease={openMissingRelease(post.id)}
                   editPost={editPost(post, false)}
                   duplicatePost={editPost(post, true)}
-                  copyDebugJson={user?.isSuperAdmin ? copyDebugJson(post) : undefined}
+                  copyDebugJson={
+                    user?.isSuperAdmin ? copyDebugJson(post) : undefined
+                  }
                   post={post}
                   integrations={integrations}
                   deletePost={deletePost(post)}
@@ -604,7 +617,13 @@ export const CalendarColumn: FC<{
   const fetch = useFetch();
 
   // Use shared post actions hook
-  const { editPost, deletePost, copyDebugJson, openStatistics, openMissingRelease } = usePostActions();
+  const {
+    editPost,
+    deletePost,
+    copyDebugJson,
+    openStatistics,
+    openMissingRelease,
+  } = usePostActions();
   const postList = useMemo(() => {
     return posts.filter((post) => {
       const pList = dayjs.utc(post.publishDate).local();
@@ -656,107 +675,116 @@ export const CalendarColumn: FC<{
       stop();
     };
   }, []);
-  const [{ canDrop }, drop] = useDrop(() => ({
-    accept: 'post',
-    drop: async (item: any) => {
-      if (isBeforeNow) return;
+  const [{ canDrop }, drop] = useDrop(
+    () => ({
+      accept: 'post',
+      drop: async (item: any) => {
+        if (isBeforeNow) return;
 
-      // Find the post to check its state
-      const post = posts.find((p) => p.id === item.id);
-      let action: 'schedule' | 'update' = 'schedule';
+        // Find the post to check its state
+        const post = posts.find((p) => p.id === item.id);
+        let action: 'schedule' | 'update' = 'schedule';
 
-      // Check if post is already published or queued in the past
-      if (
-        post &&
-        (post.state === 'PUBLISHED' ||
-          (post.state === 'QUEUE' && dayjs().isAfter(dayjs.utc(post.publishDate))))
-      ) {
-        const whatToDo = await new Promise<'schedule' | 'update' | 'cancel'>(
-          (resolve) => {
-            modal.openModal({
-              title: t('what_do_you_want_to_do', 'What do you want to do?'),
-              children: (
-                <div className="flex flex-col">
-                  <div className="text-[20px] mb-[20px]">
-                    {t(
-                      'post_already_published_republish_warning',
-                      'This post was already published. Republishing will publish it again to'
-                    )}{' '}
-                    {post.integration?.name}{' '}
-                    {t('republish_at', 'at')} {getDate.format('DD/MM/YYYY HH:mm')}.
-                    {(!!item.interval || !!post.intervalInDays) && (
-                      <div className="mt-[10px]">
-                        {t(
-                          'republish_recurring_note',
-                          'This is a recurring post: your changes apply to all future recurrences starting now.'
-                        )}
+        // Check if post is already published or queued in the past
+        if (
+          post &&
+          (post.state === 'PUBLISHED' ||
+            (post.state === 'QUEUE' &&
+              dayjs().isAfter(dayjs.utc(post.publishDate))))
+        ) {
+          const whatToDo = await new Promise<'schedule' | 'update' | 'cancel'>(
+            (resolve) => {
+              modal.openModal({
+                title: t('what_do_you_want_to_do', 'What do you want to do?'),
+                children: (
+                  <div className="flex flex-col">
+                    <div className="text-[20px] mb-[20px]">
+                      {t(
+                        'post_already_published_republish_warning',
+                        'This post was already published. Republishing will publish it again to'
+                      )}{' '}
+                      {post.integration?.name} {t('republish_at', 'at')}{' '}
+                      {getDate.format('DD/MM/YYYY HH:mm')}.
+                      {(!!item.interval || !!post.intervalInDays) && (
+                        <div className="mt-[10px]">
+                          {t(
+                            'republish_recurring_note',
+                            'This is a recurring post: your changes apply to all future recurrences starting now.'
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex w-full gap-[10px]">
+                      <div className="flex-1 flex">
+                        <Button
+                          type="button"
+                          className="flex-1"
+                          onClick={() => {
+                            modal.closeAll();
+                            resolve('update');
+                          }}
+                        >
+                          {t(
+                            'just_update_post_details',
+                            'Just update the post details'
+                          )}
+                        </Button>
                       </div>
-                    )}
-                  </div>
-                  <div className="flex w-full gap-[10px]">
-                    <div className="flex-1 flex">
-                      <Button
-                        type="button"
-                        className="flex-1"
-                        onClick={() => {
-                          modal.closeAll();
-                          resolve('update');
-                        }}
-                      >
-                        {t('just_update_post_details', 'Just update the post details')}
-                      </Button>
-                    </div>
-                    <div className="flex-1 flex">
-                      <Button
-                        type="button"
-                        className="flex-1"
-                        onClick={() => {
-                          modal.closeAll();
-                          resolve('schedule');
-                        }}
-                      >
-                        {t('reschedule_post', 'Reschedule the post')}
-                      </Button>
+                      <div className="flex-1 flex">
+                        <Button
+                          type="button"
+                          className="flex-1"
+                          onClick={() => {
+                            modal.closeAll();
+                            resolve('schedule');
+                          }}
+                        >
+                          {t('reschedule_post', 'Reschedule the post')}
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ),
-              onClose: () => resolve('cancel'),
-            });
+                ),
+                onClose: () => resolve('cancel'),
+              });
+            }
+          );
+
+          if (whatToDo === 'cancel') {
+            return;
           }
-        );
+          action = whatToDo;
+        }
 
-        if (whatToDo === 'cancel') {
+        if (!item.interval) {
+          changeDate(item.id, getDate);
+        }
+        const { status } = await fetch(`/posts/${item.id}/date`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            date: getDate.utc().format('YYYY-MM-DDTHH:mm:ss'),
+            action,
+            // published posts always confirm via the modal before reaching here;
+            // for QUEUE posts the flag is a no-op on the server
+            ...(action === 'schedule' ? { republish: true } : {}),
+          }),
+        });
+        if (status !== 500) {
+          if (item.interval || action === 'schedule') {
+            reloadCalendarView();
+            return;
+          }
           return;
         }
-        action = whatToDo;
-      }
-
-      if (!item.interval) {
-        changeDate(item.id, getDate);
-      }
-      const { status } = await fetch(`/posts/${item.id}/date`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          date: getDate.utc().format('YYYY-MM-DDTHH:mm:ss'),
-          action,
-          // published posts always confirm via the modal before reaching here;
-          // for QUEUE posts the flag is a no-op on the server
-          ...(action === 'schedule' ? { republish: true } : {}),
-        }),
-      });
-      if (status !== 500) {
-        if (item.interval || action === 'schedule') {
-          reloadCalendarView();
-          return;
-        }
-        return;
-      }
-    },
-    collect: (monitor) => ({
-      canDrop: isBeforeNow ? false : !!monitor.canDrop() && !!monitor.isOver(),
+      },
+      collect: (monitor) => ({
+        canDrop: isBeforeNow
+          ? false
+          : !!monitor.canDrop() && !!monitor.isOver(),
+      }),
     }),
-  }), [posts]);
+    [posts]
+  );
 
   const addModal = useCallback(async () => {
     const set: any = !sets.length
@@ -883,7 +911,9 @@ export const CalendarColumn: FC<{
                   missingRelease={openMissingRelease(post.id)}
                   editPost={editPost(post, false)}
                   duplicatePost={editPost(post, true)}
-                  copyDebugJson={user?.isSuperAdmin ? copyDebugJson(post) : undefined}
+                  copyDebugJson={
+                    user?.isSuperAdmin ? copyDebugJson(post) : undefined
+                  }
                   post={post}
                   integrations={integrations}
                   deletePost={deletePost(post)}
@@ -1059,7 +1089,13 @@ const CalendarItem: FC<{
         <div
           className="absolute -top-[6px] -left-[6px] z-20 w-[18px] h-[18px] rounded-full bg-red-500 flex items-center justify-center text-white text-[11px] font-bold cursor-pointer"
           data-tooltip-id="tooltip"
-          data-tooltip-content={post.error || 'An error occurred while publishing this post'}
+          data-tooltip-content={
+            post.error ||
+            t(
+              'error_while_publishing_post',
+              'An error occurred while publishing this post'
+            )
+          }
         >
           !
         </div>
@@ -1117,7 +1153,8 @@ const CalendarItem: FC<{
         >
           <Preview />
         </div>{' '}
-        {((post.integration.providerIdentifier === 'x' && disableXAnalytics) || !post.releaseId) ? (
+        {(post.integration.providerIdentifier === 'x' && disableXAnalytics) ||
+        !post.releaseId ? (
           <></>
         ) : post.releaseId === 'missing' && missingRelease ? (
           <div
@@ -1174,16 +1211,18 @@ const CalendarItem: FC<{
           <div className="text-start">
             {state === 'DRAFT' ? t('draft', 'Draft') + ': ' : ''}
           </div>
-            <div className="w-full relative">
-              <div className="absolute top-0 start-0 w-full text-ellipsis break-words line-clamp-1 text-start">
-                {stripHtmlValidation('none', post.content, false, true, false) ||
-                  t('no_content', 'no content')}
-              </div>
+          <div className="w-full relative">
+            <div className="absolute top-0 start-0 w-full text-ellipsis break-words line-clamp-1 text-start">
+              {stripHtmlValidation('none', post.content, false, true, false) ||
+                t('no_content', 'no content')}
             </div>
+          </div>
         </div>
         {showTime && (
           <div className="text-textColor/50 text-[12px] whitespace-nowrap flex items-center">
-            {newDayjs(post.publishDate).local().format(isUSCitizen() ? 'hh:mm A' : 'HH:mm')}
+            {newDayjs(post.publishDate)
+              .local()
+              .format(isUSCitizen() ? 'hh:mm A' : 'HH:mm')}
           </div>
         )}
       </div>
@@ -1198,10 +1237,7 @@ const DebugJsonModal: FC<{ post: any }> = ({ post }) => {
 
   const copyPostId = useCallback(() => {
     copy(post.id);
-    toaster.show(
-      t('post_id_copied', 'Post ID copied to clipboard'),
-      'success'
-    );
+    toaster.show(t('post_id_copied', 'Post ID copied to clipboard'), 'success');
     closeCurrent();
   }, [post, toaster, t, closeCurrent]);
 

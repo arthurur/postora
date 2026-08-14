@@ -16,14 +16,15 @@ import { AddTeamMemberDto } from '@gitroom/nestjs-libraries/dtos/settings/add.te
 import { AdminAddTeamMemberDto } from '@gitroom/nestjs-libraries/dtos/settings/admin.add.team.member.dto';
 import { ShortlinkPreferenceDto } from '@gitroom/nestjs-libraries/dtos/settings/shortlink-preference.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthorizationActions, Sections } from '@gitroom/backend/services/auth/permissions/permission.exception.class';
+import {
+  AuthorizationActions,
+  Sections,
+} from '@gitroom/backend/services/auth/permissions/permission.exception.class';
 
 @ApiTags('Settings')
 @Controller('/settings')
 export class SettingsController {
-  constructor(
-    private _organizationService: OrganizationService
-  ) {}
+  constructor(private _organizationService: OrganizationService) {}
 
   @Get('/team')
   @CheckPolicies(
@@ -54,7 +55,7 @@ export class SettingsController {
     @Body() body: AdminAddTeamMemberDto
   ) {
     if (!user.isSuperAdmin) {
-      throw new HttpException('Unauthorized', 400);
+      throw new HttpException('Não autorizado', 400);
     }
 
     return this._organizationService.addTeamMemberByEmail(org, body);

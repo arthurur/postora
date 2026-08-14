@@ -13,7 +13,7 @@ function hexToUint8Array(hex) {
   }
 
   if (hex.length % 2 !== 0) {
-    throw new Error('Invalid hex string. It must have an even length.');
+    throw new Error('String hexadecimal inválida. O tamanho deve ser par.');
   }
 
   const byteLength = hex.length / 2;

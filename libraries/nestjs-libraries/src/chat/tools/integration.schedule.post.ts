@@ -204,39 +204,46 @@ If the tools return errors, you would need to rerun it with the right parameters
           const integration = integrations[post.integrationId];
 
           if (!integration) {
-            throw new Error('Integration not found');
+            throw new Error('Integração não encontrada');
           }
 
-          const output = await this._postsService.createPost(organizationId, {
-            date: post.date,
-            type: post.type as 'draft' | 'schedule' | 'now',
-            shortLink: post.shortLink,
-            tags: [],
-            posts: [
-              {
-                integration,
-                group: makeId(10),
-                settings: post.settings.reduce(
-                  (acc: AllProvidersSettings, s: { key: string; value: any }) => ({
-                    ...acc,
-                    [s.key]: s.value,
-                  }),
-                  {
-                    __type: integration.providerIdentifier,
-                  } as AllProvidersSettings
-                ),
-                value: post.postsAndComments.map((p: any) => ({
-                  content: p.content,
-                  id: makeId(10),
-                  delay: 0,
-                  image: p.attachments.map((p: any) => ({
+          const output = await this._postsService.createPost(
+            organizationId,
+            {
+              date: post.date,
+              type: post.type as 'draft' | 'schedule' | 'now',
+              shortLink: post.shortLink,
+              tags: [],
+              posts: [
+                {
+                  integration,
+                  group: makeId(10),
+                  settings: post.settings.reduce(
+                    (
+                      acc: AllProvidersSettings,
+                      s: { key: string; value: any }
+                    ) => ({
+                      ...acc,
+                      [s.key]: s.value,
+                    }),
+                    {
+                      __type: integration.providerIdentifier,
+                    } as AllProvidersSettings
+                  ),
+                  value: post.postsAndComments.map((p: any) => ({
+                    content: p.content,
                     id: makeId(10),
-                    path: p,
+                    delay: 0,
+                    image: p.attachments.map((p: any) => ({
+                      id: makeId(10),
+                      path: p,
+                    })),
                   })),
-                })),
-              },
-            ],
-          }, 'MCP');
+                },
+              ],
+            },
+            'MCP'
+          );
           finalOutput.push(...output);
         }
 

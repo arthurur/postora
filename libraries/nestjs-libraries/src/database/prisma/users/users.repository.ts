@@ -25,7 +25,7 @@ export class UsersRepository {
     });
 
     if (!current || !target) {
-      throw new Error('User not found');
+      throw new Error('Usuário não encontrado');
     }
 
     const currentCredentials = {

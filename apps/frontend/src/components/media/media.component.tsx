@@ -53,6 +53,10 @@ import { useLaunchStore } from '@gitroom/frontend/components/new-launch/store';
 import { useShallow } from 'zustand/react/shallow';
 import { LoadingComponent } from '@gitroom/frontend/components/layout/loading';
 import { useDebounce } from 'use-debounce';
+import {
+  getLabelTranslationKey,
+  getTextTranslationKey,
+} from '@gitroom/react/translation/translated-label';
 const Polonto = dynamic(
   () => import('@gitroom/frontend/components/launches/polonto')
 );
@@ -123,7 +127,7 @@ export const Pagination: FC<{
       <li className={clsx(current === 0 && 'opacity-20 pointer-events-none')}>
         <div
           className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 py-2 gap-1 ps-2.5 text-gray-400 hover:text-white border-[#1F1F1F] hover:bg-forth"
-          aria-label="Go to previous page"
+          aria-label={t('go_to_previous_page', 'Go to previous page')}
           onClick={() => setPage(current - 1)}
         >
           <ChevronLeftIcon className="lucide lucide-chevron-left h-4 w-4" />
@@ -159,7 +163,7 @@ export const Pagination: FC<{
       >
         <a
           className="text-textColor hover:text-white group cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 py-2 gap-1 pe-2.5 text-gray-400 border-[#1F1F1F] hover:bg-forth"
-          aria-label="Go to next page"
+          aria-label={t('go_to_next_page', 'Go to next page')}
           onClick={() => setPage(current + 1)}
         >
           <span>{t('next', 'Next')}</span>
@@ -363,7 +367,7 @@ export const MediaBox: FC<{
                 height="100%"
                 className="w-full h-full max-h-[100%] max-w-[100%] object-cover"
                 src={mediaDirectory.set(media.path)}
-                alt="media"
+                alt={t('media', 'Media')}
               />
             )}
           </div>
@@ -408,21 +412,24 @@ export const MediaBox: FC<{
         ) : (
           <PlusIcon size={14} />
         )}
-        <div className={loading ? 'invisible' : undefined}>{t('upload', 'Upload')}</div>
+        <div className={loading ? 'invisible' : undefined}>
+          {t('upload', 'Upload')}
+        </div>
       </button>
     );
   }, [t, loading]);
 
   return (
-    <DropFiles disabled={loading} className="flex flex-col flex-1" onDrop={dragAndDrop}>
+    <DropFiles
+      disabled={loading}
+      className="flex flex-col flex-1"
+      onDrop={dragAndDrop}
+    >
       <div className="flex flex-col flex-1">
         <div
           className={clsx(
             'flex items-center gap-[12px]',
-            !isLoading &&
-              !data?.results?.length &&
-              !debouncedSearch &&
-              'hidden'
+            !isLoading && !data?.results?.length && !debouncedSearch && 'hidden'
           )}
         >
           <div className="flex-1">
@@ -483,10 +490,7 @@ export const MediaBox: FC<{
                 <NoMediaIcon />
                 <div className="text-[20px] font-[600]">
                   {debouncedSearch
-                    ? t(
-                        'no_media_match_search',
-                        'No media matches your search'
-                      )
+                    ? t('no_media_match_search', 'No media matches your search')
                     : t(
                         'you_dont_have_any_media_yet',
                         "You don't have any media yet"
@@ -559,7 +563,9 @@ export const MediaBox: FC<{
                         onClick={deleteImage(media)}
                       />
                     )}
-                    <div className="absolute bottom-[10px] end-[10px] z-[100]">{media.originalName}</div>
+                    <div className="absolute bottom-[10px] end-[10px] z-[100]">
+                      {media.originalName}
+                    </div>
                     <div className="w-full h-full rounded-[6px] overflow-hidden relative">
                       <div className="absolute z-[20] left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
                         <div
@@ -588,7 +594,7 @@ export const MediaBox: FC<{
                           height="100%"
                           className="w-full h-full object-cover"
                           src={mediaDirectory.set(media.path)}
-                          alt="media"
+                          alt={t('media', 'Media')}
                         />
                       )}
                     </div>
@@ -768,57 +774,60 @@ export const MultiMediaComponent: FC<{
               handle=".dragging"
             >
               {currentMedia.map((media, index) => (
-                  <div key={media.id} className="cursor-pointer rounded-[5px] w-[40px] h-[40px] border-2 border-tableBorder relative flex transition-all">
-                    <DragHandleIcon className="z-[20] dragging absolute pe-[1px] pb-[3px] -start-[4px] -top-[4px] cursor-move" />
+                <div
+                  key={media.id}
+                  className="cursor-pointer rounded-[5px] w-[40px] h-[40px] border-2 border-tableBorder relative flex transition-all"
+                >
+                  <DragHandleIcon className="z-[20] dragging absolute pe-[1px] pb-[3px] -start-[4px] -top-[4px] cursor-move" />
 
-                    <div className="w-full h-full relative group">
-                      <div
-                        onClick={async () => {
-                          modals.openModal({
-                            title: t('media_settings', 'Media Settings'),
-                            children: (close) => (
-                              <MediaComponentInner
-                                media={media as any}
-                                onClose={close}
-                                onSelect={(value: any) => {
-                                  onChange({
-                                    target: {
-                                      name: 'upload',
-                                      value: currentMedia.map((p) => {
-                                        if (p.id === media.id) {
-                                          return {
-                                            ...p,
-                                            ...value,
-                                          };
-                                        }
-                                        return p;
-                                      }),
-                                    },
-                                  });
-                                }}
-                              />
-                            ),
-                          });
-                        }}
-                        className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] bg-black/80 rounded-[10px] opacity-0 group-hover:opacity-100 transition-opacity z-[9]"
-                      >
-                        <MediaSettingsIcon className="cursor-pointer relative z-[200]" />
-                      </div>
-                      {hasExtension(media?.path, 'mp4') ? (
-                        <VideoFrame url={mediaDirectory.set(media?.path)} />
-                      ) : (
-                        <img
-                          className="w-full h-full object-cover rounded-[4px]"
-                          src={mediaDirectory.set(media?.path)}
-                        />
-                      )}
+                  <div className="w-full h-full relative group">
+                    <div
+                      onClick={async () => {
+                        modals.openModal({
+                          title: t('media_settings', 'Media Settings'),
+                          children: (close) => (
+                            <MediaComponentInner
+                              media={media as any}
+                              onClose={close}
+                              onSelect={(value: any) => {
+                                onChange({
+                                  target: {
+                                    name: 'upload',
+                                    value: currentMedia.map((p) => {
+                                      if (p.id === media.id) {
+                                        return {
+                                          ...p,
+                                          ...value,
+                                        };
+                                      }
+                                      return p;
+                                    }),
+                                  },
+                                });
+                              }}
+                            />
+                          ),
+                        });
+                      }}
+                      className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] bg-black/80 rounded-[10px] opacity-0 group-hover:opacity-100 transition-opacity z-[9]"
+                    >
+                      <MediaSettingsIcon className="cursor-pointer relative z-[200]" />
                     </div>
-
-                    <CloseCircleIcon
-                      onClick={clearMedia(index)}
-                      className="absolute -end-[4px] -top-[4px] z-[20] rounded-full bg-white"
-                    />
+                    {hasExtension(media?.path, 'mp4') ? (
+                      <VideoFrame url={mediaDirectory.set(media?.path)} />
+                    ) : (
+                      <img
+                        className="w-full h-full object-cover rounded-[4px]"
+                        src={mediaDirectory.set(media?.path)}
+                      />
+                    )}
                   </div>
+
+                  <CloseCircleIcon
+                    onClick={clearMedia(index)}
+                    className="absolute -end-[4px] -top-[4px] z-[20] rounded-full bg-white"
+                  />
+                </div>
               ))}
             </ReactSortable>
           )}
@@ -972,8 +981,12 @@ export const MediaComponent: FC<{
   }, [value]);
   return (
     <div className="flex flex-col gap-[8px]">
-      <div className="text-[14px]">{label}</div>
-      <div className="text-[12px]">{description}</div>
+      <div className="text-[14px]">
+        {t(getLabelTranslationKey(label), label)}
+      </div>
+      <div className="text-[12px]">
+        {t(getTextTranslationKey('description', description), description)}
+      </div>
       {!!currentMedia && (
         <div className="my-[20px] cursor-pointer w-[200px] h-[200px] border-2 border-tableBorder">
           <img

@@ -7,10 +7,12 @@ import { textSlicer } from '@gitroom/helpers/utils/count.length';
 import SafeImage from '@gitroom/react/helpers/safe.image';
 import { useLaunchStore } from '@gitroom/frontend/components/new-launch/store';
 import { stripHtmlValidation } from '@gitroom/helpers/utils/strip.html.validation';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 
 export const GeneralPreviewComponent: FC<{
   maximumCharacters?: number;
 }> = (props) => {
+  const t = useT();
   const { value: topValue, integration } = useIntegration();
   const current = useLaunchStore((state) => state.current);
   const mediaDir = useMediaDirectory();
@@ -39,7 +41,10 @@ export const GeneralPreviewComponent: FC<{
         .replace(/\[\[\[([.\s\S]*?)]]]/, (match, match1) => {
           return `<span class="font-bold font-[arial]" style="color: #ae8afc">${match1}</span>`;
         }) +
-      `<mark class="bg-red-500" data-tooltip-id="tooltip" data-tooltip-content="This text will be cropped">` +
+      `<mark class="bg-red-500" data-tooltip-id="tooltip" data-tooltip-content="${t(
+        'this_text_will_be_cropped',
+        'This text will be cropped'
+      )}">` +
       newContent.slice(end).replace(/\[\[\[([.\s\S]*?)]]]/, (match, match1) => {
         return `<span class="font-bold font-[arial]" style="color: #ae8afc">${match1}</span>`;
       }) +
@@ -89,12 +94,14 @@ export const GeneralPreviewComponent: FC<{
             <div className="flex-1 flex flex-col gap-[4px]">
               <div className="flex">
                 <div className="h-[22px] text-[15px] font-[700]">
-                  {current === 'global' ? 'Global Edit' : integration?.name}
+                  {current === 'global'
+                    ? t('global_edit', 'Global Edit')
+                    : integration?.name}
                 </div>
                 <div className="text-[15px] text-customColor26 mt-[1px] ms-[2px]">
                   <svg
                     viewBox="0 0 22 22"
-                    aria-label="Verified account"
+                    aria-label={t('verified_account', 'Verified account')}
                     role="img"
                     className="max-w-[20px] max-h-[20px] fill-current h-[1.25em]"
                     data-testid="icon-verified"

@@ -1,6 +1,7 @@
 'use client';
 
 import { withContinueProvider } from '../with-continue-provider';
+import { TranslatedLabel } from '@gitroom/react/translation/translated-label';
 
 interface TumblrBlogItem {
   id: string;
@@ -66,10 +67,15 @@ export const TumblrContinue = withContinueProvider<
       )}
       {!!item.followers && (
         <div className="text-xs text-gray-400">
-          {item.followers.toLocaleString()} followers
+          {item.followers.toLocaleString('pt-BR')}{' '}
+          <TranslatedLabel label="followers" />
         </div>
       )}
-      {item.primary && <div className="text-xs text-gray-400">Primary</div>}
+      {item.primary && (
+        <div className="text-xs text-gray-400">
+          <TranslatedLabel label="Primary" />
+        </div>
+      )}
     </>
   ),
 });

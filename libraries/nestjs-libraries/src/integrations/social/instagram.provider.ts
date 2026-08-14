@@ -52,34 +52,34 @@ export class InstagramProvider
     settings: any
   ): Promise<string | true> {
     if (!firstPost?.length) {
-      return 'Should have at least one media';
+      return 'Adicione pelo menos uma mídia.';
     }
     if (firstPost.length > 10) {
-      return 'Instagram carousel only supports up to 10 media attachments';
+      return 'O carrossel do Instagram aceita no máximo 10 mídias.';
     }
     if (this.assetBoolean(settings?.is_trial_reel)) {
       if ((firstPost?.length ?? 0) > 1) {
-        return 'Trial Reels can only have one video';
+        return 'Reels de teste podem ter apenas um vídeo.';
       }
       const hasVideo = firstPost?.some(
         (f) => (f?.path?.indexOf?.('mp4') ?? -1) > -1
       );
       if (!hasVideo) {
-        return 'Trial Reels must be a video';
+        return 'Um Reel de teste precisa ser um vídeo.';
       }
     }
     if (settings?.audio?.id) {
       if (settings?.post_type === 'story') {
-        return 'Audio can only be added to Reels, not to Stories';
+        return 'Áudio pode ser adicionado apenas a Reels, não a Stories.';
       }
       if ((firstPost?.length ?? 0) > 1) {
-        return 'Audio can only be added to a single video Reel';
+        return 'Áudio pode ser adicionado apenas a um Reel com um único vídeo.';
       }
       const hasVideo = firstPost?.some(
         (f) => (f?.path?.indexOf?.('mp4') ?? -1) > -1
       );
       if (!hasVideo) {
-        return 'Audio can only be added to a video Reel';
+        return 'Áudio pode ser adicionado apenas a um Reel de vídeo.';
       }
     }
     return true;
@@ -136,7 +136,7 @@ export class InstagramProvider
       return {
         type: 'refresh-token' as const,
         value:
-          'Your Instagram account is not a business account, please convert it to a business account',
+          'Sua conta do Instagram não é comercial. Converta-a em uma conta comercial.',
       };
     }
 
@@ -144,14 +144,14 @@ export class InstagramProvider
       return {
         type: 'refresh-token' as const,
         value:
-          'You session has been invalidated, this can usually happen from frequent posting, please re-authenticate, and wait 1-2 days before posting again',
+          'Sua sessão foi invalidada. Isso pode acontecer por publicações frequentes. Autentique-se novamente e aguarde de 1 a 2 dias antes de publicar.',
       };
     }
 
     if (body.indexOf('2207050') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Instagram user is restricted',
+        value: 'O usuário do Instagram está restrito',
       };
     }
 
@@ -159,70 +159,70 @@ export class InstagramProvider
     if (body.indexOf('2207003') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Timeout downloading media, please try again',
+        value: 'O download da mídia excedeu o tempo limite. Tente novamente.',
       };
     }
 
     if (body.indexOf('2207020') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Media expired, please upload again',
+        value: 'A mídia expirou. Envie-a novamente.',
       };
     }
 
     if (body.indexOf('2207032') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Failed to create media, please try again',
+        value: 'Não foi possível criar a mídia. Tente novamente.',
       };
     }
 
     if (body.indexOf('2207053') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Unknown upload error, please try again',
+        value: 'Ocorreu um erro desconhecido no envio. Tente novamente.',
       };
     }
 
     if (body.indexOf('2207052') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Media fetch failed, please try again',
+        value: 'Não foi possível buscar a mídia. Tente novamente.',
       };
     }
 
     if (body.indexOf('2207057') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Invalid thumbnail offset for video',
+        value: 'O momento selecionado para a miniatura do vídeo é inválido.',
       };
     }
 
     if (body.indexOf('2207026') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Unsupported video format',
+        value: 'O formato do vídeo não é compatível.',
       };
     }
 
     if (body.indexOf('2207023') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Unknown media type',
+        value: 'O tipo de mídia é desconhecido.',
       };
     }
 
     if (body.indexOf('2207006') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Media not found, please upload again',
+        value: 'A mídia não foi encontrada. Envie-a novamente.',
       };
     }
 
     if (body.indexOf('2207008') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Media builder expired, please try again',
+        value: 'O processamento da mídia expirou. Tente novamente.',
       };
     }
 
@@ -230,14 +230,14 @@ export class InstagramProvider
     if (body.indexOf('2207028') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Carousel validation failed',
+        value: 'Não foi possível validar o carrossel.',
       };
     }
 
     if (body.indexOf('2207010') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Caption is too long',
+        value: 'A legenda é muito longa.',
       };
     }
 
@@ -245,28 +245,29 @@ export class InstagramProvider
     if (body.indexOf('2207035') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Product tag positions not supported for videos',
+        value: 'Não é possível posicionar marcações de produtos em vídeos.',
       };
     }
 
     if (body.indexOf('2207036') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Product tag positions required for photos',
+        value:
+          'É necessário informar a posição das marcações de produtos nas fotos.',
       };
     }
 
     if (body.indexOf('2207037') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Product tag validation failed',
+        value: 'Não foi possível validar as marcações de produtos.',
       };
     }
 
     if (body.indexOf('2207040') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Too many product tags',
+        value: 'Há marcações de produtos demais.',
       };
     }
 
@@ -274,50 +275,52 @@ export class InstagramProvider
     if (body.indexOf('2207004') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Image is too large',
+        value: 'A imagem é grande demais.',
       };
     }
 
     if (body.indexOf('2207005') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Unsupported image format',
+        value: 'O formato da imagem não é compatível.',
       };
     }
 
     if (body.indexOf('2207009') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Aspect ratio not supported, must be between 4:5 to 1.91:1',
+        value:
+          'A proporção não é compatível. Use uma proporção entre 4:5 e 1,91:1.',
       };
     }
 
     if (body.indexOf('Page request limit reached') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Page posting for today is limited, please try again tomorrow',
+        value:
+          'O limite de publicações da página foi atingido hoje. Tente novamente amanhã.',
       };
     }
 
     if (body.indexOf('2207042') > -1) {
       return {
         type: 'bad-body' as const,
-        value:
-          'You have reached the maximum of 25 posts per day, allowed for your account',
+        value: 'Sua conta atingiu o limite de 25 publicações por dia.',
       };
     }
 
     if (body.indexOf('Not enough permissions to post') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Not enough permissions to post',
+        value: 'A conta não tem permissões suficientes para publicar.',
       };
     }
 
     if (body.indexOf('36003') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Aspect ratio not supported, must be between 4:5 to 1.91:1',
+        value:
+          'A proporção não é compatível. Use uma proporção entre 4:5 e 1,91:1.',
       };
     }
 
@@ -325,21 +328,22 @@ export class InstagramProvider
       return {
         type: 'bad-body' as const,
         value:
-          'The account is missing some permissions to perform this action, please re-add the account and allow all permissions',
+          'A conta não tem algumas permissões necessárias. Adicione-a novamente e autorize todas as permissões.',
       };
     }
 
     if (body.indexOf('36001') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Invalid Instagram image resolution max: 1920x1080px',
+        value:
+          'A resolução da imagem é inválida. O máximo no Instagram é 1920 × 1080 px.',
       };
     }
 
     if (body.indexOf('2207051') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Instagram blocked your request',
+        value: 'O Instagram bloqueou sua solicitação.',
       };
     }
 
@@ -347,42 +351,43 @@ export class InstagramProvider
       return {
         type: 'bad-body' as const,
         value:
-          'Instagram detected that your post is spam, please try again with different content',
+          'O Instagram identificou a publicação como spam. Tente novamente com outro conteúdo.',
       };
     }
 
     if (body.indexOf('2207082') > -1) {
       return {
         type: 'retry' as const,
-        value: 'Could not upload your media',
-      }
+        value: 'Não foi possível enviar sua mídia.',
+      };
     }
 
     if (body.indexOf('2207077') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Instagram Video download failed',
+        value: 'Não foi possível baixar o vídeo do Instagram.',
       };
     }
 
     if (body.indexOf('too little or too many attachments') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Instagram carousel should have between 2 and 10 media attachments',
-      }
+        value: 'O carrossel do Instagram deve ter entre 2 e 10 mídias.',
+      };
     }
 
     if (body.indexOf('2207027') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Unknown error, please try again later or contact support',
+        value:
+          'Ocorreu um erro desconhecido. Tente novamente mais tarde ou fale com o suporte.',
       };
     }
 
     if (body.indexOf('param collaborators is not allowed') > -1) {
       return {
         type: 'bad-body' as const,
-        value: 'Collaborators are not allowed for carousel',
+        value: 'Não é possível adicionar colaboradores a um carrossel.',
       };
     }
 
@@ -884,7 +889,9 @@ export class InstagramProvider
       // re-running this is safe)
       const { id: containerId } = await (
         await this.fetch(
-          `https://${pendingData.type}/v20.0/${igId}/media?caption=${encodeURIComponent(
+          `https://${
+            pendingData.type
+          }/v20.0/${igId}/media?caption=${encodeURIComponent(
             pendingData.message || ''
           )}&media_type=CAROUSEL&children=${encodeURIComponent(
             pendingData.containers.join(',')

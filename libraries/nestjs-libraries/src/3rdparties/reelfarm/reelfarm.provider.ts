@@ -8,8 +8,7 @@ const BASE_URL = 'https://reel.farm/api/v1';
 @ThirdParty({
   identifier: 'reelfarm',
   title: 'Reel.Farm',
-  description:
-    'Import UGC and greenscreen videos from your Reel.Farm account.',
+  description: 'Importe vídeos de UGC e chroma key da sua conta da Reel.Farm.',
   position: 'media-library',
   fields: [],
 })

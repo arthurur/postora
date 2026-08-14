@@ -128,13 +128,13 @@ export class XProvider extends SocialAbstract implements SocialProvider {
         hasExtension(m.path, 'mp4')
       )
     ) {
-      return 'X articles only support images';
+      return 'Artigos do X aceitam apenas imagens.';
     }
 
     // Replies can only be attached to the seed post a published article
     // creates - a draft has no post to reply to.
     if (settings?.article_status !== 'published' && comments.length) {
-      return 'A draft article cannot have thread replies, remove them or publish the article';
+      return 'Um artigo em rascunho não pode ter respostas em sequência. Remova-as ou publique o artigo.';
     }
 
     return true;
@@ -150,73 +150,72 @@ export class XProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'There is a problem posting, please edit your post and check character count and media attachments',
+          'Houve um problema ao publicar. Edite a publicação e verifique o limite de caracteres e os anexos de mídia.',
       };
     }
     if (body.includes('Service Unavailable')) {
       return {
         type: 'retry',
-        value: 'X is currently unavailable, please try again later',
+        value: 'O X está indisponível no momento. Tente novamente mais tarde.',
       };
     }
     if (body.includes('maximum of one cashtag')) {
       return {
         type: 'bad-body',
-        value: 'There can be maximum of one cashtag ($SYMBOL) per post',
+        value: 'Cada publicação pode ter no máximo um cashtag ($SÍMBOLO)',
       };
     }
     if (body.includes('maximum of 4 items')) {
       return {
         type: 'bad-body',
-        value: 'There must be a maximum of 4 items per post',
+        value: 'Cada publicação pode ter no máximo 4 itens',
       };
     }
     if (body.includes('Unsupported Authentication')) {
       return {
         type: 'refresh-token',
-        value: 'X authentication has expired, please reconnect your account',
+        value: 'A autenticação do X expirou. Reconecte sua conta.',
       };
     }
 
     if (body.includes('You are not allowed to create a Tweet')) {
       return {
         type: 'bad-body',
-        value: 'You are not allowed to create a post with duplicate content',
-      }
+        value: 'Não é permitido criar uma publicação com conteúdo duplicado',
+      };
     }
 
     if (body.includes('usage-capped')) {
       return {
         type: 'bad-body',
-        value: 'Posting failed - capped reached. Please try again later',
+        value:
+          'Falha ao publicar: o limite foi atingido. Tente novamente mais tarde',
       };
     }
 
     if (body.includes('user-suspended')) {
       return {
         type: 'bad-body',
-        value:
-          'Your X account has been suspended, please reconnect with another account',
+        value: 'Sua conta do X foi suspensa. Reconecte usando outra conta',
       };
     }
     if (body.includes('duplicate-rules')) {
       return {
         type: 'bad-body',
         value:
-          'You have already posted this post, please wait before posting again',
+          'Você já enviou esta publicação. Aguarde antes de publicar novamente',
       };
     }
     if (body.includes('Your account is not permitted to access this feature')) {
       return {
         type: 'bad-body',
-        value:
-          'X blocked your request',
+        value: 'O X bloqueou sua solicitação',
       };
     }
     if (body.includes('The Tweet contains an invalid URL.')) {
       return {
         type: 'bad-body',
-        value: 'The Tweet contains a URL that is not allowed on X',
+        value: 'A publicação contém uma URL que não é permitida no X',
       };
     }
     if (
@@ -227,7 +226,7 @@ export class XProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'The video you are trying to post is longer than 2 minutes, which is not allowed for this account',
+          'O vídeo que você está tentando publicar tem mais de 2 minutos, o que não é permitido para esta conta',
       };
     }
     return undefined;
@@ -235,18 +234,18 @@ export class XProvider extends SocialAbstract implements SocialProvider {
 
   @Plug({
     identifier: 'x-autoRepostPost',
-    title: 'Auto Repost Posts',
+    title: 'Republicar automaticamente',
     disabled: !!process.env.DISABLE_X_ANALYTICS,
     description:
-      'When a post reached a certain number of likes, repost it to increase engagement (1 week old posts)',
+      'Quando uma publicação atingir certo número de curtidas, republique-a para aumentar o engajamento (publicações de até 1 semana)',
     runEveryMilliseconds: 21600000,
     totalRuns: 3,
     fields: [
       {
         name: 'likesAmount',
         type: 'number',
-        placeholder: 'Amount of likes',
-        description: 'The amount of likes to trigger the repost',
+        placeholder: 'Número de curtidas',
+        description: 'Número de curtidas necessário para republicar',
         validation: /^\d+$/,
       },
     ],
@@ -280,8 +279,8 @@ export class XProvider extends SocialAbstract implements SocialProvider {
 
   @PostPlug({
     identifier: 'x-repost-post-users',
-    title: 'Add Re-posters',
-    description: 'Add accounts to repost your post',
+    title: 'Adicionar contas para republicar',
+    description: 'Adicione contas que republicarão sua publicação',
     pickIntegration: ['x'],
     fields: [],
   })
@@ -312,25 +311,25 @@ export class XProvider extends SocialAbstract implements SocialProvider {
 
   @Plug({
     identifier: 'x-autoPlugPost',
-    title: 'Auto plug post',
+    title: 'Adicionar promoção automaticamente',
     disabled: !!process.env.DISABLE_X_ANALYTICS,
     description:
-      'When a post reached a certain number of likes, add another post to it so you followers get a notification about your promotion',
+      'Quando uma publicação atingir certo número de curtidas, adicione uma resposta para que seus seguidores recebam uma notificação sobre sua promoção',
     runEveryMilliseconds: 21600000,
     totalRuns: 3,
     fields: [
       {
         name: 'likesAmount',
         type: 'number',
-        placeholder: 'Amount of likes',
-        description: 'The amount of likes to trigger the repost',
+        placeholder: 'Número de curtidas',
+        description: 'Número de curtidas necessário para adicionar a promoção',
         validation: /^\d+$/,
       },
       {
         name: 'post',
         type: 'richtext',
-        placeholder: 'Post to plug',
-        description: 'Message content to plug',
+        placeholder: 'Publicação promocional',
+        description: 'Conteúdo da mensagem promocional',
         validation: /^[\s\S]{3,}$/g,
       },
     ],
@@ -438,8 +437,8 @@ export class XProvider extends SocialAbstract implements SocialProvider {
       username,
       additionalSettings: [
         {
-          title: 'Verified',
-          description: 'Is this a verified user? (Premium)',
+          title: 'Verificada',
+          description: 'Esta conta é verificada? (Premium)',
           type: 'checkbox' as const,
           value: verified,
         },
@@ -831,7 +830,11 @@ export class XProvider extends SocialAbstract implements SocialProvider {
     const stillProcessing: string[] = [];
     for (const mediaId of pendingData.processingIds || []) {
       let processing:
-        | { state: string; check_after_secs?: number; error?: { message?: string } }
+        | {
+            state: string;
+            check_after_secs?: number;
+            error?: { message?: string };
+          }
         | undefined;
       try {
         processing = await this.mediaProcessingStatus(client, mediaId);

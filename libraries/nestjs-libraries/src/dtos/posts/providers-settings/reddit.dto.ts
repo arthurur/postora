@@ -27,7 +27,7 @@ export class RedditSettingsDtoInner {
   @MinLength(2)
   @IsDefined()
   @JSONSchema({
-    description: 'Subreddit must start with /r',
+    description: 'O subreddit deve começar com /r',
   })
   subreddit: string;
 
@@ -40,7 +40,8 @@ export class RedditSettingsDtoInner {
   @MinLength(2)
   @IsDefined()
   @JSONSchema({
-    description: 'Must be any of link, self (normal post), image, video, videogif',
+    description:
+      'Deve ser link, self (publicação comum), image, video ou videogif',
   })
   type: string;
 
@@ -50,7 +51,7 @@ export class RedditSettingsDtoInner {
   @Matches(
     /^(|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})$/,
     {
-      message: 'Invalid URL',
+      message: 'URL inválida',
     }
   )
   url: string;

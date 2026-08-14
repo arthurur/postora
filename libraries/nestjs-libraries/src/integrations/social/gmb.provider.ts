@@ -61,14 +61,14 @@ export class GmbProvider extends SocialAbstract implements SocialProvider {
   ): Promise<string | true> {
     // GMB posts can have text only, or text with one image
     if ((items?.length ?? 0) > 0 && (items?.[0]?.length ?? 0) > 1) {
-      return 'Google My Business posts can only have one image';
+      return 'Publicações do Perfil da Empresa no Google podem ter apenas uma imagem.';
     }
 
     // Check for video - GMB doesn't support video in local posts
     if ((items?.length ?? 0) > 0 && (items?.[0]?.length ?? 0) > 0) {
       const media = items?.[0]?.[0];
       if ((media?.path?.indexOf?.('mp4') ?? -1) > -1) {
-        return 'Google My Business posts do not support video attachments';
+        return 'Publicações do Perfil da Empresa no Google não aceitam vídeos.';
       }
     }
 
@@ -89,15 +89,14 @@ export class GmbProvider extends SocialAbstract implements SocialProvider {
     if (body.includes('UNAUTHENTICATED') || body.includes('invalid_grant')) {
       return {
         type: 'refresh-token',
-        value: 'Please re-authenticate your Google My Business account',
+        value: 'Autentique novamente sua conta do Perfil da Empresa no Google.',
       };
     }
 
     if (body.includes('Unauthorized')) {
       return {
         type: 'refresh-token',
-        value:
-          'Token expired or invalid, please reconnect your YouTube account.',
+        value: 'O token expirou ou é inválido. Reconecte sua conta do Google.',
       };
     }
 
@@ -105,28 +104,29 @@ export class GmbProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'refresh-token',
         value:
-          'Permission denied. Please ensure you have access to this business location.',
+          'Permissão negada. Confirme que você tem acesso a este local da empresa.',
       };
     }
 
     if (body.includes('NOT_FOUND')) {
       return {
         type: 'bad-body',
-        value: 'Business location not found. It may have been deleted.',
+        value:
+          'Local da empresa não encontrado. Talvez ele tenha sido excluído.',
       };
     }
 
     if (body.includes('INVALID_ARGUMENT')) {
       return {
         type: 'bad-body',
-        value: 'Invalid post content. Please check your post details.',
+        value: 'Conteúdo inválido. Verifique os detalhes da publicação.',
       };
     }
 
     if (body.includes('RESOURCE_EXHAUSTED')) {
       return {
         type: 'bad-body',
-        value: 'Rate limit exceeded. Please try again later.',
+        value: 'Limite de solicitações excedido. Tente novamente mais tarde.',
       };
     }
 
@@ -212,7 +212,9 @@ export class GmbProvider extends SocialAbstract implements SocialProvider {
       if (accountsPageToken) {
         params.set('pageToken', accountsPageToken);
       }
-      const url = `https://mybusinessaccountmanagement.googleapis.com/v1/accounts${params.toString() ? `?${params}` : ''}`;
+      const url = `https://mybusinessaccountmanagement.googleapis.com/v1/accounts${
+        params.toString() ? `?${params}` : ''
+      }`;
 
       const accountsResponse = await fetch(url, {
         headers: {
@@ -388,7 +390,7 @@ export class GmbProvider extends SocialAbstract implements SocialProvider {
     const findPage = pages.find((p) => p.id === requiredId);
 
     if (!findPage) {
-      throw new Error('Location not found');
+      throw new Error('Local não encontrado');
     }
 
     const information = await this.fetchPageInformation(accessToken, {

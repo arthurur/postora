@@ -10,7 +10,7 @@ export class ConfigurationChecker {
     const envFile = resolve(__dirname, '../../../.env');
 
     if (!existsSync(envFile)) {
-      console.error('Env file not found!: ', envFile);
+      console.error('Arquivo .env não encontrado: ', envFile);
       return;
     }
 
@@ -30,7 +30,10 @@ export class ConfigurationChecker {
     this.checkIsValidUrl('FRONTEND_URL');
     this.checkIsValidUrl('NEXT_PUBLIC_BACKEND_URL');
     this.checkIsValidUrl('BACKEND_INTERNAL_URL');
-    this.checkNonEmpty('STORAGE_PROVIDER', 'Needed to setup storage.');
+    this.checkNonEmpty(
+      'STORAGE_PROVIDER',
+      'Necessário para configurar o armazenamento.'
+    );
   }
 
   checkNonEmpty(key: string, description?: string): boolean {
@@ -41,12 +44,12 @@ export class ConfigurationChecker {
     }
 
     if (!v) {
-      this.issues.push(key + ' not set. ' + description);
+      this.issues.push(key + ' não está configurado. ' + description);
       return false;
     }
 
     if (v.length === 0) {
-      this.issues.push(key + ' is empty.' + description);
+      this.issues.push(key + ' está vazio. ' + description);
       return false;
     }
 
@@ -64,17 +67,17 @@ export class ConfigurationChecker {
 
   checkRedis() {
     if (!this.cfg.REDIS_URL) {
-      this.issues.push('REDIS_URL not set');
+      this.issues.push('REDIS_URL não está configurado');
     }
 
     try {
       const redisUrl = new URL(this.cfg.REDIS_URL);
 
       if (redisUrl.protocol !== 'redis:') {
-        this.issues.push('REDIS_URL must start with redis://');
+        this.issues.push('REDIS_URL deve começar com redis://');
       }
     } catch (error) {
-      this.issues.push('REDIS_URL is not a valid URL');
+      this.issues.push('REDIS_URL não é uma URL válida');
     }
   }
 
@@ -88,11 +91,11 @@ export class ConfigurationChecker {
     try {
       new URL(urlString);
     } catch (error) {
-      this.issues.push(key + ' is not a valid URL');
+      this.issues.push(key + ' não é uma URL válida');
     }
 
     if (urlString.endsWith('/')) {
-      this.issues.push(key + ' should not end with /');
+      this.issues.push(key + ' não deve terminar com /');
     }
   }
 

@@ -16,7 +16,7 @@ export class ForgotReturnPasswordDto {
   @IsString()
   @IsDefined()
   @IsIn([makeId(10)], {
-    message: 'Passwords do not match',
+    message: 'As senhas não coincidem',
   })
   @ValidateIf((o) => o.password !== o.repeatPassword)
   repeatPassword: string;

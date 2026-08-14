@@ -10,6 +10,10 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import clsx from 'clsx';
 import { VariableContextComponent } from '@gitroom/react/helpers/variable.context';
 import UtmSaver from '@gitroom/helpers/utils/utm.saver';
+import {
+  defaultDocumentLanguage,
+  fallbackLng,
+} from '@gitroom/react/translation/i18n.config';
 
 const jakartaSans = Plus_Jakarta_Sans({
   weight: ['600', '500'],
@@ -19,7 +23,7 @@ const jakartaSans = Plus_Jakarta_Sans({
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <html>
+    <html lang={defaultDocumentLanguage}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
@@ -27,7 +31,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         className={clsx(jakartaSans.className, 'dark text-primary !bg-primary')}
       >
         <VariableContextComponent
-          language="en"
+          language={fallbackLng}
           storageProvider={
             process.env.STORAGE_PROVIDER! as 'local' | 'cloudflare'
           }

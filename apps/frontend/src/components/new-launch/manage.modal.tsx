@@ -104,7 +104,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
           <div className="relative">
             <SettingsIcon size={15} className="text-white" />
           </div>
-          <div>Settings</div>
+          <div>{t('settings', 'Settings')}</div>
         </div>
       );
     }
@@ -633,7 +633,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                 }
                 onClick={schedule('draft')}
               >
-                Save Set
+                {t('save_set', 'Save Set')}
               </button>
             )}
             {!addEditSets && (

@@ -15,10 +15,14 @@ const ConnectedComponent: FC<{
 }> = (props) => {
   const { id, login, deleteRepository } = props;
   const fetch = useFetch();
+  const t = useT();
   const disconnect = useCallback(async () => {
     if (
       !(await deleteDialog(
-        'Are you sure you want to disconnect this repository?'
+        t(
+          'confirm_disconnect_repository',
+          'Are you sure you want to disconnect this repository?'
+        )
       ))
     ) {
       return;
@@ -29,13 +33,16 @@ const ConnectedComponent: FC<{
     });
   }, []);
 
-  const t = useT();
-
   return (
     <div className="my-[16px] mt-[16px] h-[90px] bg-sixth border-fifth border rounded-[4px] p-[24px]">
       <div className={`flex items-center gap-[8px]`}>
         <div>
-          <SafeImage src="/icons/github.svg" alt="GitHub" width={40} height={40} />
+          <SafeImage
+            src="/icons/github.svg"
+            alt="GitHub"
+            width={40}
+            height={40}
+          />
         </div>
         <div className="flex-1">
           <strong>{t('connected', 'Connected:')}</strong> {login}
@@ -59,6 +66,7 @@ const ConnectComponent: FC<{
   const [url, setUrl] = useState('');
   const fetch = useFetch();
   const toast = useToaster();
+  const t = useT();
   const cancelConnection = useCallback(async () => {
     await (
       await fetch(`/settings/repository/${id}`, {
@@ -78,19 +86,22 @@ const ConnectComponent: FC<{
       }),
     });
     if (response.status === 404) {
-      toast.show('Repository not found', 'warning');
+      toast.show(t('repository_not_found', 'Repository not found'), 'warning');
       return;
     }
     setConnected(`${select}/${repo}`);
   }, [url]);
 
-  const t = useT();
-
   return (
     <div className="my-[16px] mt-[16px] h-[100px] bg-sixth border-fifth border rounded-[4px] px-[24px] flex">
       <div className={`flex items-center gap-[8px] flex-1`}>
         <div>
-          <SafeImage src="/icons/github.svg" alt="GitHub" width={40} height={40} />
+          <SafeImage
+            src="/icons/github.svg"
+            alt="GitHub"
+            width={40}
+            height={40}
+          />
         </div>
         <div className="flex-1">
           {t('connect_your_repository', 'Connect your repository')}

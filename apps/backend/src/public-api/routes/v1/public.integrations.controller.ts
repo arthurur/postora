@@ -87,7 +87,7 @@ export class PublicIntegrationsController {
   ) {
     Sentry.metrics.count('public_api-request', 1);
     if (!file) {
-      throw new HttpException({ msg: 'No file provided' }, 400);
+      throw new HttpException({ msg: 'Nenhum arquivo foi enviado' }, 400);
     }
 
     const getFile = await this.storage.uploadFile(file);
@@ -113,10 +113,10 @@ export class PublicIntegrationsController {
     } catch {
       // Network-level failure (DNS, connection refused, SSRF block, etc.) —
       // fetch rejects rather than returning a non-ok response.
-      throw new HttpException({ msg: 'Failed to fetch URL' }, 400);
+      throw new HttpException({ msg: 'Não foi possível acessar a URL' }, 400);
     }
     if (!response.ok) {
-      throw new HttpException({ msg: 'Failed to fetch URL' }, 400);
+      throw new HttpException({ msg: 'Não foi possível acessar a URL' }, 400);
     }
 
     // Guard against OOM: bail out before buffering the whole body into memory.
@@ -126,17 +126,17 @@ export class PublicIntegrationsController {
     const maxDownloadSize = getMaxSize('video/mp4');
     const declaredSize = Number(response.headers.get('content-length'));
     if (declaredSize && declaredSize > maxDownloadSize) {
-      throw new HttpException({ msg: 'File is too large.' }, 400);
+      throw new HttpException({ msg: 'O arquivo é grande demais.' }, 400);
     }
 
     const buffer = Buffer.from(await response.arrayBuffer());
     const detected = await fromBuffer(buffer);
     if (!detected || !PUBLIC_API_ALLOWED_MIME.has(detected.mime)) {
-      throw new HttpException({ msg: 'Unsupported file type.' }, 400);
+      throw new HttpException({ msg: 'Tipo de arquivo não compatível.' }, 400);
     }
 
     if (buffer.length > getMaxSize(detected.mime)) {
-      throw new HttpException({ msg: 'File is too large.' }, 400);
+      throw new HttpException({ msg: 'O arquivo é grande demais.' }, 400);
     }
 
     const mimetype = detected.mime;
@@ -337,7 +337,7 @@ export class PublicIntegrationsController {
         .getAllowedSocialsIntegrations()
         .includes(integration)
     ) {
-      throw new HttpException({ msg: 'Integration not allowed' }, 400);
+      throw new HttpException({ msg: 'Integração não permitida' }, 400);
     }
 
     const integrationProvider =
@@ -365,7 +365,10 @@ export class PublicIntegrationsController {
 
       return { url };
     } catch (err) {
-      throw new HttpException({ msg: 'Failed to generate auth URL' }, 500);
+      throw new HttpException(
+        { msg: 'Não foi possível gerar a URL de autenticação' },
+        500
+      );
     }
   }
 
@@ -431,7 +434,7 @@ export class PublicIntegrationsController {
     );
 
     if (!loadIntegration) {
-      throw new HttpException({ msg: 'Integration not found' }, 404);
+      throw new HttpException({ msg: 'Integração não encontrada' }, 404);
     }
 
     const verified =
@@ -543,7 +546,7 @@ export class PublicIntegrationsController {
     );
 
     if (!getIntegration) {
-      throw new HttpException({ msg: 'Integration not found' }, 404);
+      throw new HttpException({ msg: 'Integração não encontrada' }, 404);
     }
 
     const integrationProvider = socialIntegrationList.find(
@@ -551,7 +554,10 @@ export class PublicIntegrationsController {
     )!;
 
     if (!integrationProvider) {
-      throw new HttpException({ msg: 'Integration provider not found' }, 404);
+      throw new HttpException(
+        { msg: 'Provedor de integração não encontrado' },
+        404
+      );
     }
 
     const tools = this._integrationManager.getAllTools();
@@ -563,7 +569,7 @@ export class PublicIntegrationsController {
       // @ts-ignore
       !integrationProvider[body.methodName]
     ) {
-      throw new HttpException({ msg: 'Tool not found' }, 404);
+      throw new HttpException({ msg: 'Ferramenta não encontrada' }, 404);
     }
 
     while (true) {
@@ -606,7 +612,7 @@ export class PublicIntegrationsController {
             continue;
           }
         }
-        throw new HttpException({ msg: 'Unexpected error' }, 500);
+        throw new HttpException({ msg: 'Erro inesperado' }, 500);
       }
     }
   }

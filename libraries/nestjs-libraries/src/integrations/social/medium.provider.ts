@@ -82,7 +82,7 @@ export class MediumProvider extends SocialAbstract implements SocialProvider {
         username,
       };
     } catch (err) {
-      return 'Invalid credentials';
+      return 'Credenciais inválidas';
     }
   }
 

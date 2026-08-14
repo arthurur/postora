@@ -369,10 +369,10 @@ export const DecisionModal: FC<{
 export const decisionModalEmitter = new EventEmitter();
 
 export const areYouSure = ({
-  title = 'Are you sure?',
-  description = 'Are you sure you want to close this modal?' as any,
-  approveLabel = 'Yes',
-  cancelLabel = 'No',
+  title = 'Tem certeza?',
+  description = 'Tem certeza de que deseja fechar esta janela?' as any,
+  approveLabel = 'Sim',
+  cancelLabel = 'Não',
 } = {}): Promise<boolean> => {
   return new Promise<boolean>((newRes) => {
     decisionModalEmitter.emit('open', {
@@ -397,11 +397,11 @@ export const useDecisionModal = () => {
   const modals = useModals();
   const open = useCallback(
     ({
-      title = 'Are you sure?',
-      description = 'Are you sure you want to close this modal?' as any,
+      title = 'Tem certeza?',
+      description = 'Tem certeza de que deseja fechar esta janela?' as any,
       onlyApprove = false,
-      approveLabel = 'Yes',
-      cancelLabel = 'No',
+      approveLabel = 'Sim',
+      cancelLabel = 'Não',
       newRes = undefined as any,
     } = {}) => {
       return new Promise<boolean>((res) => {

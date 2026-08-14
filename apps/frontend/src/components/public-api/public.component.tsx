@@ -11,6 +11,10 @@ import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { useDecisionModal } from '@gitroom/frontend/components/layout/new-modal';
 import { DeveloperComponent } from '@gitroom/frontend/components/developer/developer.component';
 import clsx from 'clsx';
+import {
+  getLabelTranslationKey,
+  getTextTranslationKey,
+} from '@gitroom/react/translation/translated-label';
 
 const mcpClients = [
   'Claude Code',
@@ -159,13 +163,7 @@ const getMcpConfig = (
   }
 };
 
-const CopyButton = ({
-  text,
-  label,
-}: {
-  text: string;
-  label: string;
-}) => {
+const CopyButton = ({ text, label }: { text: string; label: string }) => {
   const toaster = useToaster();
   return (
     <button
@@ -218,7 +216,10 @@ const McpSection = ({
 
   const maskedConfig = revealed
     ? config
-    : config.replace(new RegExp(user.publicApi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '*'.repeat(user.publicApi.length));
+    : config.replace(
+        new RegExp(user.publicApi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+        '*'.repeat(user.publicApi.length)
+      );
 
   const maskedRemoteUrl = revealed
     ? remoteUrl
@@ -244,7 +245,20 @@ const McpSection = ({
             href="https://docs.postiz.com/mcp/introduction"
             target="_blank"
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
             {t('read_the_docs', 'Docs')}
           </a>
         </div>
@@ -301,7 +315,7 @@ const McpSection = ({
         <div className="flex flex-col gap-[8px]">
           <div className="text-[12px] text-customColor18 font-[500]">
             {method === 'header'
-              ? hint
+              ? t(getTextTranslationKey('hint', hint), hint)
               : t(
                   'remote_server_url_hint',
                   'Paste this URL into your remote MCP client (ChatGPT, Claude, etc.).'
@@ -346,10 +360,7 @@ const McpSection = ({
               label={t('copy', 'Copy')}
             />
             {method === 'header' && (
-              <CopyButton
-                text={cliUrl}
-                label={t('copy_url', 'Copy URL')}
-              />
+              <CopyButton text={cliUrl} label={t('copy_url', 'Copy URL')} />
             )}
           </div>
         </div>
@@ -432,7 +443,20 @@ const CliSection = ({ apiKey }: { apiKey: string }) => {
             href="https://docs.postiz.com/cli/introduction"
             target="_blank"
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
             {t('read_the_docs', 'Docs')}
           </a>
         </div>
@@ -460,7 +484,7 @@ const CliSection = ({ apiKey }: { apiKey: string }) => {
         {displaySteps.map((step, i) => (
           <div key={i} className="flex flex-col gap-[6px]">
             <div className="text-[13px] font-[600] text-customColor18">
-              {i + 1}. {step.label}
+              {i + 1}. {t(getLabelTranslationKey(step.label), step.label)}
             </div>
             <pre className="bg-newBgColorInner border border-newBorder rounded-[8px] p-[16px] text-[13px] whitespace-pre-wrap break-all overflow-x-auto leading-[1.6]">
               {step.code}
@@ -588,15 +612,41 @@ const PublicApiContent = () => {
               href="https://docs.postiz.com/public-api"
               target="_blank"
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-            {t('read_the_docs', 'Docs')}
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              {t('read_the_docs', 'Docs')}
             </a>
             <a
               className="cursor-pointer px-[16px] h-[36px] bg-[#612BD3] hover:bg-[#5520CB] text-white transition-colors rounded-[8px] text-[13px] font-[600] flex items-center gap-[6px]"
               href="https://www.npmjs.com/package/n8n-nodes-postiz"
               target="_blank"
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
               {t('n8n_node', 'N8N Node')}
             </a>
           </div>
@@ -745,9 +795,7 @@ export const PublicComponent = () => {
             )}
             onClick={() => setSubTab(tab)}
           >
-            {tab === 'api'
-              ? t('access', 'Access')
-              : t('apps', 'Apps')}
+            {tab === 'api' ? t('access', 'Access') : t('apps', 'Apps')}
           </button>
         ))}
       </div>

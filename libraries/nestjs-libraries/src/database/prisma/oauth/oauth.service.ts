@@ -53,7 +53,10 @@ export class OAuthService {
   async deleteApp(orgId: string) {
     const app = await this._oauthRepository.getAppByOrgId(orgId);
     if (!app) {
-      throw new HttpException('No OAuth app found', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        'Aplicativo OAuth não encontrado',
+        HttpStatus.NOT_FOUND
+      );
     }
     await this._oauthRepository.revokeAllForApp(app.id);
     await this._oauthRepository.deleteApp(orgId);
@@ -63,7 +66,10 @@ export class OAuthService {
   async rotateSecret(orgId: string) {
     const app = await this._oauthRepository.getAppByOrgId(orgId);
     if (!app) {
-      throw new HttpException('No OAuth app found', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        'Aplicativo OAuth não encontrado',
+        HttpStatus.NOT_FOUND
+      );
     }
 
     const newSecret = 'pcs_' + makeId(48);
@@ -75,7 +81,7 @@ export class OAuthService {
   async validateAuthorizationRequest(clientId: string) {
     const app = await this._oauthRepository.getAppByClientId(clientId);
     if (!app) {
-      throw new HttpException('Invalid client_id', HttpStatus.BAD_REQUEST);
+      throw new HttpException('client_id inválido', HttpStatus.BAD_REQUEST);
     }
     return app;
   }
@@ -131,7 +137,7 @@ export class OAuthService {
 
     if (!auth.codeExpiresAt || new Date() > auth.codeExpiresAt) {
       throw new HttpException(
-        { error: 'invalid_grant', error_description: 'Code has expired' },
+        { error: 'invalid_grant', error_description: 'O código expirou' },
         HttpStatus.BAD_REQUEST
       );
     }

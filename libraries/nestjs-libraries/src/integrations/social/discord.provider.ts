@@ -361,28 +361,28 @@ export class DiscordProvider extends SocialAbstract implements SocialProvider {
     if (body.includes('50001')) {
       return {
         type: 'bad-body',
-        value: "Bot doesn't have access to this channel",
+        value: 'O bot não tem acesso a este canal',
       };
     }
 
     if (body.includes('50013')) {
       return {
         type: 'bad-body',
-        value: 'Bot lacks permission to send messages in this channel',
+        value: 'O bot não tem permissão para enviar mensagens neste canal',
       };
     }
 
     if (body.includes('10003')) {
       return {
         type: 'bad-body',
-        value: 'Channel no longer exists',
+        value: 'O canal não existe mais',
       };
     }
 
     if (body.includes('40005')) {
       return {
         type: 'bad-body',
-        value: "Attachment exceeds Discord's size limit",
+        value: 'O anexo ultrapassa o limite de tamanho do Discord',
       };
     }
 

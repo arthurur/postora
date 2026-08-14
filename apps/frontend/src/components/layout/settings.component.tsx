@@ -86,7 +86,10 @@ export const SettingsPopup: FC<{
   const t = useT();
   const list = useMemo(() => {
     const arr = [];
-    arr.push({ tab: 'global_settings', label: t('global_settings', 'Global Settings') });
+    arr.push({
+      tab: 'global_settings',
+      label: t('global_settings', 'Global Settings'),
+    });
     // Populate tabs based on user permissions
     if (user?.tier?.team_members && isGeneral) {
       arr.push({ tab: 'teams', label: t('teams', 'Teams') });
@@ -106,7 +109,10 @@ export const SettingsPopup: FC<{
     if (user?.tier?.public_api && isGeneral && showLogout) {
       arr.push({ tab: 'api', label: t('developers', 'Developers') });
     }
-    arr.push({ tab: 'approved_apps', label: t('approved_apps', 'Approved Apps') });
+    arr.push({
+      tab: 'approved_apps',
+      label: t('approved_apps', 'Approved Apps'),
+    });
 
     return arr;
   }, [user, isGeneral, showLogout, t]);

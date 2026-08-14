@@ -83,12 +83,14 @@ export async function postWorkflowV105({
 
   // in case doesn't exists for some reason, fail it
   if (!firstPost) {
-    await changeState(postId, 'ERROR', 'No Post');
+    await changeState(postId, 'ERROR', 'Publicação não encontrada');
     return;
   }
 
   if (!postNow && firstPost.state !== 'QUEUE') {
-    await changeState(firstPost.id, 'ERROR', 'Already posted', [firstPost]);
+    await changeState(firstPost.id, 'ERROR', 'Publicação já enviada', [
+      firstPost,
+    ]);
     return;
   }
 
@@ -105,7 +107,7 @@ export async function postWorkflowV105({
   const [post] = postsListBefore;
 
   if (!post) {
-    await changeState(postId, 'ERROR', 'No Post');
+    await changeState(postId, 'ERROR', 'Publicação não encontrada');
     return;
   }
 
@@ -113,8 +115,8 @@ export async function postWorkflowV105({
   if (post.integration?.refreshNeeded) {
     await inAppNotification(
       post.organizationId,
-      `We couldn't post to ${post.integration?.providerIdentifier} for ${post?.integration?.name}`,
-      `We couldn't post to ${post.integration?.providerIdentifier} for ${post?.integration?.name} because you need to reconnect it. Please enable it and try again.`,
+      `Não foi possível publicar em ${post.integration?.providerIdentifier} para ${post?.integration?.name}`,
+      `Não foi possível publicar em ${post.integration?.providerIdentifier} para ${post?.integration?.name} porque você precisa reconectar o canal. Ative-o e tente novamente.`,
       true,
       false,
       'info'
@@ -123,7 +125,7 @@ export async function postWorkflowV105({
     await changeState(
       postsListBefore[0].id,
       'ERROR',
-      'Refresh channel needed',
+      'É necessário reconectar o canal',
       postsListBefore
     );
     return;
@@ -133,8 +135,8 @@ export async function postWorkflowV105({
   if (post.integration?.disabled) {
     await inAppNotification(
       post.organizationId,
-      `We couldn't post to ${post.integration?.providerIdentifier} for ${post?.integration?.name}`,
-      `We couldn't post to ${post.integration?.providerIdentifier} for ${post?.integration?.name} because it's disabled. Please enable it and try again.`,
+      `Não foi possível publicar em ${post.integration?.providerIdentifier} para ${post?.integration?.name}`,
+      `Não foi possível publicar em ${post.integration?.providerIdentifier} para ${post?.integration?.name} porque o canal está desativado. Ative-o e tente novamente.`,
       true,
       false,
       'info'
@@ -143,7 +145,7 @@ export async function postWorkflowV105({
     await changeState(
       postsListBefore[0].id,
       'ERROR',
-      'Channel disabled',
+      'Canal desativado',
       postsListBefore
     );
     return;
@@ -203,12 +205,12 @@ export async function postWorkflowV105({
           // send notification on a sucessful post
           await inAppNotification(
             post.integration.organizationId,
-            `Your post has been published on ${capitalize(
+            `Sua publicação foi publicada em ${capitalize(
               post.integration.providerIdentifier
             )}`,
-            `Your post has been published on ${capitalize(
+            `Sua publicação foi publicada em ${capitalize(
               post.integration.providerIdentifier
-            )} at ${postsResults[0].releaseURL}`,
+            )}: ${postsResults[0].releaseURL}`,
             true,
             true
           );
@@ -247,10 +249,10 @@ export async function postWorkflowV105({
         ) {
           await inAppNotification(
             post.organizationId,
-            `Error posting${i === 0 ? ' ' : ' comments '}on ${
+            `Erro ao publicar${i === 0 ? '' : ' comentários'} em ${
               post.integration?.providerIdentifier
             } for ${post?.integration?.name}`,
-            `An error occurred while posting${i === 0 ? ' ' : ' comments '}on ${
+            `Ocorreu um erro ao publicar${i === 0 ? '' : ' comentários'} em ${
               post.integration?.providerIdentifier
             }${err?.cause?.message ? `: ${err?.cause?.message}` : ``}`,
             true,

@@ -41,7 +41,10 @@ const GenerateTab = observer(({ store }: any) => {
       return;
     }
     if (!inputRef.current.value) {
-      toast.show('Please type your prompt', 'warning');
+      toast.show(
+        t('please_type_your_prompt', 'Please type your prompt'),
+        'warning'
+      );
       return;
     }
     setLoading(true);
@@ -54,7 +57,12 @@ const GenerateTab = observer(({ store }: any) => {
     });
     setLoading(false);
     if (!req.ok) {
-      alert('Something went wrong, please try again later...');
+      alert(
+        t(
+          'something_went_wrong_try_again_later',
+          'Something went wrong, please try again later...'
+        )
+      );
       return;
     }
     mutate();
@@ -70,10 +78,15 @@ const GenerateTab = observer(({ store }: any) => {
         }}
       >
         {t('generate_image_with_ai', 'Generate image with AI')}
-        {data?.credits ? `(${data?.credits} left)` : ``}
+        {data?.credits
+          ? t('credits_left', '({{count}} left)', { count: data.credits })
+          : ``}
       </div>
       <InputGroup
-        placeholder="Type your image generation prompt here..."
+        placeholder={t(
+          'placeholder_type_your_image_generation_prompt_here',
+          'Type your image generation prompt here...'
+        )}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             handleGenerate();
@@ -92,7 +105,12 @@ const GenerateTab = observer(({ store }: any) => {
           marginBottom: '40px',
         }}
       >
-        {data?.credits <= 0 ? 'Click to purchase more credits' : 'Generate'}
+        {data?.credits <= 0
+          ? t(
+              'click_to_purchase_more_credits',
+              'Click to purchase more credits'
+            )
+          : t('generate', 'Generate')}
       </Button>
       {image && (
         <ImagesGrid
@@ -153,11 +171,14 @@ const PictureGeneratorPanel = observer(({ store }: any) => {
 // define the new custom section
 export const PictureGeneratorSection = {
   name: 'picture-generator-ai',
-  Tab: (props: any) => (
-    <SectionTab name="AI Img" {...props}>
-      <Clean />
-    </SectionTab>
-  ),
+  Tab: (props: any) => {
+    const t = useT();
+    return (
+      <SectionTab name={t('ai_image_short', 'AI Img')} {...props}>
+        <Clean />
+      </SectionTab>
+    );
+  },
   // we need observer to update component automatically on any store changes
   Panel: PictureGeneratorPanel,
 };

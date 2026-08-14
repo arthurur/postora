@@ -8,12 +8,14 @@ import {
 } from '@gitroom/frontend/components/analytics/stars.and.forks.interface';
 import dayjs from 'dayjs';
 import { newDayjs } from '@gitroom/frontend/components/layout/set.timezone';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 export const Chart: FC<{
   list: StarsList[] | ForksList[];
 }> = (props) => {
   const { list } = props;
   const ref = useRef<any>(null);
   const chart = useRef<null | DrawChart>(null);
+  const t = useT();
   useEffect(() => {
     const gradient = ref.current
       .getContext('2d')
@@ -54,7 +56,9 @@ export const Chart: FC<{
           {
             borderColor: '#fff',
             // @ts-ignore
-            label: list?.[0]?.totalForks ? 'Forks by date' : 'Stars by date',
+            label: list?.[0]?.totalForks
+              ? t('forks_by_date', 'Forks by date')
+              : t('stars_by_date', 'Stars by date'),
             backgroundColor: gradient,
             fill: true,
             // @ts-ignore
@@ -66,6 +70,6 @@ export const Chart: FC<{
     return () => {
       chart?.current?.destroy();
     };
-  }, []);
+  }, [list, t]);
   return <canvas className="w-full h-full" ref={ref} />;
 };

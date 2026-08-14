@@ -20,7 +20,12 @@ interface DebugPostData {
     settings: { __type: string; [key: string]: any };
     value: Array<{
       content: string;
-      image: Array<{ id: string; path: string; alt?: string; thumbnail?: string }>;
+      image: Array<{
+        id: string;
+        path: string;
+        alt?: string;
+        thumbnail?: string;
+      }>;
       delay: number;
     }>;
   }>;
@@ -53,25 +58,33 @@ export const ImportDebugPostModal: FC<{ close: () => void }> = ({ close }) => {
   const { data: integrations } = useIntegrationList();
   const { mutate } = useSWRConfig();
 
-  const handleJsonChange = useCallback((value: string) => {
-    setJsonInput(value);
-    setParseError('');
-    setParsed(null);
-    setSelectedIntegrationId('');
+  const handleJsonChange = useCallback(
+    (value: string) => {
+      setJsonInput(value);
+      setParseError('');
+      setParsed(null);
+      setSelectedIntegrationId('');
 
-    if (!value.trim()) return;
+      if (!value.trim()) return;
 
-    try {
-      const data = JSON.parse(value);
-      if (!data.posts || !data._debug?.providerIdentifier) {
-        setParseError('Invalid debug JSON format. Missing posts or _debug data.');
-        return;
+      try {
+        const data = JSON.parse(value);
+        if (!data.posts || !data._debug?.providerIdentifier) {
+          setParseError(
+            t(
+              'invalid_debug_json_format',
+              'Invalid debug JSON format. Missing posts or _debug data.'
+            )
+          );
+          return;
+        }
+        setParsed(data);
+      } catch {
+        setParseError(t('invalid_json', 'Invalid JSON'));
       }
-      setParsed(data);
-    } catch {
-      setParseError('Invalid JSON');
-    }
-  }, []);
+    },
+    [t]
+  );
 
   const matchingIntegrations = useMemo((): any[] => {
     if (!parsed || !integrations?.length) return [];
@@ -149,24 +162,23 @@ export const ImportDebugPostModal: FC<{ close: () => void }> = ({ close }) => {
             </div>
             <div className="text-[12px] text-textColor/70 flex flex-col gap-[4px] min-w-0 break-all">
               <div>
-                <span className="font-[500]">
-                  {t('provider', 'Provider')}:
-                </span>{' '}
-                {parsed._debug.providerIdentifier} ({parsed._debug.providerName})
+                <span className="font-[500]">{t('provider', 'Provider')}:</span>{' '}
+                {parsed._debug.providerIdentifier} ({parsed._debug.providerName}
+                )
               </div>
               <div>
-                <span className="font-[500]">
-                  {t('state', 'State')}:
-                </span>{' '}
-                <span className={parsed._debug.state === 'ERROR' ? 'text-red-500' : ''}>
+                <span className="font-[500]">{t('state', 'State')}:</span>{' '}
+                <span
+                  className={
+                    parsed._debug.state === 'ERROR' ? 'text-red-500' : ''
+                  }
+                >
                   {parsed._debug.state}
                 </span>
               </div>
               {parsed._debug.error && (
                 <div>
-                  <span className="font-[500]">
-                    {t('error', 'Error')}:
-                  </span>{' '}
+                  <span className="font-[500]">{t('error', 'Error')}:</span>{' '}
                   <span className="text-red-400">{parsed._debug.error}</span>
                 </div>
               )}
@@ -188,7 +200,9 @@ export const ImportDebugPostModal: FC<{ close: () => void }> = ({ close }) => {
                 <span className="font-[500]">
                   {t('original_date', 'Original Date')}:
                 </span>{' '}
-                {new Date(parsed._debug.originalPublishDate).toLocaleString()}
+                {new Date(parsed._debug.originalPublishDate).toLocaleString(
+                  'pt-BR'
+                )}
               </div>
             </div>
           </div>
@@ -205,7 +219,8 @@ export const ImportDebugPostModal: FC<{ close: () => void }> = ({ close }) => {
               <div className="text-[13px] text-red-400">
                 {t(
                   'no_matching_integrations',
-                  `No ${parsed._debug.providerIdentifier} integrations found. Add one first.`
+                  `No ${parsed._debug.providerIdentifier} integrations found. Add one first.`,
+                  { provider: parsed._debug.providerIdentifier }
                 )}
               </div>
             ) : (

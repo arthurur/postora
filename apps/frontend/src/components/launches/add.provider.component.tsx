@@ -22,12 +22,13 @@ import { capitalize } from 'lodash';
 const resolver = classValidatorResolver(ApiKeyDto);
 
 export const useAddProvider = (update?: () => void, invite?: boolean) => {
+  const t = useT();
   const modal = useModals();
   const fetch = useFetch();
   return useCallback(async () => {
     const data = await (await fetch('/integrations')).json();
     modal.openModal({
-      title: 'Add Channel',
+      title: t('top_title_add_channel', 'Add Channel'),
       withCloseButton: true,
       children: (
         <AddProviderComponent invite={!!invite} update={update} {...data} />
@@ -343,11 +344,16 @@ const ChromeExtensionWarning: FC<{
           )}
         </li>
         <li>
-          We will store your cookies securely to facilitate the connection.
+          {t(
+            'chrome_extension_cookie_storage',
+            'We will store your cookies securely to facilitate the connection.'
+          )}
         </li>
         <li>
-          Postiz does not take responsibility for any issues arising or account
-          termination due to the use of this method.
+          {t(
+            'chrome_extension_liability_notice',
+            'Postiz does not take responsibility for any issues arising or account termination due to the use of this method.'
+          )}
         </li>
       </ul>
       <div className="flex gap-[10px] mt-[8px]">
@@ -496,7 +502,10 @@ export const AddProviderComponent: FC<{
 
           if (invite) {
             toaster.show(
-              'Invite link copied to clipboard, link will be available for 1 hour',
+              t(
+                'invite_link_copied_one_hour',
+                'Invite link copied to clipboard. It will be available for 1 hour.'
+              ),
               'success'
             );
             modal.closeAll();
@@ -629,7 +638,7 @@ export const AddProviderComponent: FC<{
         }
         if (isExternal) {
           modal.openModal({
-            title: 'URL',
+            title: t('url', 'URL'),
             withCloseButton: true,
             ...(isMobile ? { removeLayout: true, fullScreen: true } : {}),
             classNames: {

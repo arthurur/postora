@@ -106,7 +106,7 @@ export class ListmonkProvider extends SocialAbstract implements SocialProvider {
       };
     } catch (e) {
       console.log(e);
-      return 'Invalid credentials';
+      return 'Credenciais inválidas';
     }
   }
 

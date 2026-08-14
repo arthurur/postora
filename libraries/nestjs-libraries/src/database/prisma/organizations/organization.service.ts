@@ -34,8 +34,18 @@ export class OrganizationService {
     return this._organizationRepository.getCount();
   }
 
-  async createMaxUser(id: string, name: string, saasName: string, email: string) {
-    return this._organizationRepository.createMaxUser(id, name, saasName, email);
+  async createMaxUser(
+    id: string,
+    name: string,
+    saasName: string,
+    email: string
+  ) {
+    return this._organizationRepository.createMaxUser(
+      id,
+      name,
+      saasName,
+      email
+    );
   }
 
   addUserToOrg(
@@ -79,20 +89,24 @@ export class OrganizationService {
     return this._organizationRepository.getOrgByCustomerId(customerId);
   }
 
-  async inviteTeamMember(org: Organization, user: User, body: AddTeamMemberDto) {
+  async inviteTeamMember(
+    org: Organization,
+    user: User,
+    body: AddTeamMemberDto
+  ) {
     const timeLimit = dayjs().add(2, 'day').format('YYYY-MM-DD HH:mm:ss');
     const id = makeId(5);
     const url =
       process.env.FRONTEND_URL +
       `/?org=${AuthService.signJWT({ ...body, orgId: org.id, timeLimit, id })}`;
     if (body.sendEmail) {
-      const inviter = user.name
-        ? `${user.name} (${user.email})`
-        : user.email;
+      const inviter = user.name ? `${user.name} (${user.email})` : user.email;
       await this._notificationsService.sendEmail(
         body.email,
-        `${user.name || user.email} invited you to join "${org.name}"`,
-        `${inviter} has invited you to join the "${org.name}" team.<br /><a href="${url}">Accept the invitation</a> to get started.<br />The link will expire in 2 days.`
+        `${user.name || user.email} convidou você para participar de "${
+          org.name
+        }"`,
+        `${inviter} convidou você para participar da equipe "${org.name}".<br /><a href="${url}">Aceite o convite</a> para começar.<br />O link expira em 2 dias.`
       );
     }
     return { url };
@@ -106,7 +120,7 @@ export class OrganizationService {
 
     if (!pricing[tier].team_members) {
       throw new HttpException(
-        'The organization plan does not include team members',
+        'O plano da organização não inclui membros da equipe',
         400
       );
     }
@@ -115,7 +129,10 @@ export class OrganizationService {
       body.email
     );
     if (!users.length) {
-      throw new HttpException('No Postiz account found for this email', 400);
+      throw new HttpException(
+        'Nenhuma conta do Postiz foi encontrada para este e-mail',
+        400
+      );
     }
 
     if (users.length > 1) {
@@ -158,7 +175,7 @@ export class OrganizationService {
     const userOrgs = await this._organizationRepository.getOrgsByUserId(userId);
     const findOrgToDelete = userOrgs.find((orgUser) => orgUser.id === org.id);
     if (!findOrgToDelete) {
-      throw new Error('User is not part of this organization');
+      throw new Error('O usuário não faz parte desta organização');
     }
 
     // @ts-ignore
@@ -168,7 +185,7 @@ export class OrganizationService {
     const userLevel = userRole === 'USER' ? 0 : userRole === 'ADMIN' ? 1 : 2;
 
     if (myLevel < userLevel) {
-      throw new Error('You do not have permission to delete this user');
+      throw new Error('Você não tem permissão para excluir este usuário');
     }
 
     return this._organizationRepository.deleteTeamMember(org.id, userId);

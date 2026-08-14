@@ -81,6 +81,7 @@ export const PlugPop: FC<{
   };
 }> = (props) => {
   const { plug, settings, data } = props;
+  const t = useT();
   const { closeAll } = useModals();
   const fetch = useFetch();
   const toaster = useToaster();
@@ -102,7 +103,7 @@ export const PlugPop: FC<{
           ...acc,
           [field.name]: field.validation
             ? string().matches(convertBackRegex(field.validation), {
-                message: 'Invalid value',
+                message: t('invalid_value', 'Invalid value'),
               })
             : null,
         };
@@ -125,11 +126,9 @@ export const PlugPop: FC<{
         })),
       }),
     });
-    toaster.show('Plug updated', 'success');
+    toaster.show(t('plug_updated', 'Plug updated'), 'success');
     closeAll();
   }, []);
-
-  const t = useT();
 
   return (
     <FormProvider {...form}>
@@ -175,6 +174,7 @@ export const PlugItem: FC<{
 }> = (props) => {
   const { plug, addPlug, data } = props;
   const [activated, setActivated] = useState(!!data?.activated);
+  const t = useT();
   useEffect(() => {
     setActivated(!!data?.activated);
   }, [data?.activated]);
@@ -214,7 +214,9 @@ export const PlugItem: FC<{
           )}
         </div>
         <div className="flex-1">{plug.description}</div>
-        <Button>{!data ? 'Set Plug' : 'Edit Plug'}</Button>
+        <Button>
+          {!data ? t('set_plug', 'Set Plug') : t('edit_plug', 'Edit Plug')}
+        </Button>
       </div>
     </div>
   );

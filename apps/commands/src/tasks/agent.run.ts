@@ -7,7 +7,7 @@ export class AgentRun {
   constructor(private _agentGraphService: AgentGraphService) {}
   @Command({
     command: 'run:agent',
-    describe: 'Run the agent',
+    describe: 'Executa o agente',
   })
   async agentRun() {
     console.log(await this._agentGraphService.createGraph('hello', true));

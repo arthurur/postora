@@ -38,7 +38,7 @@ export class DribbbleProvider extends SocialAbstract implements SocialProvider {
       return 'Requires one item';
     }
     if (isMp4) {
-      return 'Does not support mp4 files';
+      return 'Arquivos MP4 não são aceitos.';
     }
     const details = await this.getImageDimensions(firstItem?.[0]?.path);
     if (
@@ -47,7 +47,7 @@ export class DribbbleProvider extends SocialAbstract implements SocialProvider {
     ) {
       return true;
     }
-    return 'Invalid image size. Requires 400x300 or 800x600 px images.';
+    return 'Tamanho de imagem inválido. Use imagens de 400 × 300 ou 800 × 600 px.';
   }
 
   async refreshToken(refreshToken: string): Promise<AuthTokenDetails> {

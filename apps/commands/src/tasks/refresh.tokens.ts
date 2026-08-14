@@ -7,7 +7,7 @@ export class RefreshTokens {
   constructor(private _integrationService: IntegrationService) {}
   @Command({
     command: 'refresh',
-    describe: 'Refresh all tokens',
+    describe: 'Atualiza todos os tokens',
   })
   async refresh() {
     await this._integrationService.refreshTokens();

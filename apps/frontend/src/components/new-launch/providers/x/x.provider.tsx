@@ -12,6 +12,7 @@ import { XDto } from '@gitroom/nestjs-libraries/dtos/posts/providers-settings/x.
 import { Input } from '@gitroom/react/form/input';
 import { Checkbox } from '@gitroom/react/form/checkbox';
 import { MediaComponent } from '@gitroom/frontend/components/media/media.component';
+import { getLabelTranslationKey } from '@gitroom/react/translation/translated-label';
 
 const whoCanReply = [
   {
@@ -103,7 +104,7 @@ const SettingsComponent = () => {
           >
             {whoCanReply.map((item) => (
               <option key={item.value} value={item.value}>
-                {item.label}
+                {t(getLabelTranslationKey(item.label), item.label)}
               </option>
             ))}
           </Select>

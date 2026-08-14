@@ -6,7 +6,7 @@ export class SlackDto {
   @IsDefined()
   @IsString()
   @JSONSchema({
-    description: 'Channel must be an id',
+    description: 'O canal deve ser informado por ID',
   })
   channel: string;
 }

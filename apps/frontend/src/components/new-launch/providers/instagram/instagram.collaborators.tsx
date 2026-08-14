@@ -14,6 +14,7 @@ import { InstagramAudioSelector } from '@gitroom/frontend/components/new-launch/
 import { useIntegration } from '@gitroom/frontend/components/launches/helpers/use.integration';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
 import { InstagramPreview } from '@gitroom/frontend/components/new-launch/providers/instagram/instagram.preview';
+import { getLabelTranslationKey } from '@gitroom/react/translation/translated-label';
 const postType = [
   {
     value: 'post',
@@ -56,7 +57,7 @@ const InstagramCollaborators: FC<{
         <option value="">{t('select_post_type', 'Select Post Type...')}</option>
         {postType.map((item) => (
           <option key={item.value} value={item.value}>
-            {item.label}
+            {t(getLabelTranslationKey(item.label), item.label)}
           </option>
         ))}
       </Select>
@@ -89,7 +90,10 @@ const InstagramCollaborators: FC<{
             {...register('is_trial_reel', {
               value: false,
             })}
-            label={t('trial_reel', 'Trial Reel (share only to non-followers first)')}
+            label={t(
+              'trial_reel',
+              'Trial Reel (share only to non-followers first)'
+            )}
           />
 
           {isTrialReel && (
@@ -101,7 +105,7 @@ const InstagramCollaborators: FC<{
             >
               {graduationStrategies.map((item) => (
                 <option key={item.value} value={item.value}>
-                  {item.label}
+                  {t(getLabelTranslationKey(item.label), item.label)}
                 </option>
               ))}
             </Select>
@@ -118,5 +122,5 @@ export default withProvider<InstagramDto>({
   CustomPreviewComponent: InstagramPreview,
   dto: InstagramDto,
   maximumCharacters: 2200,
-  comments: 'no-media'
+  comments: 'no-media',
 });

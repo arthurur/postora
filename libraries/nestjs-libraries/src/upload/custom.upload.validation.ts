@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  PipeTransform,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { fromBuffer } = require('file-type');
 
@@ -25,17 +21,21 @@ export class CustomFileValidationPipe implements PipeTransform {
     }
 
     // Skip non-file parameters (org, body, query, etc.)
-    if (!('buffer' in value) && !('mimetype' in value) && !('fieldname' in value)) {
+    if (
+      !('buffer' in value) &&
+      !('mimetype' in value) &&
+      !('fieldname' in value)
+    ) {
       return value;
     }
 
     if (!value.buffer || !Buffer.isBuffer(value.buffer)) {
-      throw new BadRequestException('Invalid file upload.');
+      throw new BadRequestException('Envio de arquivo inválido.');
     }
 
     const detected = await fromBuffer(value.buffer);
     if (!detected || !ALLOWED_MIME_TYPES.has(detected.mime)) {
-      throw new BadRequestException('Unsupported file type.');
+      throw new BadRequestException('Tipo de arquivo não compatível.');
     }
 
     const maxSize = getMaxSize(detected.mime);
@@ -46,15 +46,15 @@ export class CustomFileValidationPipe implements PipeTransform {
     }
 
     value.mimetype = detected.mime;
-    const safeBase = (value.originalname || 'upload')
-      .replace(/\.[^./\\]*$/, '')
-      .replace(/[\\/]/g, '_')
-      .slice(0, 100) || 'upload';
+    const safeBase =
+      (value.originalname || 'upload')
+        .replace(/\.[^./\\]*$/, '')
+        .replace(/[\\/]/g, '_')
+        .slice(0, 100) || 'upload';
     value.originalname = `${safeBase}.${detected.ext}`;
 
     return value;
   }
-
 }
 
 export function getMaxSize(mimeType: string): number {
@@ -63,6 +63,6 @@ export function getMaxSize(mimeType: string): number {
   } else if (mimeType.startsWith('video/')) {
     return 1024 * 1024 * 1024; // 1 GB
   } else {
-    throw new BadRequestException('Unsupported file type.');
+    throw new BadRequestException('Tipo de arquivo não compatível.');
   }
 }

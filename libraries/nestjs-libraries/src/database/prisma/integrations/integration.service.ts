@@ -262,7 +262,7 @@ export class IntegrationService {
       !!process.env.STRIPE_PUBLISHABLE_KEY &&
       integrations.length >= totalChannels
     ) {
-      throw new Error('You have reached the maximum number of channels');
+      throw new Error('Você atingiu o número máximo de canais');
     }
 
     return this._integrationRepository.enableChannel(org, id);
@@ -290,10 +290,13 @@ export class IntegrationService {
       id
     );
     if (!getIntegration) {
-      throw new HttpException('Integration not found', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        'Integração não encontrada',
+        HttpStatus.NOT_FOUND
+      );
     }
     if (!getIntegration.inBetweenSteps) {
-      throw new HttpException('Invalid request', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Solicitação inválida', HttpStatus.BAD_REQUEST);
     }
 
     const provider = this._integrationManager.getSocialIntegration(
@@ -338,7 +341,7 @@ export class IntegrationService {
     const getIntegration = await this.getIntegrationById(org.id, integration);
 
     if (!getIntegration) {
-      throw new Error('Invalid integration');
+      throw new Error('Integração inválida');
     }
 
     if (getIntegration.type !== 'social') {

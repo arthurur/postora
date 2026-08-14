@@ -74,7 +74,7 @@ export class RedditProvider extends SocialAbstract implements SocialProvider {
         (p: any) => p?.value?.type === 'media' && posts?.[0]?.length !== 1
       )
     ) {
-      return 'When posting a media post, you must attached exactly one media file.';
+      return 'Para publicar uma mídia, anexe exatamente um arquivo.';
     }
 
     if (
@@ -82,7 +82,7 @@ export class RedditProvider extends SocialAbstract implements SocialProvider {
         p?.some((a) => !a?.thumbnail && (a?.path?.indexOf?.('mp4') ?? -1) > -1)
       )
     ) {
-      return 'You must attach a thumbnail to your video post.';
+      return 'Você precisa anexar uma miniatura à publicação de vídeo.';
     }
 
     return true;

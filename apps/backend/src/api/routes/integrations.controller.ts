@@ -130,7 +130,7 @@ export class IntegrationsController {
     @Body('additionalSettings') body: string
   ) {
     if (typeof body !== 'string') {
-      throw new Error('Invalid body');
+      throw new Error('Corpo da solicitação inválido');
     }
 
     await this._integrationService.updateProviderSettings(org.id, id, body);
@@ -146,14 +146,14 @@ export class IntegrationsController {
       id
     );
     if (!integration) {
-      throw new Error('Invalid integration');
+      throw new Error('Integração inválida');
     }
 
     const manager = this._integrationManager.getSocialIntegration(
       integration.providerIdentifier
     );
     if (!manager.changeProfilePicture && !manager.changeNickname) {
-      throw new Error('Invalid integration');
+      throw new Error('Integração inválida');
     }
 
     const { url } = manager.changeProfilePicture
@@ -205,14 +205,14 @@ export class IntegrationsController {
         .getAllowedSocialsIntegrations()
         .includes(integration)
     ) {
-      throw new Error('Integration not allowed');
+      throw new Error('Integração não permitida');
     }
 
     const integrationProvider =
       this._integrationManager.getSocialIntegration(integration);
 
     if (integrationProvider.externalUrl && !externalUrl) {
-      throw new Error('Missing external url');
+      throw new Error('URL externa ausente');
     }
 
     try {
@@ -272,7 +272,7 @@ export class IntegrationsController {
       body.id
     );
     if (!getIntegration) {
-      throw new Error('Invalid integration');
+      throw new Error('Integração inválida');
     }
 
     let newList: any[] | { none: true } = [];
@@ -328,14 +328,14 @@ export class IntegrationsController {
       body.id
     );
     if (!getIntegration) {
-      throw new Error('Invalid integration');
+      throw new Error('Integração inválida');
     }
 
     const integrationProvider = this._integrationManager.getSocialIntegration(
       getIntegration.providerIdentifier
     );
     if (!integrationProvider) {
-      throw new Error('Invalid provider');
+      throw new Error('Provedor inválido');
     }
 
     // @ts-ignore
@@ -375,7 +375,7 @@ export class IntegrationsController {
         return false;
       }
     }
-    throw new Error('Function not found');
+    throw new Error('Função não encontrada');
   }
 
   @Post('/disable')

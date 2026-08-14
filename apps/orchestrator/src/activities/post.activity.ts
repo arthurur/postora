@@ -251,7 +251,9 @@ export class PostActivity {
       );
 
       if (!subscription) {
-        throw new Error('No active subscription found for this organization.');
+        throw new Error(
+          'Nenhuma assinatura ativa foi encontrada para esta organização.'
+        );
       }
     }
 

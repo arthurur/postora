@@ -11,7 +11,11 @@ import { clsx } from 'clsx';
 import { useFormContext } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { useShowPostSelector } from '../../../../apps/frontend/src/components/post-url-selector/post.url.selector';
-import { TranslatedLabel } from '../translation/translated-label';
+import {
+  getTextTranslationKey,
+  TranslatedLabel,
+} from '../translation/translated-label';
+import { useT } from '../translation/get.transation.service.client';
 
 export const Canonical: FC<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
@@ -34,6 +38,14 @@ export const Canonical: FC<
     translationParams,
     ...rest
   } = props;
+  const t = useT();
+  const placeholder =
+    typeof rest.placeholder === 'string'
+      ? t(
+          getTextTranslationKey('placeholder', rest.placeholder),
+          rest.placeholder
+        )
+      : rest.placeholder;
   const form = useFormContext();
   const err = useMemo(() => {
     if (error) return error;
@@ -89,6 +101,7 @@ export const Canonical: FC<
           className
         )}
         {...rest}
+        placeholder={placeholder}
       />
       <div className="text-red-400 text-[12px]">{err || <>&nbsp;</>}</div>
     </div>

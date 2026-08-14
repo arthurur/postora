@@ -554,7 +554,7 @@ export const LaunchesComponent = () => {
                           ? '/no-channels.svg'
                           : '/no-channels-colors.svg'
                       }
-                      alt="No channels"
+                      alt={t('no_channels', 'No channels')}
                       className="mx-auto min-w-[100%]"
                     />
                     <div className="font-[600] text-[20px]">
@@ -582,7 +582,11 @@ export const LaunchesComponent = () => {
             </div>
             <div className="mt-[5px] text-center flex flex-col">
               {billingEnabled && user?.isLifetime && (
-                <div>{capitalize(user?.tier?.current || '')} tier</div>
+                <div>
+                  {t('subscription_tier', '{{tier}} tier', {
+                    tier: capitalize(user?.tier?.current || ''),
+                  })}
+                </div>
               )}
               <div>
                 {process.env.NEXT_PUBLIC_VERSION

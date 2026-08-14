@@ -23,7 +23,7 @@ export class ThirdPartyController {
 
   constructor(
     private _thirdPartyManager: ThirdPartyManager,
-    private _mediaService: MediaService,
+    private _mediaService: MediaService
   ) {}
 
   @Get('/list')
@@ -72,7 +72,7 @@ export class ThirdPartyController {
     );
 
     if (!thirdParty) {
-      throw new HttpException('Integration not found', 404);
+      throw new HttpException('Integração não encontrada', 404);
     }
 
     const thirdPartyInstance = this._thirdPartyManager.getThirdPartyByName(
@@ -80,7 +80,7 @@ export class ThirdPartyController {
     );
 
     if (!thirdPartyInstance) {
-      throw new HttpException('Invalid identifier', 400);
+      throw new HttpException('Identificador inválido', 400);
     }
 
     const loadedData = await thirdPartyInstance?.instance?.sendData(
@@ -89,7 +89,11 @@ export class ThirdPartyController {
     );
 
     const file = await this.storage.uploadSimple(loadedData);
-    return this._mediaService.saveFile(organization.id, file.split('/').pop(), file);
+    return this._mediaService.saveFile(
+      organization.id,
+      file.split('/').pop(),
+      file
+    );
   }
 
   @Post('/function/:id/:functionName')
@@ -105,7 +109,7 @@ export class ThirdPartyController {
     );
 
     if (!thirdParty) {
-      throw new HttpException('Integration not found', 404);
+      throw new HttpException('Integração não encontrada', 404);
     }
 
     const thirdPartyInstance = this._thirdPartyManager.getThirdPartyByName(
@@ -113,7 +117,7 @@ export class ThirdPartyController {
     );
 
     if (!thirdPartyInstance) {
-      throw new HttpException('Invalid identifier', 400);
+      throw new HttpException('Identificador inválido', 400);
     }
 
     return thirdPartyInstance?.instance?.[functionName](
@@ -134,7 +138,7 @@ export class ThirdPartyController {
     );
 
     if (!thirdParty) {
-      throw new HttpException('Integration not found', 404);
+      throw new HttpException('Integração não encontrada', 404);
     }
 
     const thirdPartyInstance = this._thirdPartyManager.getThirdPartyByName(
@@ -142,7 +146,7 @@ export class ThirdPartyController {
     );
 
     if (!thirdPartyInstance) {
-      throw new HttpException('Invalid identifier', 400);
+      throw new HttpException('Identificador inválido', 400);
     }
 
     const downloadUrls = await thirdPartyInstance?.instance?.['importMedia']?.(
@@ -151,7 +155,7 @@ export class ThirdPartyController {
     );
 
     if (!downloadUrls || !Array.isArray(downloadUrls)) {
-      throw new HttpException('Import not supported', 400);
+      throw new HttpException('Importação não compatível', 400);
     }
 
     const results = [];
@@ -176,12 +180,12 @@ export class ThirdPartyController {
   ) {
     const thirdParty = this._thirdPartyManager.getThirdPartyByName(identifier);
     if (!thirdParty) {
-      throw new HttpException('Invalid identifier', 400);
+      throw new HttpException('Identificador inválido', 400);
     }
 
     const connect = await thirdParty.instance.checkConnection(api);
     if (!connect) {
-      throw new HttpException('Invalid API key', 400);
+      throw new HttpException('Chave de API inválida', 400);
     }
 
     try {
@@ -201,7 +205,7 @@ export class ThirdPartyController {
       };
     } catch (e) {
       console.log(e);
-      throw new HttpException('Integration Already Exists', 400);
+      throw new HttpException('A integração já existe', 400);
     }
   }
 }

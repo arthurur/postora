@@ -21,7 +21,14 @@ export class WhopProvider extends SocialAbstract implements SocialProvider {
   identifier = 'whop';
   name = 'Whop';
   isBetweenSteps = false;
-  scopes = ['openid', 'profile', 'email', 'forum:post:create', 'forum:read', 'company:basic:read'];
+  scopes = [
+    'openid',
+    'profile',
+    'email',
+    'forum:post:create',
+    'forum:read',
+    'company:basic:read',
+  ];
   refreshCron = false;
   editor = 'markdown' as const;
   dto = WhopDto;
@@ -37,9 +44,7 @@ export class WhopProvider extends SocialAbstract implements SocialProvider {
 
   override handleErrors(
     body: string
-  ):
-    | { type: 'refresh-token' | 'bad-body'; value: string }
-    | undefined {
+  ): { type: 'refresh-token' | 'bad-body'; value: string } | undefined {
     if (body.includes('invalid_grant')) {
       return {
         type: 'refresh-token' as const,
@@ -150,7 +155,7 @@ export class WhopProvider extends SocialAbstract implements SocialProvider {
     ).json();
 
     if (tokenResponse.error) {
-      return `Authentication failed: ${
+      return `Falha na autenticação: ${
         tokenResponse.error_description || tokenResponse.error
       }`;
     }
@@ -306,7 +311,7 @@ export class WhopProvider extends SocialAbstract implements SocialProvider {
         const maxAttempts = 108; // ~9 minutes at 5s interval
         while (uploadStatus !== 'ready') {
           if (attempts++ >= maxAttempts) {
-            throw new Error('File upload timed out');
+            throw new Error('O envio do arquivo excedeu o tempo limite');
           }
 
           const fileStatus = await (
@@ -324,7 +329,7 @@ export class WhopProvider extends SocialAbstract implements SocialProvider {
           ).json();
           uploadStatus = fileStatus.upload_status;
           if (uploadStatus === 'failed') {
-            throw new Error('File upload failed');
+            throw new Error('Falha ao enviar o arquivo');
           }
           if (uploadStatus !== 'ready') {
             await timer(5000);

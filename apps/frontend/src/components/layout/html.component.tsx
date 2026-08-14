@@ -1,6 +1,7 @@
 'use client';
 import { FC, ReactNode, useEffect, useState } from 'react';
 import { useTranslationSettings } from '@gitroom/react/translation/get.transation.service.client';
+import { defaultDocumentLanguage } from '@gitroom/react/translation/i18n.config';
 
 export const HtmlComponent: FC = () => {
   const settings = useTranslationSettings();
@@ -16,8 +17,14 @@ export const HtmlComponent: FC = () => {
     const htmlElement = document.querySelector('html');
     if (htmlElement) {
       htmlElement.setAttribute('dir', dir);
+      htmlElement.setAttribute(
+        'lang',
+        settings.resolvedLanguage === 'pt'
+          ? defaultDocumentLanguage
+          : settings.resolvedLanguage || defaultDocumentLanguage
+      );
     }
-  }, [dir]);
+  }, [dir, settings]);
 
   return null;
 };

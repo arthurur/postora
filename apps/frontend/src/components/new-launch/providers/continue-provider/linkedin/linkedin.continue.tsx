@@ -40,7 +40,7 @@ export const LinkedinContinue = withContinueProvider<
   renderItem: (item) => (
     <>
       <div>
-        <img className="w-full" src={item.picture} alt="profile" />
+        <img className="w-full" src={item.picture} alt="Perfil" />
       </div>
       <div>{item.name}</div>
     </>

@@ -60,7 +60,7 @@ export class EnterpriseController {
       const org = await this._organizationService.getOrgByApiKey(load.apiKey);
 
       if (!org) {
-        throw new Error('Organization not found');
+        throw new Error('Organização não encontrada');
       }
 
       if (
@@ -68,7 +68,7 @@ export class EnterpriseController {
           .getAllowedSocialsIntegrations()
           .includes(load.provider)
       ) {
-        throw new Error('Integration not allowed');
+        throw new Error('Integração não permitida');
       }
 
       const integrationProvider = this._integrationManager.getSocialIntegration(

@@ -251,11 +251,11 @@ export class BlueskyProvider extends SocialAbstract implements SocialProvider {
           (p?.length ?? 0) > 1
       )
     ) {
-      return 'You can only upload one video per post.';
+      return 'Você pode enviar apenas um vídeo por publicação.';
     }
 
     if (posts?.some((p) => (p?.length ?? 0) > 4)) {
-      return 'There can be maximum 4 pictures in a post.';
+      return 'Uma publicação pode ter no máximo 4 imagens.';
     }
     return true;
   }
@@ -320,7 +320,7 @@ export class BlueskyProvider extends SocialAbstract implements SocialProvider {
       process.env.DISABLE_SSRF_PROTECTION !== 'true' &&
       !(await isSafePublicHttpsUrl(body.service))
     ) {
-      return 'Invalid service URL: must be a public HTTPS address';
+      return 'URL de serviço inválida: use um endereço HTTPS público.';
     }
 
     try {
@@ -350,7 +350,7 @@ export class BlueskyProvider extends SocialAbstract implements SocialProvider {
       };
     } catch (e) {
       console.log(e);
-      return 'Invalid credentials';
+      return 'Credenciais inválidas';
     }
   }
 
@@ -773,10 +773,12 @@ export class BlueskyProvider extends SocialAbstract implements SocialProvider {
 
     // @ts-ignore
     const parentCid = parentThread.data.thread.post?.cid;
-    // @ts-ignore
-    const rootUri = parentThread.data.thread.post?.record?.reply?.root?.uri || postId;
-    // @ts-ignore
-    const rootCid = parentThread.data.thread.post?.record?.reply?.root?.cid || parentCid;
+    const rootUri =
+      // @ts-ignore
+      parentThread.data.thread.post?.record?.reply?.root?.uri || postId;
+    const rootCid =
+      // @ts-ignore
+      parentThread.data.thread.post?.record?.reply?.root?.cid || parentCid;
 
     // @ts-ignore
     const { cid, uri, commit } = await agent.post({
@@ -810,17 +812,17 @@ export class BlueskyProvider extends SocialAbstract implements SocialProvider {
 
   @Plug({
     identifier: 'bluesky-autoRepostPost',
-    title: 'Auto Repost Posts',
+    title: 'Republicar automaticamente',
     description:
-      'When a post reached a certain number of likes, repost it to increase engagement (1 week old posts)',
+      'Quando uma publicação atingir certo número de curtidas, republique-a para aumentar o engajamento (publicações de até 1 semana)',
     runEveryMilliseconds: 21600000,
     totalRuns: 3,
     fields: [
       {
         name: 'likesAmount',
         type: 'number',
-        placeholder: 'Amount of likes',
-        description: 'The amount of likes to trigger the repost',
+        placeholder: 'Número de curtidas',
+        description: 'Número de curtidas necessário para republicar',
         validation: /^\d+$/,
       },
     ],
@@ -864,24 +866,24 @@ export class BlueskyProvider extends SocialAbstract implements SocialProvider {
 
   @Plug({
     identifier: 'bluesky-autoPlugPost',
-    title: 'Auto plug post',
+    title: 'Adicionar promoção automaticamente',
     description:
-      'When a post reached a certain number of likes, add another post to it so you followers get a notification about your promotion',
+      'Quando uma publicação atingir certo número de curtidas, adicione uma resposta para que seus seguidores recebam uma notificação sobre sua promoção',
     runEveryMilliseconds: 21600000,
     totalRuns: 3,
     fields: [
       {
         name: 'likesAmount',
         type: 'number',
-        placeholder: 'Amount of likes',
-        description: 'The amount of likes to trigger the repost',
+        placeholder: 'Número de curtidas',
+        description: 'Número de curtidas necessário para adicionar a promoção',
         validation: /^\d+$/,
       },
       {
         name: 'post',
         type: 'richtext',
-        placeholder: 'Post to plug',
-        description: 'Message content to plug',
+        placeholder: 'Publicação promocional',
+        description: 'Conteúdo da mensagem promocional',
         validation: /^[\s\S]{3,}$/g,
       },
     ],

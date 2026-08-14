@@ -81,13 +81,13 @@ export class PinterestProvider
       return 'Requires at least one media';
     }
     if ((firstItem?.length ?? 0) > 5) {
-      return 'You can only have up to 5 media items';
+      return 'Você pode adicionar no máximo 5 mídias.';
     }
     if (isMp4 && firstItem?.length !== 2 && !isPicture) {
-      return 'If posting a video you have to also include a cover image as second media';
+      return 'Ao publicar um vídeo, inclua também uma imagem de capa como segunda mídia.';
     }
     if (isMp4 && (firstItem?.length ?? 0) > 2) {
-      return 'If posting a video you can only have two media items';
+      return 'Ao publicar um vídeo, você pode adicionar somente duas mídias.';
     }
 
     if (
@@ -101,7 +101,7 @@ export class PinterestProvider
         return p?.width === arr?.[0]?.width && p?.height === arr?.[0]?.height;
       });
       if (!checkAllTheSameWidthHeight) {
-        return 'Requires all images to have the same width and height';
+        return 'Todas as imagens precisam ter a mesma largura e altura.';
       }
     }
     return true;

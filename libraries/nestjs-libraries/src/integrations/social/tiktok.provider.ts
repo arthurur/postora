@@ -60,12 +60,12 @@ export class TiktokProvider extends SocialAbstract implements SocialProvider {
       (firstItems?.length ?? 0) > 1 &&
       firstItems?.some((p) => (p?.path?.indexOf?.('mp4') ?? -1) > -1)
     ) {
-      return 'Only pictures are supported when selecting multiple items';
+      return 'Ao selecionar vários itens, apenas imagens são aceitas.';
     } else if (
       firstItems?.length !== 1 &&
       (firstItems?.[0]?.path?.indexOf?.('mp4') ?? -1) > -1
     ) {
-      return 'You need one media';
+      return 'Adicione uma mídia.';
     }
     return true;
   }

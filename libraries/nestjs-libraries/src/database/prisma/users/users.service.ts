@@ -51,11 +51,7 @@ export class UsersService {
       );
 
     this._logger.log(
-      `User login switch performed by admin ${adminId}: account ${
-        kept.id
-      } login ${switched.email} -> ${kept.email}; account ${
-        switched.id
-      } login ${kept.email} -> ${switched.email}`
+      `User login switch performed by admin ${adminId}: account ${kept.id} login ${switched.email} -> ${kept.email}; account ${switched.id} login ${kept.email} -> ${switched.email}`
     );
 
     // the swap is already committed; a notification failure must not fail it
@@ -65,15 +61,15 @@ export class UsersService {
           this._notificationService
             .sendEmail(
               account.email,
-              'Your Postiz login was changed',
-              `An administrator changed the login for your Postiz account. ` +
-                `You can now sign in using ${account.email}. ` +
-                `Your subscription and plan were not changed by this switch — ` +
-                `if you intended to cancel a subscription, please do that ` +
-                `separately from your billing settings.`
+              'Seu login do Postiz foi alterado',
+              `Um administrador alterou o login da sua conta do Postiz. ` +
+                `Agora você pode entrar usando ${account.email}. ` +
+                `Sua assinatura e seu plano não foram alterados — ` +
+                `caso queira cancelar uma assinatura, faça isso separadamente ` +
+                `nas configurações de cobrança.`
             )
             .catch((err) =>
-              this._logger.error(`Failed to notify ${account.email}`, err)
+              this._logger.error(`Falha ao notificar ${account.email}`, err)
             )
         )
       );

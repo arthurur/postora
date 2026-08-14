@@ -51,7 +51,7 @@ export class FacebookProvider extends SocialAbstract implements SocialProvider {
   ): Promise<string | true> {
     if (settings?.post_type === 'story') {
       if (!firstPost?.length) {
-        return 'Story should have at least one media';
+        return 'O Story precisa ter pelo menos uma mídia.';
       }
     }
     return true;
@@ -115,7 +115,7 @@ export class FacebookProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body' as const,
         value: 'Invalid file',
-      }
+      };
     }
 
     if (body.indexOf('1404102') > -1) {
@@ -456,7 +456,7 @@ export class FacebookProvider extends SocialAbstract implements SocialProvider {
       // Business Manager API not available for all users
     }
 
-    throw new Error('Page not found in your accounts');
+    throw new Error('Página não encontrada nas suas contas');
   }
 
   // Single, read-only status check of a story video - the polling loop that

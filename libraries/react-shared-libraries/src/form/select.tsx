@@ -1,16 +1,24 @@
 'use client';
 
 import {
+  Children,
+  cloneElement,
   DetailedHTMLProps,
   FC,
   forwardRef,
+  isValidElement,
+  ReactElement,
   SelectHTMLAttributes,
   useMemo,
 } from 'react';
 import { clsx } from 'clsx';
 import { useFormContext } from 'react-hook-form';
 import { RegisterOptions } from 'react-hook-form/dist/types/validator';
-import { TranslatedLabel } from '../translation/translated-label';
+import {
+  getLabelTranslationKey,
+  TranslatedLabel,
+} from '../translation/translated-label';
+import { useT } from '../translation/get.transation.service.client';
 
 export const Select: FC<
   DetailedHTMLProps<
@@ -36,8 +44,10 @@ export const Select: FC<
     extraForm,
     translationKey,
     translationParams,
+    children,
     ...rest
   } = props;
+  const t = useT();
   const form = useFormContext();
   const err = useMemo(() => {
     if (error) return error;
@@ -61,7 +71,25 @@ export const Select: FC<
           className
         )}
         {...rest}
-      />
+      >
+        {Children.map(children, (child) => {
+          if (!isValidElement(child) || child.type !== 'option') {
+            return child;
+          }
+
+          const option = child as ReactElement<{ children?: unknown }>;
+          if (typeof option.props.children !== 'string') {
+            return child;
+          }
+
+          const optionLabel = option.props.children.trim();
+          return cloneElement(
+            option,
+            undefined,
+            t(getLabelTranslationKey(optionLabel), optionLabel)
+          );
+        })}
+      </select>
       {!hideErrors && (
         <div className="text-red-400 text-[12px]">{err || <>&nbsp;</>}</div>
       )}

@@ -15,8 +15,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
   const port = process.env.ORCHESTRATOR_PORT || 3002;
   await app.listen(port);
-  console.log(`Orchestrator health check listening on port ${port}`);
+  console.log(`Verificação de integridade do orquestrador na porta ${port}`);
 }
-
 
 bootstrap();

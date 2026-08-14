@@ -6,6 +6,8 @@ import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { useUser } from '@gitroom/frontend/components/layout/user.context';
 import { Button } from '@gitroom/react/form/button';
 import { LoadingComponent } from '@gitroom/frontend/components/layout/loading';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
+import { getLabelTranslationKey } from '@gitroom/react/translation/translated-label';
 
 interface PerSocial {
   provider: string;
@@ -51,13 +53,23 @@ const startOfMonth = () => {
   return d.toISOString().slice(0, 10);
 };
 
-const PRESETS: { label: string; range: () => { from: string; to: string } }[] = [
-  { label: 'Today', range: () => ({ from: today(), to: today() }) },
-  { label: 'This week', range: () => ({ from: startOfWeek(), to: today() }) },
-  { label: 'This month', range: () => ({ from: startOfMonth(), to: today() }) },
-  { label: 'Last 7 days', range: () => ({ from: isoDaysAgo(7), to: today() }) },
-  { label: 'Last 30 days', range: () => ({ from: isoDaysAgo(30), to: today() }) },
-];
+const PRESETS: { label: string; range: () => { from: string; to: string } }[] =
+  [
+    { label: 'Today', range: () => ({ from: today(), to: today() }) },
+    { label: 'This week', range: () => ({ from: startOfWeek(), to: today() }) },
+    {
+      label: 'This month',
+      range: () => ({ from: startOfMonth(), to: today() }),
+    },
+    {
+      label: 'Last 7 days',
+      range: () => ({ from: isoDaysAgo(7), to: today() }),
+    },
+    {
+      label: 'Last 30 days',
+      range: () => ({ from: isoDaysAgo(30), to: today() }),
+    },
+  ];
 
 const useStats = (params: {
   from: string;
@@ -93,38 +105,46 @@ const SummaryCard: FC<{ label: string; value: number }> = ({
 }) => (
   <div className="border border-newTableBorder rounded-[8px] p-[16px] bg-newBgColorInner">
     <div className="text-[12px] opacity-70">{label}</div>
-    <div className="text-[28px] font-[600]">{value.toLocaleString()}</div>
+    <div className="text-[28px] font-[600]">
+      {value.toLocaleString('pt-BR')}
+    </div>
   </div>
 );
 
 const PerSocialTable: FC<{ title: string; block: StatsBlock }> = ({
   title,
   block,
-}) => (
-  <div className="border border-newTableBorder rounded-[8px] overflow-hidden">
-    <div className="grid grid-cols-[1fr_120px] gap-[12px] px-[12px] py-[10px] bg-newBgColorInner text-[12px] uppercase opacity-70 border-b border-newTableBorder">
-      <div>{title}</div>
-      <div className="text-right">Count</div>
-    </div>
-    {block.perSocial.length === 0 ? (
-      <div className="px-[12px] py-[10px] text-[13px] opacity-70">
-        No data for this timeframe.
+}) => {
+  const t = useT();
+  return (
+    <div className="border border-newTableBorder rounded-[8px] overflow-hidden">
+      <div className="grid grid-cols-[1fr_120px] gap-[12px] px-[12px] py-[10px] bg-newBgColorInner text-[12px] uppercase opacity-70 border-b border-newTableBorder">
+        <div>{title}</div>
+        <div className="text-right">{t('count', 'Count')}</div>
       </div>
-    ) : (
-      block.perSocial.map((row) => (
-        <div
-          key={row.provider}
-          className="grid grid-cols-[1fr_120px] gap-[12px] px-[12px] py-[10px] text-[13px] border-b border-newTableBorder last:border-b-0"
-        >
-          <div className="capitalize">{row.provider}</div>
-          <div className="text-right">{row.count.toLocaleString()}</div>
+      {block.perSocial.length === 0 ? (
+        <div className="px-[12px] py-[10px] text-[13px] opacity-70">
+          {t('no_data_for_timeframe', 'No data for this timeframe.')}
         </div>
-      ))
-    )}
-  </div>
-);
+      ) : (
+        block.perSocial.map((row) => (
+          <div
+            key={row.provider}
+            className="grid grid-cols-[1fr_120px] gap-[12px] px-[12px] py-[10px] text-[13px] border-b border-newTableBorder last:border-b-0"
+          >
+            <div className="capitalize">{row.provider}</div>
+            <div className="text-right">
+              {row.count.toLocaleString('pt-BR')}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
 
 export const AdminStatsComponent: FC = () => {
+  const t = useT();
   const user = useUser();
 
   const [fromInput, setFromInput] = useState(today());
@@ -143,7 +163,7 @@ export const AdminStatsComponent: FC = () => {
   if (!user?.isSuperAdmin) {
     return (
       <div className="text-textColor p-[20px]">
-        You do not have access to this page.
+        {t('no_access_to_page', 'You do not have access to this page.')}
       </div>
     );
   }
@@ -151,11 +171,13 @@ export const AdminStatsComponent: FC = () => {
   return (
     <div className="flex flex-col gap-[16px] text-textColor">
       <div className="flex items-center justify-between">
-        <div className="text-[20px] font-[600]">Admin Stats</div>
+        <div className="text-[20px] font-[600]">
+          {t('admin_stats', 'Admin Stats')}
+        </div>
         {data && (
           <div className="text-[13px] opacity-70">
-            {new Date(data.from).toLocaleDateString()} —{' '}
-            {new Date(data.to).toLocaleDateString()}
+            {new Date(data.from).toLocaleDateString('pt-BR')} —{' '}
+            {new Date(data.to).toLocaleDateString('pt-BR')}
           </div>
         )}
       </div>
@@ -175,7 +197,7 @@ export const AdminStatsComponent: FC = () => {
                   : 'bg-newBgColorInner text-textColor border-newTableBorder hover:bg-tableBorder'
               }`}
             >
-              {preset.label}
+              {t(getLabelTranslationKey(preset.label), preset.label)}
             </button>
           );
         })}
@@ -183,7 +205,7 @@ export const AdminStatsComponent: FC = () => {
 
       <div className="flex flex-wrap gap-[12px] items-end bg-newBgColorInner border border-newTableBorder rounded-[8px] p-[12px]">
         <div className="flex flex-col gap-[6px]">
-          <div className="text-[12px] opacity-70">From</div>
+          <div className="text-[12px] opacity-70">{t('from', 'From')}</div>
           <input
             type="date"
             value={fromInput}
@@ -193,7 +215,7 @@ export const AdminStatsComponent: FC = () => {
           />
         </div>
         <div className="flex flex-col gap-[6px]">
-          <div className="text-[12px] opacity-70">To</div>
+          <div className="text-[12px] opacity-70">{t('to', 'To')}</div>
           <input
             type="date"
             value={toInput}
@@ -207,51 +229,69 @@ export const AdminStatsComponent: FC = () => {
           onClick={() => setRange({ from: fromInput, to: toInput })}
           disabled={!fromInput || !toInput || fromInput > toInput}
         >
-          Apply
+          {t('apply', 'Apply')}
         </Button>
 
         <label
           className="flex items-center gap-[6px] text-[13px] cursor-pointer h-[38px]"
-          title='Only count errors whose message matches "message":"Unknown Error" (affects the error stats only)'
+          title={t(
+            'unknown_errors_only_hint',
+            'Only count errors whose message matches "message":"Unknown Error" (affects the error stats only)'
+          )}
         >
           <input
             type="checkbox"
             checked={unknownOnly}
             onChange={(e) => setUnknownOnly(e.target.checked)}
           />
-          Unknown errors only
+          {t('unknown_errors_only', 'Unknown errors only')}
         </label>
       </div>
 
       {isLoading ? (
         <LoadingComponent />
       ) : error || !data ? (
-        <div className="text-red-400">Failed to load stats.</div>
+        <div className="text-red-400">
+          {t('failed_to_load_stats', 'Failed to load stats.')}
+        </div>
       ) : (
         <div className="overflow-x-auto pb-[8px] scrollbar scrollbar-thumb-fifth scrollbar-track-newBgColor flex flex-col gap-[16px]">
           <div className="flex gap-[12px]">
             <div className="flex-1 min-w-[220px] shrink-0">
               <SummaryCard
-                label="Total posts published"
+                label={t(
+                  'label_total_posts_published',
+                  'Total posts published'
+                )}
                 value={data.posts.total}
               />
             </div>
             <div className="flex-1 min-w-[220px] shrink-0">
               <SummaryCard
-                label="Total connected accounts"
+                label={t(
+                  'label_total_connected_accounts',
+                  'Total connected accounts'
+                )}
                 value={data.connected.total}
               />
             </div>
             <div className="flex-1 min-w-[220px] shrink-0">
               <SummaryCard
-                label={unknownOnly ? 'Total unknown errors' : 'Total errors'}
+                label={
+                  unknownOnly
+                    ? t('total_unknown_errors', 'Total unknown errors')
+                    : t('total_errors', 'Total errors')
+                }
                 value={data.errors.total}
               />
             </div>
             {data.publishingChannels && (
               <div className="flex-1 min-w-[220px] shrink-0">
                 <SummaryCard
-                  label="Unique channels - published (all platforms combined)"
+                  label={t(
+                    'label_unique_channels__published_all_platforms_combined',
+                    'Unique channels - published (all platforms combined)'
+                  )}
                   value={data.publishingChannels.total}
                 />
               </div>
@@ -259,7 +299,10 @@ export const AdminStatsComponent: FC = () => {
             {data.scheduledChannels && (
               <div className="flex-1 min-w-[220px] shrink-0">
                 <SummaryCard
-                  label="Unique channels - scheduled (all platforms combined)"
+                  label={t(
+                    'label_unique_channels__scheduled_all_platforms_combined',
+                    'Unique channels - scheduled (all platforms combined)'
+                  )}
                   value={data.scheduledChannels.total}
                 />
               </div>
@@ -267,7 +310,10 @@ export const AdminStatsComponent: FC = () => {
             {data.publishingAccounts && (
               <div className="flex-1 min-w-[220px] shrink-0">
                 <SummaryCard
-                  label="Unique users - published (all platforms combined)"
+                  label={t(
+                    'label_unique_users__published_all_platforms_combined',
+                    'Unique users - published (all platforms combined)'
+                  )}
                   value={data.publishingAccounts.total}
                 />
               </div>
@@ -275,7 +321,10 @@ export const AdminStatsComponent: FC = () => {
             {data.scheduledAccounts && (
               <div className="flex-1 min-w-[220px] shrink-0">
                 <SummaryCard
-                  label="Unique users - scheduled (all platforms combined)"
+                  label={t(
+                    'label_unique_users__scheduled_all_platforms_combined',
+                    'Unique users - scheduled (all platforms combined)'
+                  )}
                   value={data.scheduledAccounts.total}
                 />
               </div>
@@ -285,13 +334,19 @@ export const AdminStatsComponent: FC = () => {
           <div className="flex gap-[12px] items-start">
             <div className="flex-1 min-w-[220px] shrink-0">
               <PerSocialTable
-                title="Posts published per social"
+                title={t(
+                  'posts_published_per_social',
+                  'Posts published per social'
+                )}
                 block={data.posts}
               />
             </div>
             <div className="flex-1 min-w-[220px] shrink-0">
               <PerSocialTable
-                title="Connected accounts per social"
+                title={t(
+                  'connected_accounts_per_social',
+                  'Connected accounts per social'
+                )}
                 block={data.connected}
               />
             </div>
@@ -299,8 +354,11 @@ export const AdminStatsComponent: FC = () => {
               <PerSocialTable
                 title={
                   unknownOnly
-                    ? 'Unknown errors per social'
-                    : 'Errors per social'
+                    ? t(
+                        'unknown_errors_per_social',
+                        'Unknown errors per social'
+                      )
+                    : t('errors_per_social', 'Errors per social')
                 }
                 block={data.errors}
               />
@@ -308,7 +366,10 @@ export const AdminStatsComponent: FC = () => {
             {data.publishingChannels && (
               <div className="flex-1 min-w-[220px] shrink-0">
                 <PerSocialTable
-                  title="Unique channels - published"
+                  title={t(
+                    'unique_channels_published',
+                    'Unique channels - published'
+                  )}
                   block={data.publishingChannels}
                 />
               </div>
@@ -316,7 +377,10 @@ export const AdminStatsComponent: FC = () => {
             {data.scheduledChannels && (
               <div className="flex-1 min-w-[220px] shrink-0">
                 <PerSocialTable
-                  title="Unique channels - scheduled"
+                  title={t(
+                    'unique_channels_scheduled',
+                    'Unique channels - scheduled'
+                  )}
                   block={data.scheduledChannels}
                 />
               </div>
@@ -324,7 +388,10 @@ export const AdminStatsComponent: FC = () => {
             {data.publishingAccounts && (
               <div className="flex-1 min-w-[220px] shrink-0">
                 <PerSocialTable
-                  title="Unique users - published"
+                  title={t(
+                    'unique_users_published',
+                    'Unique users - published'
+                  )}
                   block={data.publishingAccounts}
                 />
               </div>
@@ -332,7 +399,10 @@ export const AdminStatsComponent: FC = () => {
             {data.scheduledAccounts && (
               <div className="flex-1 min-w-[220px] shrink-0">
                 <PerSocialTable
-                  title="Unique users - scheduled"
+                  title={t(
+                    'unique_users_scheduled',
+                    'Unique users - scheduled'
+                  )}
                   block={data.scheduledAccounts}
                 />
               </div>

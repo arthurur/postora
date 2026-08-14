@@ -9,11 +9,13 @@ import { useUser } from '@gitroom/frontend/components/layout/user.context';
 import { Input } from '@gitroom/react/form/input';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 export const CommentBox: FC<{
   value?: string;
   type: 'textarea' | 'input';
   onChange: (comment: string) => void;
 }> = (props) => {
+  const t = useT();
   const { value, onChange, type } = props;
   const Component = type === 'textarea' ? Textarea : Input;
   const [newComment, setNewComment] = useState(value || '');
@@ -53,7 +55,7 @@ export const CommentBox: FC<{
         onClick={changeIt}
         className={clsx(type === 'input' && 'mb-[27px]')}
       >
-        {value ? 'Update' : 'Add comment'}
+        {value ? t('update', 'Update') : t('add_comment', 'Add comment')}
       </Button>
     </div>
   );
@@ -72,6 +74,7 @@ export const EditableCommentComponent: FC<{
   onEdit: (content: string) => void;
   onDelete: () => void;
 }> = (props) => {
+  const t = useT();
   const { comment, onEdit, onDelete } = props;
   const [commentContent, setCommentContent] = useState(comment.content);
   const [editMode, setEditMode] = useState(false);
@@ -86,8 +89,11 @@ export const EditableCommentComponent: FC<{
   const deleteCommentFunction = useCallback(async () => {
     if (
       await deleteDialog(
-        'Are you sure you want to delete this comment?',
-        'Yes, Delete'
+        t(
+          'are_you_sure_delete_comment',
+          'Are you sure you want to delete this comment?'
+        ),
+        t('yes_delete', 'Yes, delete')
       )
     ) {
       onDelete();

@@ -6,7 +6,7 @@ export class WhopDto {
   @IsDefined()
   @IsString()
   @JSONSchema({
-    description: 'Company ID',
+    description: 'ID da empresa',
   })
   company: string;
 
@@ -14,7 +14,7 @@ export class WhopDto {
   @IsDefined()
   @IsString()
   @JSONSchema({
-    description: 'Experience ID for the Whop forum',
+    description: 'ID da experiência do fórum da Whop',
   })
   experience: string;
 

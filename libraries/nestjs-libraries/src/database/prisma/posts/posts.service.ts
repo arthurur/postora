@@ -251,7 +251,9 @@ export class PostsService {
     replaceDraft: boolean = false
   ): Promise<CreatePostDto> {
     if (!body?.posts?.every((p) => p?.integration?.id)) {
-      throw new BadRequestException('All posts must have an integration id');
+      throw new BadRequestException(
+        'Todas as publicações devem ter um ID de integração'
+      );
     }
 
     const mappedValues = {
@@ -826,7 +828,10 @@ export class PostsService {
           errors = err?.message || 'Invalid media';
         }
 
-        const maximumCharacters = provider.maxLength(additionalSettings, settings);
+        const maximumCharacters = provider.maxLength(
+          additionalSettings,
+          settings
+        );
         const isX = integration.providerIdentifier === 'x';
 
         const emptyContent = (post.value || []).some((a) => {
@@ -878,7 +883,11 @@ export class PostsService {
   // the platform: require the explicit `republish` opt-in instead. The message
   // doubles as the confirmation dialog for API/MCP automation.
   private guardAgainstRepublish(
-    post: { state: State; publishDate: Date; integration?: { providerIdentifier: string } } | null,
+    post: {
+      state: State;
+      publishDate: Date;
+      integration?: { providerIdentifier: string };
+    } | null,
     source: 'createPost' | 'changeDate'
   ) {
     if (post?.state !== 'PUBLISHED') {
@@ -891,7 +900,9 @@ export class PostsService {
     throw new BadRequestException(
       `This post was already published on ${dayjs
         .utc(post.publishDate)
-        .format('YYYY-MM-DD HH:mm')} UTC. Saving it this way would publish it again to ${
+        .format(
+          'YYYY-MM-DD HH:mm'
+        )} UTC. Saving it this way would publish it again to ${
         post.integration?.providerIdentifier || 'the channel'
       }. To edit without republishing, ${howToUpdate}. To intentionally publish again, pass republish: true.`
     );
@@ -985,7 +996,7 @@ export class PostsService {
 
     const [root] = ordered;
     if (!root) {
-      throw new NotFoundException('Post not found');
+      throw new NotFoundException('Publicação não encontrada');
     }
 
     if (root.parentPostId) {
@@ -1107,7 +1118,7 @@ export class PostsService {
     );
 
     if (!output) {
-      throw new BadRequestException('Failed to update the post');
+      throw new BadRequestException('Não foi possível atualizar a publicação');
     }
 
     return {
@@ -1131,7 +1142,7 @@ export class PostsService {
   ) {
     const getPostById = await this._postRepository.getPostById(id, orgId);
     if (!getPostById) {
-      throw new BadRequestException('Post not found');
+      throw new BadRequestException('Publicação não encontrada');
     }
 
     const state: State = status === 'draft' ? 'DRAFT' : 'QUEUE';

@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import clsx from 'clsx';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 
 type CreationMethod = 'UNKNOWN' | 'WEB' | 'API' | 'MCP' | 'AUTOPOST' | 'CLI';
 
@@ -10,16 +11,21 @@ interface Props {
   ringColor?: string;
 }
 
-const tooltipFor = (m: string) =>
-  m === 'AUTOPOST' ? 'Auto-posted by system' : `Created via ${m}`;
-
 export const CreationMethodBadge: FC<Props> = ({
   creationMethod,
   size = 'xs',
   className,
   ringColor,
 }) => {
+  const t = useT();
   if (!creationMethod || creationMethod === 'UNKNOWN') return null;
+
+  const tooltip =
+    creationMethod === 'AUTOPOST'
+      ? t('auto_posted_by_system', 'Auto-posted by system')
+      : t('created_via_method', 'Created via {{method}}', {
+          method: creationMethod,
+        });
 
   const sizeClasses =
     size === 'xs'
@@ -42,7 +48,7 @@ export const CreationMethodBadge: FC<Props> = ({
       )}
       style={ringColor ? { boxShadow: `0 0 0 2px ${ringColor}` } : undefined}
       data-tooltip-id="tooltip"
-      data-tooltip-content={tooltipFor(creationMethod)}
+      data-tooltip-content={tooltip}
     >
       {creationMethod}
     </div>

@@ -50,7 +50,10 @@ export function Login() {
     });
     if (login.status === 400) {
       const errorMessage = await login.text();
-      if (errorMessage === 'User is not activated') {
+      if (
+        errorMessage === 'User is not activated' ||
+        errorMessage === 'A conta ainda não foi ativada'
+      ) {
         setNotActivated(true);
       } else {
         form.setError('email', {

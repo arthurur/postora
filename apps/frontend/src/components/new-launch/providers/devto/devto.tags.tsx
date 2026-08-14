@@ -4,6 +4,7 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { ReactTags } from 'react-tag-autocomplete';
 import { useCustomProviderFunction } from '@gitroom/frontend/components/launches/helpers/use.custom.provider.function';
 import { useSettings } from '@gitroom/frontend/components/launches/helpers/use.values';
+import { TranslatedLabel } from '@gitroom/react/translation/translated-label';
 export const DevtoTags: FC<{
   name: string;
   label: string;
@@ -51,7 +52,9 @@ export const DevtoTags: FC<{
   }
   return (
     <div>
-      <div className={`text-[14px] mb-[6px]`}>{label}</div>
+      <div className={`text-[14px] mb-[6px]`}>
+        <TranslatedLabel label={label} />
+      </div>
       <ReactTags
         suggestions={tags}
         selected={tagValue}

@@ -91,7 +91,7 @@ export class DevToProvider extends SocialAbstract implements SocialProvider {
         username,
       };
     } catch (err) {
-      return 'Invalid credentials';
+      return 'Credenciais inválidas';
     }
   }
 

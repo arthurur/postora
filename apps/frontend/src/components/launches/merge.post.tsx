@@ -11,8 +11,11 @@ export const MergePost: FC<{
   const notReversible = useCallback(async () => {
     if (
       await deleteDialog(
-        'Are you sure you want to merge all comments into one post? This action is not reversible.',
-        'Yes'
+        t(
+          'confirm_merge_all_comments',
+          'Are you sure you want to merge all comments into one post? This action is not reversible.'
+        ),
+        t('yes', 'Yes')
       )
     ) {
       merge();

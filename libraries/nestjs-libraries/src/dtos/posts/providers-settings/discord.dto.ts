@@ -5,8 +5,8 @@ export class DiscordDto {
   @MinLength(1)
   @IsDefined()
   @IsString()
-    @JSONSchema({
-    description: 'Channel must be an id',
+  @JSONSchema({
+    description: 'O canal deve ser informado por ID',
   })
   channel: string;
 }

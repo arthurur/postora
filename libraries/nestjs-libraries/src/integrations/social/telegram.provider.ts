@@ -60,7 +60,7 @@ export class TelegramProvider extends SocialAbstract implements SocialProvider {
 
     console.log(JSON.stringify(chat));
     if (!chat?.id) {
-      return 'No chat found';
+      return 'Nenhuma conversa encontrada.';
     }
 
     const photo = !chat?.photo?.big_file_id
@@ -289,7 +289,11 @@ export class TelegramProvider extends SocialAbstract implements SocialProvider {
     const [commentPost] = postDetails;
     const replyToId = Number(lastCommentId || postId);
 
-    const messageId = await this.sendMessage(accessToken, commentPost, replyToId);
+    const messageId = await this.sendMessage(
+      accessToken,
+      commentPost,
+      replyToId
+    );
 
     if (messageId) {
       return [

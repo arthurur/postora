@@ -53,7 +53,7 @@ export class MoltbookProvider extends SocialAbstract implements SocialProvider {
     );
 
     if (!response.data.success) {
-      throw new Error(response.data.error || 'Registration failed');
+      throw new Error(response.data.error || 'Falha no cadastro');
     }
 
     return response.data.agent;
@@ -79,7 +79,7 @@ export class MoltbookProvider extends SocialAbstract implements SocialProvider {
     );
 
     if (!response.data.success) {
-      throw new Error(response.data.error || 'Failed to get profile');
+      throw new Error(response.data.error || 'Não foi possível obter o perfil');
     }
 
     return response.data.agent;
@@ -137,7 +137,9 @@ export class MoltbookProvider extends SocialAbstract implements SocialProvider {
       );
 
       if (!response.data.success) {
-        throw new Error(response.data.error || 'Failed to create post');
+        throw new Error(
+          response.data.error || 'Não foi possível criar a publicação'
+        );
       }
 
       const postId = response.data.post.id;
@@ -183,7 +185,9 @@ export class MoltbookProvider extends SocialAbstract implements SocialProvider {
       );
 
       if (!response.data.success) {
-        throw new Error(response.data.error || 'Failed to create comment');
+        throw new Error(
+          response.data.error || 'Não foi possível criar o comentário'
+        );
       }
 
       const commentId = response.data.comment.id;

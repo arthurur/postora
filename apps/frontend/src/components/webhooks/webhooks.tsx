@@ -30,7 +30,9 @@ export const Webhooks: FC = () => {
   const addWebhook = useCallback(
     (data?: any) => () => {
       modal.openModal({
-        title: data ? t('update_webhook', 'Update webhook') : t('add_webhook', 'Add webhook'),
+        title: data
+          ? t('update_webhook', 'Update webhook')
+          : t('add_webhook', 'Add webhook'),
         withCloseButton: true,
         children: <AddOrEditWebhook data={data} reload={mutate} />,
       });
@@ -52,7 +54,10 @@ export const Webhooks: FC = () => {
           method: 'DELETE',
         });
         mutate();
-        toaster.show(t('webhook_deleted_successfully', 'Webhook deleted successfully'), 'success');
+        toaster.show(
+          t('webhook_deleted_successfully', 'Webhook deleted successfully'),
+          'success'
+        );
       }
     },
     []
@@ -208,7 +213,7 @@ export const AddOrEditWebhook: FC<{
         body: JSON.stringify([
           {
             id: 'cm6tcts4f0005qcwit25cis26',
-            content: 'This is the first post to instagram',
+            content: 'Esta é a primeira publicação no Instagram',
             publishDate: '2025-02-06T13:09:00.000Z',
             releaseURL: 'https://facebook.com/release/release',
             state: 'PUBLISHED',
@@ -222,7 +227,7 @@ export const AddOrEditWebhook: FC<{
           },
           {
             id: 'cm6tcts4f0005qcwit25cis26',
-            content: 'This is the second post to facebook',
+            content: 'Esta é a segunda publicação no Facebook',
             publishDate: '2025-02-06T13:09:00.000Z',
             releaseURL: 'https://facebook.com/release2/release2',
             state: 'PUBLISHED',

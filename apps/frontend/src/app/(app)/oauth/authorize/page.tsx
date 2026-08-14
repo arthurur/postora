@@ -4,8 +4,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { Logo } from '@gitroom/frontend/components/new-layout/logo';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 
 export default function OAuthAuthorizePage() {
+  const t = useT();
   const searchParams = useSearchParams();
   const fetch = useFetch();
   const [appInfo, setAppInfo] = useState<any>(null);
@@ -19,12 +21,22 @@ export default function OAuthAuthorizePage() {
 
   useEffect(() => {
     if (!clientId || !responseType) {
-      setError('Missing required parameters (client_id, response_type)');
+      setError(
+        t(
+          'oauth_missing_required_parameters',
+          'Missing required parameters (client_id, response_type)'
+        )
+      );
       setLoading(false);
       return;
     }
     if (responseType !== 'code') {
-      setError('Only response_type=code is supported');
+      setError(
+        t(
+          'oauth_response_type_code_only',
+          'Only response_type=code is supported'
+        )
+      );
       setLoading(false);
       return;
     }
@@ -39,14 +51,18 @@ export default function OAuthAuthorizePage() {
       .then((r) => r.json())
       .then((data) => {
         if (data.statusCode && data.statusCode >= 400) {
-          setError(data.message || 'Invalid OAuth request');
+          setError(
+            data.message || t('oauth_invalid_request', 'Invalid OAuth request')
+          );
         } else {
           setAppInfo(data);
         }
         setLoading(false);
       })
       .catch(() => {
-        setError('Failed to validate OAuth request');
+        setError(
+          t('oauth_validation_failed', 'Failed to validate OAuth request')
+        );
         setLoading(false);
       });
   }, [clientId, responseType, state]);
@@ -70,7 +86,9 @@ export default function OAuthAuthorizePage() {
           window.location.href = result.redirect;
         }
       } catch {
-        setError('Failed to process authorization');
+        setError(
+          t('oauth_authorization_failed', 'Failed to process authorization')
+        );
         setSubmitting(false);
       }
     },
@@ -89,7 +107,7 @@ export default function OAuthAuthorizePage() {
             <Logo />
           </div>
           <div className="text-[16px] text-gray-400">
-            Please wait...
+            {t('please_wait_short', 'Please wait...')}
           </div>
           <div className="mt-[32px] flex justify-center">
             <div className="w-[48px] h-[48px] border-[3px] border-[#612BD3] border-t-transparent rounded-full animate-spin" />
@@ -124,11 +142,9 @@ export default function OAuthAuthorizePage() {
             </svg>
           </div>
           <div className="text-[28px] font-semibold mb-[12px]">
-            Authorization Error
+            {t('authorization_error', 'Authorization Error')}
           </div>
-          <div className="text-[16px] text-gray-400 max-w-[400px]">
-            {error}
-          </div>
+          <div className="text-[16px] text-gray-400 max-w-[400px]">{error}</div>
         </div>
       </div>
     );
@@ -175,13 +191,27 @@ export default function OAuthAuthorizePage() {
 
           <div className="border-t border-[#2A2929] pt-[16px]">
             <div className="text-[14px] text-gray-400 mb-[12px]">
-              This application is requesting access to your Postiz account. It
-              will be able to:
+              {t(
+                'application_requesting_postiz_access',
+                'This application is requesting access to your Postiz account. It will be able to:'
+              )}
             </div>
             <ul className="text-[14px] list-disc list-inside space-y-[4px]">
-              <li>Access your integrations and channels</li>
-              <li>Create and schedule posts on your behalf</li>
-              <li>Read your post analytics</li>
+              <li>
+                {t(
+                  'oauth_scope_integrations_channels',
+                  'Access your integrations and channels'
+                )}
+              </li>
+              <li>
+                {t(
+                  'oauth_scope_create_schedule_posts',
+                  'Create and schedule posts on your behalf'
+                )}
+              </li>
+              <li>
+                {t('oauth_scope_read_analytics', 'Read your post analytics')}
+              </li>
             </ul>
           </div>
 
@@ -191,14 +221,14 @@ export default function OAuthAuthorizePage() {
               disabled={submitting}
               className="flex-1 bg-[#612BD3] hover:bg-[#7B3FF2] disabled:opacity-50 text-white rounded-[8px] py-[10px] px-[16px] text-[14px] font-semibold transition-colors"
             >
-              Authorize
+              {t('authorize', 'Authorize')}
             </button>
             <button
               onClick={() => handleAction('deny')}
               disabled={submitting}
               className="flex-1 bg-[#2A2929] hover:bg-[#3A3939] disabled:opacity-50 text-white rounded-[8px] py-[10px] px-[16px] text-[14px] font-semibold transition-colors"
             >
-              Deny
+              {t('deny', 'Deny')}
             </button>
           </div>
         </div>

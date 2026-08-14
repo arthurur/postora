@@ -39,7 +39,7 @@ export class LemmyProvider extends SocialAbstract implements SocialProvider {
       (firstItems?.[0]?.path?.indexOf?.('jpef') ?? -1) === -1 &&
       (firstItems?.[0]?.path?.indexOf?.('gif') ?? -1) === -1
     ) {
-      return 'You can set only one picture for a cover';
+      return 'Você pode definir apenas uma imagem de capa.';
     }
     return true;
   }
@@ -110,7 +110,7 @@ export class LemmyProvider extends SocialAbstract implements SocialProvider {
     });
 
     if (load.status === 401) {
-      return 'Invalid credentials';
+      return 'Credenciais inválidas';
     }
 
     const { jwt } = await load.json();
@@ -140,11 +140,13 @@ export class LemmyProvider extends SocialAbstract implements SocialProvider {
       };
     } catch (e) {
       console.log(e);
-      return 'Invalid credentials';
+      return 'Credenciais inválidas';
     }
   }
 
-  private async getJwtAndService(integration: Integration): Promise<{ jwt: string; service: string }> {
+  private async getJwtAndService(
+    integration: Integration
+  ): Promise<{ jwt: string; service: string }> {
     const body = JSON.parse(
       AuthService.fixedDecryption(integration.customInstanceDetails!)
     );

@@ -41,7 +41,7 @@ export class AuthService {
   ) {
     if (provider === Provider.LOCAL) {
       if (process.env.DISALLOW_PLUS && body.email.includes('+')) {
-        throw new Error('Email with plus sign is not allowed');
+        throw new Error('Não é permitido usar sinal de mais no e-mail');
       }
       if (body instanceof CreateOrgUserDto) {
         body.email = body.email.toLowerCase();
@@ -49,11 +49,11 @@ export class AuthService {
       const user = await this._userService.getUserByEmail(body.email);
       if (body instanceof CreateOrgUserDto) {
         if (user) {
-          throw new Error('Email already exists');
+          throw new Error('Este e-mail já está cadastrado');
         }
 
         if (!(await this.canRegister(provider))) {
-          throw new Error('Registration is disabled');
+          throw new Error('O cadastro está desativado');
         }
 
         const create = await this._organizationService.createOrgAndUser(
@@ -75,19 +75,19 @@ export class AuthService {
         const obj = { addedOrg, jwt: await this.jwt(create.users[0].user) };
         await this._emailService.sendEmail(
           body.email,
-          'Activate your account',
-          `Click <a href="${process.env.FRONTEND_URL}/auth/activate/${obj.jwt}">here</a> to activate your account`,
+          'Ative sua conta',
+          `Clique <a href="${process.env.FRONTEND_URL}/auth/activate/${obj.jwt}">aqui</a> para ativar sua conta`,
           'top'
         );
         return obj;
       }
 
       if (!user || !AuthChecker.comparePassword(body.password, user.password)) {
-        throw new Error('Invalid user name or password');
+        throw new Error('E-mail ou senha inválidos');
       }
 
       if (!user.activated) {
-        throw new Error('User is not activated');
+        throw new Error('A conta ainda não foi ativada');
       }
 
       return { addedOrg: false, jwt: await this.jwt(user) };
@@ -144,7 +144,7 @@ export class AuthService {
     const providerUser = await providerInstance.getUser(body.providerToken);
 
     if (!providerUser) {
-      throw new Error('Invalid provider token');
+      throw new Error('Token do provedor inválido');
     }
 
     const user = await this._userService.getUserByProvider(
@@ -156,7 +156,7 @@ export class AuthService {
     }
 
     if (!(await this.canRegister(provider))) {
-      throw new Error('Registration is disabled');
+      throw new Error('O cadastro está desativado');
     }
 
     const create = await this._organizationService.createOrgAndUser(
@@ -227,8 +227,8 @@ export class AuthService {
 
     await this._notificationService.sendEmail(
       user.email,
-      'Reset your password',
-      `You have requested to reset your passsord. <br />Click <a href="${process.env.FRONTEND_URL}/auth/forgot/${resetValues}">here</a> to reset your password<br />The link will expire in 20 minutes`
+      'Redefina sua senha',
+      `Você solicitou a redefinição da sua senha.<br />Clique <a href="${process.env.FRONTEND_URL}/auth/forgot/${resetValues}">aqui</a> para criar uma nova senha.<br />O link expira em 20 minutos.`
     );
   }
 
@@ -269,19 +269,19 @@ export class AuthService {
     const user = await this._userService.getUserByEmail(email);
 
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('Usuário não encontrado');
     }
 
     if (user.activated) {
-      throw new Error('Account is already activated');
+      throw new Error('A conta já está ativada');
     }
 
     const jwt = await this.jwt(user);
 
     await this._emailService.sendEmail(
       user.email,
-      'Activate your account',
-      `Click <a href="${process.env.FRONTEND_URL}/auth/activate/${jwt}">here</a> to activate your account`,
+      'Ative sua conta',
+      `Clique <a href="${process.env.FRONTEND_URL}/auth/activate/${jwt}">aqui</a> para ativar sua conta`,
       'top'
     );
 
@@ -298,7 +298,7 @@ export class AuthService {
     const token = await providerInstance.getToken(code, redirectUri);
     const user = await providerInstance.getUser(token);
     if (!user) {
-      throw new Error('Invalid user');
+      throw new Error('Usuário inválido');
     }
     const checkExists = await this._userService.getUserByProvider(
       user.id,

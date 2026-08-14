@@ -8,6 +8,12 @@ interface TranslatedLabelProps {
   children?: ReactNode;
 }
 
+export const getTextTranslationKey = (prefix: string, text: string) =>
+  `${prefix}_${text.toLowerCase().replace(/\s+/g, '_').replace(/[^\w]/g, '')}`;
+
+export const getLabelTranslationKey = (label: string) =>
+  getTextTranslationKey('label', label);
+
 /**
  * TranslatedLabel is a wrapper component that translates labels in form components
  *
@@ -25,9 +31,7 @@ export function TranslatedLabel({
   const t = useT();
 
   // If no explicit key is provided, create one from the label
-  const key =
-    translationKey ||
-    `label_${label.toLowerCase().replace(/\s+/g, '_').replace(/[^\w]/g, '')}`;
+  const key = translationKey || getLabelTranslationKey(label);
 
   const translatedLabel = t(key, label, translationParams);
 

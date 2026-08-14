@@ -30,13 +30,14 @@ async function getAudioDuration(buffer: Buffer): Promise<number> {
 
 class ImagesSlidesParams {
   @JSONSchema({
-    description: 'Elevenlabs voice id, use a special tool to get it, this is a required filed',
+    description:
+      'ID da voz no ElevenLabs. Use a ferramenta específica para obtê-lo. Este campo é obrigatório.',
   })
   @IsString()
   voice: string;
 
   @JSONSchema({
-    description: 'Simple string of the prompt, not a json',
+    description: 'Texto simples do prompt, não um JSON',
   })
   @IsString()
   prompt: string;
@@ -44,8 +45,9 @@ class ImagesSlidesParams {
 
 @Video({
   identifier: 'image-text-slides',
-  title: 'Image Text Slides',
-  description: 'Generate videos slides from images and text, Don\'t break down the slides, provide only the first slide information',
+  title: 'Slides com imagens e texto',
+  description:
+    'Gere vídeos em slides a partir de imagens e texto. Não divida os slides; informe apenas os dados do primeiro slide.',
   placement: 'text-to-image',
   tools: [{ functionName: 'loadVoices', output: 'voice id' }],
   dto: ImagesSlidesParams,

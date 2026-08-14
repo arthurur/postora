@@ -52,7 +52,7 @@ export class NoAuthIntegrationsController {
         .getAllowedSocialsIntegrations()
         .includes(integration)
     ) {
-      throw new Error('Integration not allowed');
+      throw new Error('Integração não permitida');
     }
 
     const integrationProvider =
@@ -62,12 +62,12 @@ export class NoAuthIntegrationsController {
       ? 'none'
       : await ioRedis.get(`login:${body.state}`);
     if (!getCodeVerifier) {
-      throw new Error('Invalid state');
+      throw new Error('Estado inválido');
     }
 
     const organization = await ioRedis.get(`organization:${body.state}`);
     if (!organization) {
-      throw new Error('Organization not found');
+      throw new Error('Organização não encontrada');
     }
 
     const org = await this._organizationService.getOrgById(organization);
@@ -165,7 +165,7 @@ export class NoAuthIntegrationsController {
         }
 
         return res({
-          error: 'Authentication failed',
+          error: 'Falha na autenticação',
           accessToken: '',
           id: '',
           name: '',
@@ -322,12 +322,12 @@ export class NoAuthIntegrationsController {
   @Post('/public/provider/:id/connect')
   async saveProviderPage(@Param('id') id: string, @Body() body: any) {
     if (!body.state) {
-      throw new Error('Invalid state');
+      throw new Error('Estado inválido');
     }
 
     const organization = await ioRedis.get(`organization:${body.state}`);
     if (!organization) {
-      throw new Error('Organization not found');
+      throw new Error('Organização não encontrada');
     }
 
     const org = await this._organizationService.getOrgById(organization);
@@ -343,12 +343,12 @@ export class NoAuthIntegrationsController {
     try {
       payload = AuthService.verifyJWT(body.jwt);
     } catch {
-      throw new HttpException('Invalid token', 401);
+      throw new HttpException('Token inválido', 401);
     }
 
     const { integrationId, organizationId, internalId, provider } = payload;
     if (!integrationId || !organizationId || !internalId || !provider) {
-      throw new HttpException('Invalid token payload', 400);
+      throw new HttpException('Conteúdo do token inválido', 400);
     }
 
     const integration = await this._integrationService.getIntegrationById(
@@ -356,13 +356,16 @@ export class NoAuthIntegrationsController {
       integrationId
     );
     if (!integration || integration.internalId !== internalId) {
-      throw new HttpException('Integration not found', 404);
+      throw new HttpException('Integração não encontrada', 404);
     }
 
     const integrationProvider =
       this._integrationManager.getSocialIntegration(provider);
     if (!integrationProvider?.isChromeExtension) {
-      throw new HttpException('Not a Chrome extension integration', 400);
+      throw new HttpException(
+        'Esta integração não pertence à extensão do Chrome',
+        400
+      );
     }
 
     const authResult = await integrationProvider.authenticate({

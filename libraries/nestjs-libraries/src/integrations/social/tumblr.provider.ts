@@ -132,56 +132,56 @@ export class TumblrProvider extends SocialAbstract implements SocialProvider {
     ) {
       return {
         type: 'refresh-token',
-        value: 'Please re-authenticate your Tumblr account.',
+        value: 'Autentique novamente sua conta do Tumblr.',
       };
     }
 
     if (body.includes('daily posting limit') || this.hasErrorCode(body, 8023)) {
       return {
         type: 'bad-body',
-        value: 'Tumblr daily posting limit reached.',
+        value: 'O limite diário de publicações do Tumblr foi atingido.',
       };
     }
 
     if (this.hasErrorCode(body, 8001)) {
       return {
         type: 'bad-body',
-        value: 'Tumblr rejected the post content format.',
+        value: 'O Tumblr rejeitou o formato do conteúdo da publicação.',
       };
     }
 
     if (this.hasErrorCode(body, 8002)) {
       return {
         type: 'bad-body',
-        value: 'Tumblr rejected the reblog parent post information.',
+        value: 'O Tumblr rejeitou as informações da publicação original.',
       };
     }
 
     if (this.hasErrorCode(body, 8004)) {
       return {
         type: 'bad-body',
-        value: 'Tumblr daily media upload limit reached.',
+        value: 'O limite diário de envio de mídias do Tumblr foi atingido.',
       };
     }
 
     if (this.hasErrorCode(body, 8005)) {
       return {
         type: 'bad-body',
-        value: 'Tumblr rejected one of the uploaded media files.',
+        value: 'O Tumblr rejeitou um dos arquivos de mídia enviados.',
       };
     }
 
     if (this.hasErrorCode(body, 8006)) {
       return {
         type: 'retry',
-        value: 'Tumblr had a media upload error.',
+        value: 'O Tumblr apresentou um erro ao enviar a mídia.',
       };
     }
 
     if (this.hasErrorCode(body, 8008)) {
       return {
         type: 'bad-body',
-        value: 'Tumblr does not allow uploaded videos in reblog content.',
+        value: 'O Tumblr não permite vídeos enviados em conteúdo republicado.',
       };
     }
 
@@ -189,49 +189,50 @@ export class TumblrProvider extends SocialAbstract implements SocialProvider {
       return {
         type: 'bad-body',
         value:
-          'Tumblr is still transcoding a video upload for this blog. Please try again later.',
+          'O Tumblr ainda está processando um vídeo enviado para este blog. Tente novamente mais tarde.',
       };
     }
 
     if (this.hasErrorCode(body, 8011)) {
       return {
         type: 'bad-body',
-        value: 'Tumblr daily video upload limit reached.',
+        value: 'O limite diário de envio de vídeos do Tumblr foi atingido.',
       };
     }
 
     if (this.hasErrorCode(body, 8016)) {
       return {
         type: 'bad-body',
-        value: 'Tumblr rejected the ask content or layout.',
+        value: 'O Tumblr rejeitou o conteúdo ou o layout da pergunta.',
       };
     }
 
     if (this.hasErrorCode(body, 8022)) {
       return {
         type: 'bad-body',
-        value: 'Tumblr blog queue limit reached.',
+        value: 'O limite da fila de publicações do Tumblr foi atingido.',
       };
     }
 
     if (this.hasErrorCode(body, 8009)) {
       return {
         type: 'retry',
-        value: 'Tumblr had a video upload error.',
+        value: 'O Tumblr apresentou um erro ao enviar o vídeo.',
       };
     }
 
     if (status === 429) {
       return {
         type: 'retry',
-        value: 'Tumblr API rate limit reached.',
+        value: 'O limite de solicitações da API do Tumblr foi atingido.',
       };
     }
 
     if (status === 503) {
       return {
         type: 'retry',
-        value: 'Tumblr posting via the API is temporarily unavailable.',
+        value:
+          'A publicação pela API do Tumblr está temporariamente indisponível.',
       };
     }
 
@@ -332,7 +333,7 @@ export class TumblrProvider extends SocialAbstract implements SocialProvider {
     const blog = blogs.find((item) => item.id === data.id);
 
     if (!blog) {
-      throw new Error('Tumblr blog not found');
+      throw new Error('Blog do Tumblr não encontrado');
     }
 
     return {
