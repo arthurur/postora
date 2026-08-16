@@ -163,3 +163,5 @@ networks:
   temporal-network:
     driver: bridge
     name: temporal-network
+  traefik-proxy:
+    external: true
