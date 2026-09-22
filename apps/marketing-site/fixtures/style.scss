@@ -1,0 +1,45 @@
+@use '../../frontend/src/app/colors.scss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('../src/fonts/plus-jakarta-sans-latin.woff2') format('woff2');
+  font-weight: 200 800;
+}
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--new-bgColorInner);
+  color: var(--new-btn-text);
+}
+.capture-frame {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 20px;
+}
+.capture-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.capture-heading h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+.capture-heading p {
+  color: #555b63;
+  font-size: 13px;
+}
+.capture-heading span {
+  color: var(--new-btn-primary);
+  font-weight: 700;
+}
+.capture-calendar {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
