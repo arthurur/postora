@@ -38,7 +38,15 @@
     "docker-create": "./var/docker/docker-create.sh",
     "deploy:production": "./scripts/deploy-production.sh",
     "postinstall": "pnpm run prisma-generate",
-    "test": "jest --coverage --detectOpenHandles --reporters=default --reporters=jest-junit"
+    "test": "jest --coverage --detectOpenHandles --reporters=default --reporters=jest-junit",
+    "dev:marketing": "pnpm --filter postora-marketing dev",
+    "build:marketing": "pnpm --filter postora-marketing build",
+    "start:marketing": "pnpm --filter postora-marketing start",
+    "typecheck:marketing": "pnpm --filter postora-marketing typecheck",
+    "lint:marketing": "eslint --config apps/marketing-site/eslint.config.mjs apps/marketing-site/src apps/marketing-site/tests apps/marketing-site/playwright.config.ts",
+    "test:marketing": "pnpm run build:marketing && playwright test -c apps/marketing-site/playwright.config.ts",
+    "capture:marketing": "node apps/marketing-site/fixtures/capture.mjs",
+    "demo:marketing": "vite --config apps/marketing-site/fixtures/vite.config.mjs"
   },
   "dependencies": {
     "@ag-ui/mastra": "^1.0.1",
@@ -311,7 +319,8 @@
     "typescript": "5.5.4",
     "vite": "^6.3.5",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "3.1.4"
+    "vitest": "3.1.4",
+    "@playwright/test": "1.58.2"
   },
   "volta": {
     "node": "20.17.0"
