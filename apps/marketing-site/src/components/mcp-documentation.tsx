@@ -18,8 +18,10 @@ export function McpIntroduction() {
         configurações de desenvolvedor.
       </p>
       <p>
-        Use Claude Code, Codex ou Cursor. O acesso e os custos do cliente de IA
-        pertencem à sua conta nesse serviço.
+        Há guias para Claude Code, Codex, Cursor, ChatGPT, Claude e Claude
+        Cowork. O acesso e os custos do cliente de IA pertencem à sua conta
+        nesse serviço. Conectores personalizados e ações de escrita dependem dos
+        recursos e das permissões disponíveis na sua conta.
       </p>
       <h2>Agendar e gerar mídia são coisas diferentes</h2>
       <p>
@@ -148,6 +150,83 @@ export function McpSetup() {
         Para usar a chave no endereço, substitua <code>url</code> pela URL
         completa e remova <code>headers</code>. Confira o status nas
         configurações de ferramentas MCP do Cursor.
+      </p>
+      <h2 id="chatgpt">ChatGPT</h2>
+      <p>
+        Na versão web, confira se sua conta permite criar apps MCP
+        personalizados e executar ações de escrita. Em workspaces, o
+        administrador precisa liberar esses recursos. A disponibilidade varia
+        por plano; consulte a{' '}
+        <a href="https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt">
+          documentação de apps MCP do ChatGPT
+        </a>
+        .
+      </p>
+      <ol>
+        <li>
+          Abra as configurações de Apps e a opção de criar um app personalizado,
+          com o modo de desenvolvedor habilitado.
+        </li>
+        <li>
+          Informe o nome Postora e a URL HTTPS completa com chave, terminada em{' '}
+          <code>/mcp/SUA_CHAVE_POSTORA</code>, copiada do app.
+        </li>
+        <li>
+          Para essa URL com chave, selecione a opção sem autenticação adicional.
+          A credencial já está no endereço. Não insira a chave como segredo de
+          cliente OAuth.
+        </li>
+        <li>
+          Carregue as ferramentas, salve o app e habilite-o na conversa. Comece
+          com a consulta de canais descrita abaixo.
+        </li>
+      </ol>
+      <p>
+        Este é um caminho de configuração manual a verificar no seu ambiente,
+        não uma conexão Postora já homologada pelo ChatGPT. Se a conta permitir
+        apenas leitura, ela não poderá criar rascunhos nem agendamentos.
+      </p>
+      <h2 id="claude">Claude</h2>
+      <p>
+        Nas configurações de personalização do Claude, abra Conectores e escolha
+        adicionar um conector personalizado. Dê o nome Postora e informe a URL
+        HTTPS completa com chave copiada do app. Não preencha campos OAuth para
+        essa forma de conexão. Habilite o conector na conversa e teste a
+        consulta aos canais antes de criar posts.
+      </p>
+      <p>
+        Em contas de equipe, um administrador pode precisar cadastrar o conector
+        para a organização antes de você habilitá-lo. Confira a disponibilidade
+        e as etapas na{' '}
+        <a href="https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp">
+          documentação de conectores remotos do Claude
+        </a>
+        .
+      </p>
+      <h2 id="claude-cowork">Claude Cowork</h2>
+      <p>
+        Configure o conector remoto do Postora conforme os passos para o Claude
+        acima. No Cowork, disponibilize esse conector para a tarefa e confira as
+        permissões de uso das ferramentas. Comece pedindo apenas a lista de
+        canais, depois forneça o briefing e peça uma proposta de calendário.
+      </p>
+      <p>
+        Arquivos acessíveis à tarefa não são enviados automaticamente ao
+        Postora. Para publicar mídia, use arquivos da biblioteca ou uma URL
+        pública aceita pela ferramenta de importação. Consulte os recursos da
+        sua conta no{' '}
+        <a href="https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork">
+          guia do Cowork
+        </a>
+        .
+      </p>
+      <h2>Conectores remotos precisam alcançar o servidor</h2>
+      <p>
+        ChatGPT, Claude e Cowork precisam alcançar o endpoint HTTPS público do
+        Postora. Um endereço localhost na sua máquina não atende a esse acesso
+        remoto. Estes guias não usam os conectores oficiais do Postiz: cadastre
+        o endereço da sua própria organização no Postora. A URL com chave é uma
+        credencial; não a publique em documentos, mensagens ou repositórios.
       </p>
       <h2>Confira a conexão sem publicar</h2>
       <p>

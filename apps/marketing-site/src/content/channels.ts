@@ -1,6 +1,7 @@
 export type Channel = {
   slug: string;
   name: string;
+  icon: string;
   intro: string;
   formats: string;
   account: string;
@@ -12,6 +13,7 @@ export type Channel = {
 export const channels: Channel[] = [
   {
     slug: 'x',
+    icon: '/icons/platforms/x.webp',
     name: 'X',
     intro: 'Prepare suas ideias e organize a próxima conversa no X.',
     formats:
@@ -28,6 +30,7 @@ export const channels: Channel[] = [
   },
   {
     slug: 'instagram',
+    icon: '/icons/platforms/instagram.webp',
     name: 'Instagram',
     intro: 'Organize o feed, os Reels e os Stories no seu calendário.',
     formats:
@@ -44,6 +47,7 @@ export const channels: Channel[] = [
   },
   {
     slug: 'facebook',
+    icon: '/icons/platforms/facebook.webp',
     name: 'Facebook',
     intro:
       'Mantenha a Página do seu negócio presente, com posts preparados antes.',
@@ -60,6 +64,7 @@ export const channels: Channel[] = [
   },
   {
     slug: 'tiktok',
+    icon: '/icons/platforms/tiktok.webp',
     name: 'TikTok',
     intro: 'Prepare vídeos e fotos, e escolha como terminar a publicação.',
     formats:
@@ -76,6 +81,7 @@ export const channels: Channel[] = [
   },
   {
     slug: 'youtube',
+    icon: '/icons/platforms/youtube.webp',
     name: 'YouTube',
     intro: 'Planeje os próximos vídeos do seu canal com antecedência.',
     formats:
@@ -92,6 +98,7 @@ export const channels: Channel[] = [
   },
   {
     slug: 'linkedin',
+    icon: '/icons/platforms/linkedin.webp',
     name: 'LinkedIn',
     intro: 'Dê espaço às suas ideias e às novidades da empresa no calendário.',
     formats:
@@ -108,6 +115,7 @@ export const channels: Channel[] = [
   },
   {
     slug: 'threads',
+    icon: '/icons/platforms/threads.webp',
     name: 'Threads',
     intro: 'Organize as ideias que você quer compartilhar no Threads.',
     formats: 'Texto, imagem, vídeo e carrosséis de mídia.',

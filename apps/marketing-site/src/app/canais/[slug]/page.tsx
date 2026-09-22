@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BrandIcon } from '../../../components/brand-icon';
 import { notFound } from 'next/navigation';
 import { channels } from '../../../content/channels';
 import { pageMetadata } from '../../../content/site';
@@ -37,7 +38,10 @@ export default async function ChannelPage({
         <Link className="text-link small" href="/canais">
           Todos os canais
         </Link>
-        <p className="eyebrow mt-6">{channel.name}</p>
+        <p className="eyebrow mt-6 brand-label">
+          <BrandIcon src={channel.icon} />
+          {channel.name}
+        </p>
         <h1>Agende suas publicações no {channel.name}</h1>
         <p className="muted">{channel.intro}</p>
         <TrialOffer />

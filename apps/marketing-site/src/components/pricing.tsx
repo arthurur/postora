@@ -26,11 +26,11 @@ export function Pricing({ detailed = false }: { detailed?: boolean }) {
             Mensal
           </button>
           <button
-            aria-label="Anual, 25% de desconto"
+            aria-label="Anual, até 25% de desconto"
             aria-pressed={annual}
             onClick={() => setAnnual(true)}
           >
-            Anual <span>−25%</span>
+            Anual <span>até −25%</span>
           </button>
         </div>
       </div>

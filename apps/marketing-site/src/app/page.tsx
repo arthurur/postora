@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BrandIcon } from '../components/brand-icon';
 import { Pricing } from '../components/pricing';
 import { Signup } from '../components/signup';
 import { ProductShot } from '../components/product-shot';
@@ -42,7 +43,12 @@ export default function Home() {
         </p>
         <div className="network-links">
           {channels.map((channel) => (
-            <Link key={channel.slug} href={`/canais/${channel.slug}`}>
+            <Link
+              className="brand-label"
+              key={channel.slug}
+              href={`/canais/${channel.slug}`}
+            >
+              <BrandIcon src={channel.icon} />
               {channel.name}
             </Link>
           ))}
@@ -129,10 +135,11 @@ export default function Home() {
           <div className="chips">
             {agents.map((agent) => (
               <Link
-                className="secondary"
+                className="secondary brand-label"
                 key={agent.slug}
                 href={`/agentes/${agent.slug}`}
               >
+                <BrandIcon src={agent.icon} />
                 {agent.name}
               </Link>
             ))}

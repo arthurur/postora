@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BrandIcon } from '../../components/brand-icon';
 import { channels } from '../../content/channels';
 import { pageMetadata } from '../../content/site';
 import { TrialOffer } from '../../components/signup';
@@ -22,8 +23,12 @@ export default function Channels() {
       <div className="grid-three">
         {channels.map((channel) => (
           <article className="panel" key={channel.slug}>
-            <h2>
-              <Link className="text-link" href={`/canais/${channel.slug}`}>
+            <h2 className="text-2xl">
+              <Link
+                className="text-link brand-label"
+                href={`/canais/${channel.slug}`}
+              >
+                <BrandIcon src={channel.icon} />
                 {channel.name}
               </Link>
             </h2>

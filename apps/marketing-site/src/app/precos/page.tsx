@@ -4,7 +4,7 @@ import { pageMetadata } from '../../content/site';
 export const metadata = pageMetadata(
   '/precos',
   'Preços e planos',
-  'Compare Standard, Team, Pro e Ultimate em reais. Planos a partir de R$80 por mês, 25% de desconto no anual e teste grátis por 7 dias.'
+  'Compare Standard, Team, Pro e Ultimate em reais. Planos a partir de R$80 por mês, até 25% de desconto no anual e teste grátis por 7 dias.'
 );
 export default function Prices() {
   return (
@@ -32,7 +32,7 @@ export default function Prices() {
           ],
           [
             'Quanto pago no plano anual?',
-            'A cobrança é anual, em um único valor: R$720, R$1.080, R$1.350 ou R$2.250, conforme o plano. O valor mensal equivalente serve para comparação. O desconto é de 25% sobre doze mensalidades.',
+            'A cobrança é anual, em um único valor: R$720, R$1.080, R$1.380 ou R$2.280, conforme o plano. O valor mensal equivalente serve para comparação. O desconto é de 25% no Standard e no Team, cerca de 23,3% no Pro e 24% no Ultimate, em comparação com doze mensalidades.',
           ],
           [
             'Posso trabalhar com uma equipe?',

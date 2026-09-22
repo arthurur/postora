@@ -7,15 +7,15 @@ for (const path of ['/', '/precos']) {
     await page.goto(path);
     const monthly = page.getByRole('button', { name: 'Mensal', exact: true });
     const annual = page.getByRole('button', {
-      name: 'Anual, 25% de desconto',
+      name: 'Anual, até 25% de desconto',
       exact: true,
     });
     await expect(monthly).toHaveAttribute('aria-pressed', 'true');
     const prices = [
       ['Standard', '80', '60', '720', '5'],
       ['Team', '120', '90', '1.080', '10'],
-      ['Pro', '150', '112,50', '1.350', '30'],
-      ['Ultimate', '250', '187,50', '2.250', '100'],
+      ['Pro', '150', '115', '1.380', '30'],
+      ['Ultimate', '250', '190', '2.280', '100'],
     ];
     for (const [name, month, , , channels] of prices) {
       const plan = page.getByRole('article', { name, exact: true });

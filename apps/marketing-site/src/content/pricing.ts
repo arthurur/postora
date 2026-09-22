@@ -1,4 +1,5 @@
-// BRL offers approved in issue #1. Checkout configuration is a separate change.
+// BRL marketing offers. Annual Pro and Ultimate equivalents are R$115 and R$190.
+// Checkout configuration is a separate change.
 export const plans = [
   {
     name: 'Standard',
@@ -23,7 +24,7 @@ export const plans = [
   {
     name: 'Pro',
     monthly: 150,
-    annual: 1350,
+    annual: 1380,
     channels: 30,
     team: true,
     images: 300,
@@ -33,7 +34,7 @@ export const plans = [
   {
     name: 'Ultimate',
     monthly: 250,
-    annual: 2250,
+    annual: 2280,
     channels: 100,
     team: true,
     images: 500,

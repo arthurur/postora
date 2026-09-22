@@ -212,6 +212,25 @@ h3 {
   justify-content: center;
   font-weight: 600;
 }
+.brand-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 4px;
+}
+.network-links > a {
+  min-height: 44px;
+}
+.agent-cards .brand-icon {
+  width: 28px;
+  height: 28px;
+}
 .section {
   padding: 56px 0;
   border-bottom: 1px solid var(--new-border);
@@ -353,6 +372,104 @@ h3 {
 }
 .prompt {
   font-size: 20px;
+}
+.campaign-request {
+  background: var(--new-boxFocused);
+  border: 1px solid #e3d6fa;
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 14px;
+}
+.campaign-request .eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  margin-bottom: 5px;
+}
+.campaign-request p:last-child {
+  margin-bottom: 0;
+}
+.campaign-versions {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 20px 13px;
+  padding: 20px 0 0 19px;
+  border-left: 1px solid #ded4f2;
+  list-style: none;
+}
+.campaign-version {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--new-table-border);
+  border-radius: 10px;
+  padding: 14px;
+  background: var(--new-bgColorInner);
+}
+.campaign-version::before {
+  content: '';
+  position: absolute;
+  width: 19px;
+  height: 1px;
+  left: -20px;
+  top: 28px;
+  background: #ded4f2;
+}
+.campaign-platform {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.campaign-format {
+  margin-left: auto;
+  border-radius: 5px;
+  padding: 2px 7px;
+  background: var(--new-bgColor);
+  color: #555b63;
+  font-size: 10px;
+  font-weight: 500;
+}
+.campaign-version p {
+  margin: 0;
+  font-size: 13px;
+}
+.campaign-media {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.campaign-thumbnail {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 68px;
+  height: 68px;
+  border-radius: 8px;
+  background: #f3e6d5;
+  font-size: 32px;
+}
+@media (max-width: 380px) {
+  .campaign-example {
+    padding: 16px;
+  }
+  .campaign-versions {
+    margin-left: 6px;
+    padding-left: 12px;
+  }
+  .campaign-version::before {
+    left: -13px;
+    width: 12px;
+  }
+  .campaign-media {
+    align-items: flex-start;
+  }
+  .campaign-thumbnail {
+    width: 48px;
+    height: 54px;
+    font-size: 26px;
+  }
 }
 .page-heading {
   padding: 60px 0 32px;

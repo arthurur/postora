@@ -15,6 +15,9 @@ const canonical = [
   '/agentes/claude-code',
   '/agentes/codex',
   '/agentes/cursor',
+  '/agentes/chatgpt',
+  '/agentes/claude',
+  '/agentes/claude-cowork',
   '/docs/mcp/introducao',
   '/docs/mcp/configuracao',
   '/docs/mcp/ferramentas',
@@ -198,6 +201,6 @@ test('mobile navigation and billing work by keyboard and pointer with visible fo
   await page.keyboard.press('Tab');
   await page.keyboard.press('Space');
   await expect(
-    page.getByRole('button', { name: 'Anual, 25% de desconto' })
+    page.getByRole('button', { name: 'Anual, até 25% de desconto' })
   ).toHaveAttribute('aria-pressed', 'true');
 });

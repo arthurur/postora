@@ -36,6 +36,8 @@ export default function Layout({ children }: { children: ReactNode }) {
             <Link href="/canais">Canais</Link>
             <Link href="/agentes">Agentes de IA</Link>
             <Link href="/docs/mcp/introducao">Documentação</Link>
+            <Link href="/privacidade">Privacidade</Link>
+            <Link href="/termos">Termos de uso</Link>
           </nav>
           <span className="muted">Português · Brasil</span>
         </footer>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BrandIcon } from '../../components/brand-icon';
 import { agents } from '../../content/agents';
 import { pageMetadata } from '../../content/site';
 import { TrialOffer } from '../../components/signup';
@@ -6,7 +7,7 @@ import { TrialOffer } from '../../components/signup';
 export const metadata = pageMetadata(
   '/agentes',
   'Agentes de IA e MCP',
-  'Conecte Claude Code, Codex ou Cursor ao Postora por MCP para consultar canais, preparar rascunhos e agendar publicações.'
+  'Conecte ChatGPT, Claude, Claude Cowork, Claude Code, Codex ou Cursor ao Postora por MCP para preparar e agendar publicações.'
 );
 export default function Agents() {
   return (
@@ -19,11 +20,15 @@ export default function Agents() {
           publicações, prepare rascunhos e aprove o que será agendado.
         </p>
       </header>
-      <div className="grid-three">
+      <div className="grid-three agent-cards">
         {agents.map((agent) => (
           <article className="panel" key={agent.slug}>
-            <h2>
-              <Link className="text-link" href={`/agentes/${agent.slug}`}>
+            <h2 className="text-2xl">
+              <Link
+                className="text-link brand-label"
+                href={`/agentes/${agent.slug}`}
+              >
+                <BrandIcon src={agent.icon} />
                 {agent.name}
               </Link>
             </h2>
