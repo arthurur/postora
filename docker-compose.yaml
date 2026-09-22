@@ -1,4 +1,15 @@
 services:
+  marketing-site:
+    build:
+      context: .
+      dockerfile: apps/marketing-site/Dockerfile
+    image: postora-marketing:local
+    restart: always
+    ports:
+      - '4300:4300'
+    networks:
+      - postiz-network
+
   postiz:
     image: ghcr.io/gitroomhq/postiz-app:latest
     container_name: postiz

@@ -7,7 +7,7 @@ node_modules
 docker-data/*
 dist
 .nx
-/apps/frontend/.next
+**/.next
 /apps/backend/dist
 /apps/workers/dist
 /apps/cron/dist
@@ -21,3 +21,4 @@ dist
 .git
 .github
 reports
+**/tsconfig.tsbuildinfo

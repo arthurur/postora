@@ -19,6 +19,16 @@ pnpm test:marketing
 
 The site runs at `http://127.0.0.1:4300`. The test command builds and starts its own production server on that port; stop another marketing server before running it. `PLAYWRIGHT_CHANNEL=chrome pnpm test:marketing` uses an installed Chrome instead of Playwright's downloaded Chromium.
 
+## Docker Compose
+
+From the repository root, `docker compose up -d --build` builds and starts the marketing site alongside the existing Postiz service and its dependencies. The marketing site is available on host port 4300; the app remains on host port 4007. To rebuild the marketing image after site changes, run `docker compose up -d --build marketing-site`.
+
+For the planned domains, point both DNS records at the Docker host and configure its HTTPS reverse proxy to send `postora.com.br` to port 4300 and `app.postora.com.br` to port 4007. The Compose file publishes those ports but does not manage DNS or TLS. The marketing image builds from this monorepo; the existing Postiz service still uses the upstream image unless the separate production deployment flow replaces it with a locally built image.
+
+On the deployment host, set `FRONTEND_URL=https://app.postora.com.br` and `NEXT_PUBLIC_BACKEND_URL=https://app.postora.com.br/api` in the app's `.env` before building the Postiz image. These URLs are used in redirects, cookies, API calls and the frontend build. Keep `BACKEND_INTERNAL_URL` pointed at the backend inside the app container. The existing `deploy:production` command updates only Postiz; use the Compose marketing command above when deploying marketing changes.
+
+`docker-compose.dev.yaml` remains the infrastructure-only development stack. Run `pnpm dev:marketing` alongside `pnpm dev` when using that stack.
+
 The browser/HTTP seam covers all 18 canonical pages, initial HTML without JavaScript, metadata, internal links, redirects, 404 status, pricing in both directions, keyboard navigation and layouts at 320, 390, 768 and 1440px. It inspects signup/login targets without visiting them. No test connects to live accounts or publishes posts.
 
 ## Product screenshots
