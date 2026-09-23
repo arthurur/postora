@@ -21,11 +21,11 @@ The site runs at `http://127.0.0.1:4300`. The test command builds and starts its
 
 ## Docker Compose
 
-From the repository root, `docker compose up -d --build` builds and starts the marketing site alongside the existing Postiz service and its dependencies. The marketing site is available on host port 4300; the app remains on host port 4007. To rebuild the marketing image after site changes, run `docker compose up -d --build marketing-site`.
+From the repository root, `docker compose pull postiz marketing-site` and `docker compose up -d postiz marketing-site` start the published app and marketing images in the same Compose project. The marketing site is available on host port 4300; the app remains on host port 4007. Use `docker compose up -d --build` only when testing changes to a local Dockerfile with an explicit build configuration.
 
-For the planned domains, point both DNS records at the Docker host and configure its HTTPS reverse proxy to send `postora.com.br` to port 4300 and `app.postora.com.br` to port 4007. The Compose file publishes those ports but does not manage DNS or TLS. The marketing image builds from this monorepo; the existing Postiz service still uses the upstream image unless the separate production deployment flow replaces it with a locally built image.
+For the planned domains, point both DNS records at the Docker host and configure its HTTPS reverse proxy to send `postora.com.br` to port 4300 and `app.postora.com.br` to port 4007. The Compose file publishes those ports but does not manage DNS or TLS. The `Build Containers` workflow publishes both images to GHCR under separate tags of the same package.
 
-On the deployment host, set `FRONTEND_URL=https://app.postora.com.br` and `NEXT_PUBLIC_BACKEND_URL=https://app.postora.com.br/api` in the app's `.env` before building the Postiz image. These URLs are used in redirects, cookies, API calls and the frontend build. Keep `BACKEND_INTERNAL_URL` pointed at the backend inside the app container. The existing `deploy:production` command updates only Postiz; use the Compose marketing command above when deploying marketing changes.
+On the deployment host, keep `FRONTEND_URL=https://app.postora.com.br` and `NEXT_PUBLIC_BACKEND_URL=https://app.postora.com.br/api` in the app's `.env`. These URLs are used in redirects, cookies and API calls. Keep `BACKEND_INTERNAL_URL` pointed at the backend inside the app container. The existing `deploy:production` command still builds only Postiz locally; use the Compose commands above when deploying published images.
 
 `docker-compose.dev.yaml` remains the infrastructure-only development stack. Run `pnpm dev:marketing` alongside `pnpm dev` when using that stack.
 

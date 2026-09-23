@@ -1,9 +1,6 @@
 services:
   marketing-site:
-    build:
-      context: .
-      dockerfile: apps/marketing-site/Dockerfile
-    image: postora-marketing:local
+    image: ghcr.io/arthurur/postora:marketing-${POSTORA_IMAGE_TAG:-main}
     restart: always
     ports:
       - '4300:4300'

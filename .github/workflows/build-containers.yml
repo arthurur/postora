@@ -34,8 +34,20 @@ jobs:
         include:
           - runnertags: ubuntu-latest
             arch: amd64
+            dockerfile: Dockerfile.dev
+            suffix: ''
+          - runnertags: ubuntu-latest
+            arch: amd64
+            dockerfile: apps/marketing-site/Dockerfile
+            suffix: '-marketing'
           - runnertags: ubuntu-24.04-arm
             arch: arm64
+            dockerfile: Dockerfile.dev
+            suffix: ''
+          - runnertags: ubuntu-24.04-arm
+            arch: arm64
+            dockerfile: apps/marketing-site/Dockerfile
+            suffix: '-marketing'
     runs-on: ${{ matrix.runnertags }}
     steps:
       - name: Checkout
@@ -59,10 +71,12 @@ jobs:
           VERSION: ${{ needs.build-containers-common.outputs.version }}
           BUILD: ${{ needs.build-containers-common.outputs.build }}
           ARCH: ${{ matrix.arch }}
+          DOCKERFILE: ${{ matrix.dockerfile }}
+          SUFFIX: ${{ matrix.suffix }}
         run: |
           docker buildx build --platform "linux/${ARCH}" \
-            -f Dockerfile.dev \
-            -t "${IMAGE}:${BUILD}-${ARCH}" \
+            -f "${DOCKERFILE}" \
+            -t "${IMAGE}:${BUILD}${SUFFIX}-${ARCH}" \
             --build-arg "NEXT_PUBLIC_VERSION=${VERSION}" \
             --label "org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
             --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
@@ -98,10 +112,16 @@ jobs:
             "${IMAGE}:${BUILD}-amd64" \
             "${IMAGE}:${BUILD}-arm64"
           docker buildx imagetools inspect "${IMAGE}:${VERSION}"
+          docker buildx imagetools create -t "${IMAGE}:marketing-${VERSION}" \
+            "${IMAGE}:${BUILD}-marketing-amd64" \
+            "${IMAGE}:${BUILD}-marketing-arm64"
+          docker buildx imagetools inspect "${IMAGE}:marketing-${VERSION}"
 
           # Rerunning an older commit must not move the main image backwards.
           main_sha=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')
           if [ "$main_sha" = "$GITHUB_SHA" ]; then
+            docker buildx imagetools create -t "${IMAGE}:marketing-main" "${IMAGE}:marketing-${VERSION}"
+            docker buildx imagetools inspect "${IMAGE}:marketing-main"
             docker buildx imagetools create -t "${IMAGE}:main" "${IMAGE}:${VERSION}"
             docker buildx imagetools inspect "${IMAGE}:main"
           else
