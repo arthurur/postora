@@ -174,13 +174,19 @@ const Plug: FC<{
           >
             <div>{plug.description}</div>
             <Select
-              label="Delay"
+              label={t('label_delay', 'Delay')}
               hideErrors={true}
               {...register(`plug--${plug.identifier}--delay`)}
             >
               {delayOptions.map((p) => (
                 <option key={p.name} value={p.value}>
-                  {p.name}
+                  {p.value === 0
+                    ? t('delay_immediately', 'Immediately')
+                    : p.value === 3600000
+                    ? t('delay_one_hour', '1 hour')
+                    : t('delay_hours', '{{hours}} hours', {
+                        hours: p.value / 3600000,
+                      })}
                 </option>
               ))}
             </Select>

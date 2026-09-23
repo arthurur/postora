@@ -26,6 +26,7 @@ const mcpClients = [
 type McpClient = (typeof mcpClients)[number];
 
 const getMcpConfig = (
+  t: (key: string, fallback: string) => string,
   client: McpClient,
   method: 'header' | 'path',
   mcpBase: string,
@@ -41,47 +42,59 @@ const getMcpConfig = (
     switch (client) {
       case 'Claude Code':
         return {
-          config: `claude mcp add postiz --transport http "${urlWithKey}"`,
-          hint: 'Run this command in your terminal.',
+          config: `claude mcp add postora --transport http "${urlWithKey}"`,
+          hint: t('mcp_hint_run_in_terminal', 'Run this command in your terminal.'),
         };
       case 'Cursor':
         return {
-          config: json({ mcpServers: { postiz: { url: urlWithKey } } }),
-          hint: 'Add to .cursor/mcp.json in your project root.',
+          config: json({ mcpServers: { postora: { url: urlWithKey } } }),
+          hint: t(
+            'mcp_hint_cursor',
+            'Add to .cursor/mcp.json in your project root.'
+          ),
         };
       case 'VS Code / Copilot':
         return {
           config: json({
-            servers: { postiz: { type: 'http', url: urlWithKey } },
+            servers: { postora: { type: 'http', url: urlWithKey } },
           }),
-          hint: 'Add to .vscode/mcp.json in your project root.',
+          hint: t(
+            'mcp_hint_vscode',
+            'Add to .vscode/mcp.json in your project root.'
+          ),
         };
       case 'Windsurf':
         return {
           config: json({
-            mcpServers: { postiz: { serverUrl: urlWithKey } },
+            mcpServers: { postora: { serverUrl: urlWithKey } },
           }),
-          hint: 'Add to ~/.codeium/windsurf/mcp_config.json',
+          hint: t(
+            'mcp_hint_windsurf',
+            'Add to ~/.codeium/windsurf/mcp_config.json'
+          ),
         };
       case 'Amp':
         return {
-          config: `amp mcp add postiz ${urlWithKey}`,
-          hint: 'Run this command in your terminal.',
+          config: `amp mcp add postora ${urlWithKey}`,
+          hint: t('mcp_hint_run_in_terminal', 'Run this command in your terminal.'),
         };
       case 'Codex':
         return {
-          config: `# ~/.codex/config.toml\n\n[mcp_servers.postiz]\nurl = "${urlWithKey}"`,
-          hint: 'Add to ~/.codex/config.toml',
+          config: `# ~/.codex/config.toml\n\n[mcp_servers.postora]\nurl = "${urlWithKey}"`,
+          hint: t('mcp_hint_codex', 'Add to ~/.codex/config.toml'),
         };
       case 'Gemini CLI':
         return {
-          config: json({ mcpServers: { postiz: { url: urlWithKey } } }),
-          hint: 'Add to ~/.gemini/settings.json',
+          config: json({ mcpServers: { postora: { url: urlWithKey } } }),
+          hint: t('mcp_hint_gemini', 'Add to ~/.gemini/settings.json'),
         };
       case 'Warp':
         return {
-          config: json({ postiz: { url: urlWithKey } }),
-          hint: 'Settings > MCP Servers > + Add, then paste this config.',
+          config: json({ postora: { url: urlWithKey } }),
+          hint: t(
+            'mcp_hint_warp',
+            'Settings > MCP Servers > + Add, then paste this config.'
+          ),
         };
     }
   }
@@ -89,72 +102,84 @@ const getMcpConfig = (
   switch (client) {
     case 'Claude Code':
       return {
-        config: `claude mcp add --transport http postiz ${urlBase} --header "Authorization: ${bearer}"`,
-        hint: 'Run this command in your terminal.',
+        config: `claude mcp add --transport http postora ${urlBase} --header "Authorization: ${bearer}"`,
+        hint: t('mcp_hint_run_in_terminal', 'Run this command in your terminal.'),
       };
     case 'Cursor':
       return {
         config: json({
           mcpServers: {
-            postiz: { url: urlBase, headers: { Authorization: bearer } },
+            postora: { url: urlBase, headers: { Authorization: bearer } },
           },
         }),
-        hint: 'Add to .cursor/mcp.json in your project root.',
+        hint: t(
+            'mcp_hint_cursor',
+            'Add to .cursor/mcp.json in your project root.'
+          ),
       };
     case 'VS Code / Copilot':
       return {
         config: json({
           servers: {
-            postiz: {
+            postora: {
               type: 'http',
               url: urlBase,
               headers: { Authorization: bearer },
             },
           },
         }),
-        hint: 'Add to .vscode/mcp.json in your project root.',
+        hint: t(
+            'mcp_hint_vscode',
+            'Add to .vscode/mcp.json in your project root.'
+          ),
       };
     case 'Windsurf':
       return {
         config: json({
           mcpServers: {
-            postiz: {
+            postora: {
               serverUrl: urlBase,
               headers: { Authorization: bearer },
             },
           },
         }),
-        hint: 'Add to ~/.codeium/windsurf/mcp_config.json',
+        hint: t(
+            'mcp_hint_windsurf',
+            'Add to ~/.codeium/windsurf/mcp_config.json'
+          ),
       };
     case 'Amp':
       return {
         config: json({
           'amp.mcpServers': {
-            postiz: { url: urlBase, headers: { Authorization: bearer } },
+            postora: { url: urlBase, headers: { Authorization: bearer } },
           },
         }),
-        hint: 'Add to your Amp settings.json',
+        hint: t('mcp_hint_amp', 'Add to your Amp settings.json'),
       };
     case 'Codex':
       return {
-        config: `# ~/.codex/config.toml\n\n[mcp_servers.postiz]\nurl = "${urlBase}"\nhttp_headers = { "Authorization" = "${bearer}" }`,
-        hint: 'Add to ~/.codex/config.toml',
+        config: `# ~/.codex/config.toml\n\n[mcp_servers.postora]\nurl = "${urlBase}"\nhttp_headers = { "Authorization" = "${bearer}" }`,
+        hint: t('mcp_hint_codex', 'Add to ~/.codex/config.toml'),
       };
     case 'Gemini CLI':
       return {
         config: json({
           mcpServers: {
-            postiz: { url: urlBase, headers: { Authorization: bearer } },
+            postora: { url: urlBase, headers: { Authorization: bearer } },
           },
         }),
-        hint: 'Add to ~/.gemini/settings.json',
+        hint: t('mcp_hint_gemini', 'Add to ~/.gemini/settings.json'),
       };
     case 'Warp':
       return {
         config: json({
-          postiz: { url: urlBase, headers: { Authorization: bearer } },
+          postora: { url: urlBase, headers: { Authorization: bearer } },
         }),
-        hint: 'Settings > MCP Servers > + Add, then paste this config.',
+        hint: t(
+            'mcp_hint_warp',
+            'Settings > MCP Servers > + Add, then paste this config.'
+          ),
       };
   }
 };
@@ -207,6 +232,7 @@ const McpSection = ({
   const [revealed, setRevealed] = useState(false);
 
   const { config, hint } = getMcpConfig(
+    t,
     activeClient,
     method,
     mcpBase,
@@ -234,14 +260,14 @@ const McpSection = ({
           <div className="text-[13px] text-customColor18 mt-[2px]">
             {t(
               'connect_your_mcp_client_to_postiz_to_schedule_your_posts_faster',
-              'Connect Postiz MCP server to your client (Http streaming) to schedule your posts faster.'
+              'Connect Postora MCP server to your client (Http streaming) to schedule your posts faster.'
             )}
           </div>
         </div>
         <div className="flex gap-[6px] shrink-0 pt-[2px]">
           <a
             className="cursor-pointer px-[16px] h-[36px] bg-[#612BD3] hover:bg-[#5520CB] text-white transition-colors rounded-[8px] text-[13px] font-[600] flex items-center gap-[6px]"
-            href="https://docs.postiz.com/mcp/introduction"
+            href="https://postora.com.br/docs/mcp/introducao"
             target="_blank"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
@@ -358,35 +384,44 @@ const McpSection = ({
   );
 };
 
-const localCliSteps = [
+const getLocalCliSteps = (t: (key: string, fallback: string) => string) => [
   {
-    label: 'Install the CLI',
+    label: t('cli_step_install_cli', 'Install the CLI'),
     code: 'npm install -g postiz',
   },
   {
-    label: 'Run: postiz auth:login',
+    label: t('cli_step_run_auth_login', 'Run: postiz auth:login'),
     code: 'postiz auth:login',
   },
   {
-    label: 'Install the Postiz skill for your AI agent',
+    label: t(
+      'cli_step_install_skill',
+      'Install the Postora skill for your AI agent'
+    ),
     code: 'npx skills add gitroomhq/postiz-agent',
   },
-] as const;
+];
 
-const ciCliSteps = [
+const getCiCliSteps = (t: (key: string, fallback: string) => string) => [
   {
-    label: 'Install the CLI',
+    label: t('cli_step_install_cli', 'Install the CLI'),
     code: 'npm install -g postiz',
   },
   {
-    label: 'Set your API key as an environment variable',
+    label: t(
+      'cli_step_set_api_key_env',
+      'Set your API key as an environment variable'
+    ),
     code: 'export POSTIZ_API_KEY="{API_KEY}"',
   },
   {
-    label: 'Install the Postiz skill for your AI agent',
+    label: t(
+      'cli_step_install_skill',
+      'Install the Postora skill for your AI agent'
+    ),
     code: 'npx skills add gitroomhq/postiz-agent',
   },
-] as const;
+];
 
 const CliSection = ({ apiKey }: { apiKey: string }) => {
   const t = useT();
@@ -395,8 +430,8 @@ const CliSection = ({ apiKey }: { apiKey: string }) => {
 
   const steps =
     mode === 'local'
-      ? localCliSteps.map((step) => ({ ...step }))
-      : ciCliSteps.map((step) => ({
+      ? getLocalCliSteps(t).map((step) => ({ ...step }))
+      : getCiCliSteps(t).map((step) => ({
           ...step,
           code: step.code.replace('{API_KEY}', apiKey),
         }));
@@ -422,7 +457,7 @@ const CliSection = ({ apiKey }: { apiKey: string }) => {
           <div className="text-[13px] text-customColor18 mt-[2px]">
             {t(
               'cli_description',
-              'Use the Postiz CLI to automate posting from your terminal, or install the skill to let your AI agent schedule posts for you.'
+              'Use the Postora CLI to automate posting from your terminal, or install the skill to let your AI agent schedule posts for you.'
             )}
           </div>
         </div>
@@ -538,7 +573,7 @@ const PublicApiContent = () => {
       t('api_key_rotated', 'API Key rotated successfully'),
       'success'
     );
-  }, [decision, fetch, mutate, toaster]);
+  }, [decision, fetch, mutate, toaster, t]);
 
   if (!user || !user.publicApi) {
     return null;
@@ -556,7 +591,7 @@ const PublicApiContent = () => {
         <br />
         {t(
           'api_auth_note_line2',
-          'If you are building a product that schedules posts on behalf of other Postiz users,'
+          'If you are building a product that schedules posts on behalf of other Postora users,'
         )}
         <br />
         {t(
@@ -578,7 +613,7 @@ const PublicApiContent = () => {
             <div className="text-[13px] text-customColor18 mt-[2px]">
               {t(
                 'use_postiz_api_to_integrate_with_your_tools',
-                'Use Postiz API to integrate with your tools.'
+                'Use Postora API to integrate with your tools.'
               )}
             </div>
           </div>

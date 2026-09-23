@@ -15,22 +15,27 @@ import { MediaComponent } from '@gitroom/frontend/components/media/media.compone
 
 const whoCanReply = [
   {
+    key: 'x_reply_everyone',
     label: 'Everyone',
     value: 'everyone',
   },
   {
+    key: 'x_reply_following',
     label: 'Accounts you follow',
     value: 'following',
   },
   {
+    key: 'x_reply_mentioned_users',
     label: 'Mentioned accounts',
     value: 'mentionedUsers',
   },
   {
+    key: 'x_reply_subscribers',
     label: 'Subscribers',
     value: 'subscribers',
   },
   {
+    key: 'x_reply_verified',
     label: 'Verified accounts',
     value: 'verified',
   },
@@ -103,15 +108,16 @@ const SettingsComponent = () => {
           >
             {whoCanReply.map((item) => (
               <option key={item.value} value={item.value}>
-                {item.label}
+                {t(item.key, item.label)}
               </option>
             ))}
           </Select>
 
           <Input
-            label={
+            label={t(
+              'x_community_url_label',
               'Post to a community, URL (Ex: https://x.com/i/communities/1493446837214187523)'
-            }
+            )}
             {...register('community')}
           />
 

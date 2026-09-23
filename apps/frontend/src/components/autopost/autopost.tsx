@@ -34,7 +34,7 @@ export const Autopost: FC = () => {
         children: <AddOrEditWebhook data={data} reload={mutate} />,
       });
     },
-    []
+    [t]
   );
   const deleteHook = useCallback(
     (data: any) => async () => {
@@ -42,7 +42,7 @@ export const Autopost: FC = () => {
         await deleteDialog(
           t(
             'are_you_sure_you_want_to_delete',
-            `Are you sure you want to delete ${data.name}?`,
+            'Are you sure you want to delete {{name}}?',
             { name: data.name }
           )
         )
@@ -54,7 +54,7 @@ export const Autopost: FC = () => {
         toaster.show(t('webhook_deleted_successfully', 'Webhook deleted successfully'), 'success');
       }
     },
-    []
+    [t]
   );
   const changeActive = useCallback(
     (data: any) => async (ac: 'on' | 'off') => {
@@ -267,7 +267,7 @@ export const AddOrEditWebhook: FC<{
       modal.closeAll();
       reload();
     },
-    [data, integrations, lastUrl, syncLast]
+    [data, integrations, lastUrl, syncLast, t]
   );
   const sendTest = useCallback(async () => {
     const url = form.getValues('url');
@@ -291,7 +291,7 @@ export const AddOrEditWebhook: FC<{
     } catch (e: any) {
       /** empty **/
     }
-  }, []);
+  }, [t]);
 
   return (
     <FormProvider {...form}>

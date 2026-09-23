@@ -44,6 +44,7 @@ export function useUppyUploader(props: {
 }) {
   const setLocked = useLaunchStore((state) => state.setLocked);
   const toast = useToaster();
+  const t = useT();
   const { storageProvider, backendUrl, disableImageCompression, transloadit } =
     useVariables();
   const { onUploadSuccess, allowedFileTypes } = props;
@@ -110,7 +111,11 @@ export function useUppyUploader(props: {
               uppy2.log(error.message, 'error');
               uppy2.info(error.message, 'error', 5000);
               toast.show(
-                `File type "${fileType}" is not allowed. Allowed types: ${allowedFileTypes}`,
+                t(
+                  'file_type_not_allowed',
+                  'File type "{{fileType}}" is not allowed. Allowed types: {{allowedTypes}}',
+                  { fileType, allowedTypes: allowedFileTypes }
+                ),
                 'warning'
               );
               uppy2.removeFile(file.id);
@@ -142,7 +147,10 @@ export function useUppyUploader(props: {
               uppy2.log(error.message, 'error');
               uppy2.info(error.message, 'error', 5000);
               toast.show(
-                `Image file is too large. Maximum size allowed is 30MB.`
+                t(
+                  'image_file_too_large',
+                  'Image file is too large. Maximum size allowed is 30MB.'
+                )
               );
               uppy2.removeFile(file.id); // Remove file from queue
               return reject(error);
@@ -155,7 +163,10 @@ export function useUppyUploader(props: {
               uppy2.log(error.message, 'error');
               uppy2.info(error.message, 'error', 5000);
               toast.show(
-                `Video file is too large. Maximum size allowed is 1GB.`
+                t(
+                  'video_file_too_large',
+                  'Video file is too large. Maximum size allowed is 1GB.'
+                )
               );
               uppy2.removeFile(file.id); // Remove file from queue
               return reject(error);
@@ -280,5 +291,5 @@ export function useUppyUploader(props: {
       });
     });
     return uppy2;
-  }, []);
+  }, [t]);
 }
