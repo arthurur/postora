@@ -9,6 +9,34 @@ A imagem inclui frontend, backend e orchestrator, usando `Dockerfile.dev`.
 O site de marketing continua com seu próprio Dockerfile e não faz parte desta
 publicação. PostgreSQL, Redis e Temporal continuam como serviços separados.
 
+## Estrutura do projeto na Hostinger
+
+O projeto mostrado no painel da VPS tem nove containers, gerenciados pelo mesmo
+Compose. Cada serviço usa sua própria imagem. A imagem publicada pelo Postora
+substitui a imagem do serviço `postiz` dentro desse projeto.
+
+| Container                | Conteúdo                                 | Atualização com a imagem do Postora     |
+| ------------------------ | ---------------------------------------- | --------------------------------------- |
+| `postiz`                 | Frontend, backend, orchestrator e Nginx  | Usa `ghcr.io/arthurur/postora:main`     |
+| `postiz-postgres`        | Banco do app                             | Mantém a imagem e a configuração atuais |
+| `postiz-redis`           | Redis do app                             | Mantém a imagem e a configuração atuais |
+| `spotlight`              | Monitoramento e depuração                | Mantém a imagem e a configuração atuais |
+| `temporal`               | Servidor Temporal                        | Mantém a imagem e a configuração atuais |
+| `temporal-admin-tools`   | Ferramentas de administração do Temporal | Mantém a imagem e a configuração atuais |
+| `temporal-elasticsearch` | Elasticsearch do Temporal                | Mantém a imagem e a configuração atuais |
+| `temporal-postgresql`    | Banco do Temporal                        | Mantém a imagem e a configuração atuais |
+| `temporal-ui`            | Interface do Temporal                    | Mantém a imagem e a configuração atuais |
+
+O `orchestrator` é o worker do app e roda dentro de `postiz`; ele se conecta ao
+servidor do container `temporal`. A publicação não cria containers separados para
+frontend, backend ou worker. O Nginx continua ouvindo na porta interna `5000`,
+compatível com o mapeamento `4007:5000` mostrado no painel.
+
+O Compose local também contém `marketing-site`, que não aparece na configuração
+mostrada da VPS. Esse serviço não precisa ser adicionado para usar a nova imagem.
+A captura não informa as versões das imagens, variáveis, redes ou volumes em uso;
+essas configurações devem ser preservadas no Compose da Hostinger.
+
 ## Publicação inicial
 
 1. Coloque esta configuração na `main` do repositório `arthurur/postora`.
@@ -48,9 +76,13 @@ endereço com digest, `ghcr.io/arthurur/postora@sha256:<digest>`.
 
 ## Atualização na VPS da Hostinger
 
-Edite o serviço do app no **projeto Compose que já está em uso na Hostinger**.
+No editor Compose do **projeto que já está em uso na Hostinger**, localize
+`services.postiz.image` e substitua seu valor por `ghcr.io/arthurur/postora:main`.
 Preserve o nome do projeto, as variáveis, os volumes, as redes e os demais serviços.
 Não substitua a configuração inteira pelo Compose de desenvolvimento deste repo.
+
+Este trecho mostra apenas a linha da imagem dentro do serviço. Não é um Compose
+completo e não deve substituir o conteúdo do editor:
 
 ```yaml
 services:
@@ -78,6 +110,8 @@ docker compose logs --tail=100 postiz
 
 Substitua `postiz` se o serviço tiver outro nome. A recriação pode causar uma breve
 indisponibilidade. Confira o acesso ao app e os logs após a atualização.
+O comando `up` acima recria somente `postiz`; os outros oito containers continuam
+em execução. Não é necessário executar `docker compose down` para essa atualização.
 
 O `docker-compose.yaml` deste repo usa
 `ghcr.io/arthurur/postora:${POSTORA_IMAGE_TAG:-main}`. Se estiver usando esse mesmo
