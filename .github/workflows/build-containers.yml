@@ -1,22 +1,31 @@
 ---
-name: "Build Containers"
+name: Build Containers
 
 on:
   workflow_dispatch:
   push:
-    tags:
-      - '*'
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build-containers-common:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     outputs:
-      containerver: ${{ steps.getcontainerver.outputs.containerver }}
+      image: ${{ steps.metadata.outputs.image }}
+      version: ${{ steps.metadata.outputs.version }}
+      build: ${{ steps.metadata.outputs.build }}
     steps:
-      - name: Get Container Version
-        id: getcontainerver
+      - name: Get image metadata
+        id: metadata
         run: |
-          echo "containerver=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+          echo "version=sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+          echo "build=build-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
 
   build-containers:
     needs: build-containers-common
@@ -32,72 +41,69 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to ghcr
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Build and Push Image
+      - name: Build and push image
         env:
-          CONTAINERVER: ${{ needs.build-containers-common.outputs.containerver }}
-          NEXT_PUBLIC_VERSION: ${{ github.ref_name }}
+          IMAGE: ${{ needs.build-containers-common.outputs.image }}
+          VERSION: ${{ needs.build-containers-common.outputs.version }}
+          BUILD: ${{ needs.build-containers-common.outputs.build }}
+          ARCH: ${{ matrix.arch }}
         run: |
-          docker buildx build --platform linux/${{ matrix.arch }} \
+          docker buildx build --platform "linux/${ARCH}" \
             -f Dockerfile.dev \
-            -t ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }}-${{ matrix.arch }} \
-            --build-arg NEXT_PUBLIC_VERSION=${{ env.NEXT_PUBLIC_VERSION }} \
+            -t "${IMAGE}:${BUILD}-${ARCH}" \
+            --build-arg "NEXT_PUBLIC_VERSION=${VERSION}" \
+            --label "org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
+            --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
             --pull \
-            --no-cache \
             --provenance=false --sbom=false \
-            --output "type=registry,name=ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }}-${{ matrix.arch }}" .
+            --push .
 
   build-container-manifest:
     needs: [build-containers, build-containers-common]
     runs-on: ubuntu-latest
+    concurrency:
+      group: publish-container-main
+      cancel-in-progress: false
     steps:
-      - name: Login to ghcr
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Create Docker Manifest
+      - name: Publish commit image and update main
         env:
-          CONTAINERVER: ${{ needs.build-containers-common.outputs.containerver }}
+          IMAGE: ${{ needs.build-containers-common.outputs.image }}
+          VERSION: ${{ needs.build-containers-common.outputs.version }}
+          BUILD: ${{ needs.build-containers-common.outputs.build }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          # Verify the architecture images
-          echo "Verifying AMD64 image:"
-          docker buildx imagetools inspect ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }}-amd64
-          
-          echo "Verifying ARM64 image:"
-          docker buildx imagetools inspect ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }}-arm64
-          
-          # Try to remove any existing manifests first
-          docker manifest rm ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }} || true
-          docker manifest rm ghcr.io/gitroomhq/postiz-app:latest || true
-          
-          # Create and push the version-specific manifest
-          docker manifest create ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }} \
-            --amend ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }}-amd64 \
-            --amend ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }}-arm64
+          docker buildx imagetools create -t "${IMAGE}:${VERSION}" \
+            "${IMAGE}:${BUILD}-amd64" \
+            "${IMAGE}:${BUILD}-arm64"
+          docker buildx imagetools inspect "${IMAGE}:${VERSION}"
 
-          docker manifest push ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }}
-
-          # Create and push the latest manifest
-          docker manifest create ghcr.io/gitroomhq/postiz-app:latest \
-            --amend ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }}-amd64 \
-            --amend ghcr.io/gitroomhq/postiz-app:${{ env.CONTAINERVER }}-arm64
-
-          docker manifest push ghcr.io/gitroomhq/postiz-app:latest
-
-      - name: Verify Manifest
-        run: |
-          docker manifest inspect ghcr.io/gitroomhq/postiz-app:latest
+          # Rerunning an older commit must not move the main image backwards.
+          main_sha=$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')
+          if [ "$main_sha" = "$GITHUB_SHA" ]; then
+            docker buildx imagetools create -t "${IMAGE}:main" "${IMAGE}:${VERSION}"
+            docker buildx imagetools inspect "${IMAGE}:main"
+          else
+            echo "Published ${VERSION}; main has moved on, so its image was not updated."
+          fi

@@ -22,3 +22,18 @@ dist
 .github
 reports
 **/tsconfig.tsbuildinfo
+
+# Runtime credentials and local data must never enter a published image.
+**/.env
+**/.env.*
+**/.secrets
+**/.ssh
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+/uploads
+/backups
+/config
+/.agents
+/.claude

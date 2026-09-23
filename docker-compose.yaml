@@ -11,7 +11,7 @@ services:
       - postiz-network
 
   postiz:
-    image: ghcr.io/gitroomhq/postiz-app:latest
+    image: ghcr.io/arthurur/postora:${POSTORA_IMAGE_TAG:-main}
     container_name: postiz
     restart: always
     env_file:
