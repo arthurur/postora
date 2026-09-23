@@ -22,6 +22,10 @@ i18next
     detection: {
       order: ['cookie', 'header'],
     },
+    // React escapes rendered values already; escaping here would show "&amp;".
+    interpolation: {
+      escapeValue: false,
+    },
     preload: runsOnServerSide ? languages : [],
   });
 

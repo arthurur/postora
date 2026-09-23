@@ -20,19 +20,22 @@ export const SignaturesComponent: FC<{
   const fetch = useFetch();
   const modal = useModals();
   const toaster = useToaster();
+  const t = useT();
   const load = useCallback(async () => {
     return (await fetch('/signatures')).json();
-  }, []);
+  }, [fetch]);
   const { data, mutate } = useSWR('signatures', load);
   const addSignature = useCallback(
     (data?: any) => () => {
       modal.openModal({
-        title: data ? 'Edit Signature' : 'Add Signature',
+        title: data
+          ? t('top_title_edit_signature', 'Edit Signature')
+          : t('top_title_add_signature', 'Add signature'),
         withCloseButton: true,
         children: <AddOrRemoveSignature data={data} reload={mutate} />,
       });
     },
-    [mutate]
+    [modal, mutate, t]
   );
 
   const deleteSignature = useCallback(
@@ -50,13 +53,14 @@ export const SignaturesComponent: FC<{
           method: 'DELETE',
         });
         mutate();
-        toaster.show('Signature deleted successfully', 'success');
+        toaster.show(
+          t('signature_deleted_successfully', 'Signature deleted successfully'),
+          'success'
+        );
       }
     },
-    []
+    [fetch, mutate, t, toaster]
   );
-
-  const t = useT();
 
   return (
     <div className="flex flex-col">
@@ -93,7 +97,7 @@ export const SignaturesComponent: FC<{
                   </div>
                   <div className="flex flex-col justify-center relative me-[20px]">
                     <div className="text-center w-full absolute start-0 line-clamp-1 top-[50%] -translate-y-[50%]">
-                      {p.autoAdd ? 'Yes' : 'No'}
+                      {p.autoAdd ? t('yes', 'Yes') : t('no', 'No')}
                     </div>
                   </div>
                   {!!appendSignature && (
@@ -145,6 +149,7 @@ const AddOrRemoveSignature: FC<{
   const { data, reload } = props;
   const toast = useToaster();
   const fetch = useFetch();
+  const t = useT();
   const form = useForm({
     resolver: yupResolver(details),
     values: {
@@ -163,17 +168,15 @@ const AddOrRemoveSignature: FC<{
       });
       toast.show(
         data?.id
-          ? 'Signature updated successfully'
-          : 'Signature added successfully',
+          ? t('signature_updated_successfully', 'Signature updated successfully')
+          : t('signature_added_successfully', 'Signature added successfully'),
         'success'
       );
       modal.closeCurrent();
       reload();
     },
-    [data, modal]
+    [data, modal, t]
   );
-
-  const t = useT();
 
   return (
     <FormProvider {...form}>
@@ -210,7 +213,7 @@ const AddOrRemoveSignature: FC<{
               onChange={(e) => {
                 form.setValue('content', e.target.value);
               }}
-              placeholder="Write your signature..."
+              placeholder={t('write_your_signature', 'Write your signature...')}
               autosuggestionsConfig={{
                 textareaPurpose: `Assist me in writing social media signature`,
                 chatApiConfigs: {},

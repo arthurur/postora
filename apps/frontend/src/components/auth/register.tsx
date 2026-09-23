@@ -138,10 +138,11 @@ export function RegisterAfter({
       })
       .catch((e) => {
         form.setError('email', {
-          message:
-            'General error: ' +
-            e.toString() +
-            '. Please check your browser console.',
+          message: t(
+            'register_general_error',
+            'General error: {{error}}. Please check your browser console.',
+            { error: e.toString() }
+          ),
         });
       });
   };
@@ -219,7 +220,7 @@ export function RegisterAfter({
                 )}
                 &nbsp;
                 <a
-                  href={`https://postiz.com/terms`}
+                  href={`https://postora.com.br/termos`}
                   className="underline hover:font-bold"
                   rel="nofollow"
                 >
@@ -228,7 +229,7 @@ export function RegisterAfter({
                 &nbsp;
                 {t('and', 'and')}&nbsp;
                 <a
-                  href={`https://postiz.com/privacy`}
+                  href={`https://postora.com.br/privacidade`}
                   rel="nofollow"
                   className="underline hover:font-bold"
                 >

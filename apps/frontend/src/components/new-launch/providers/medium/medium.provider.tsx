@@ -12,24 +12,32 @@ import { MediumTags } from '@gitroom/frontend/components/new-launch/providers/me
 import { MediumSettingsDto } from '@gitroom/nestjs-libraries/dtos/posts/providers-settings/medium.settings.dto';
 import { useIntegration } from '@gitroom/frontend/components/launches/helpers/use.integration';
 import { Canonical } from '@gitroom/react/form/canonical';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 
 const MediumSettings: FC = () => {
+  const t = useT();
   const form = useSettings();
   const { date } = useIntegration();
   return (
     <>
-      <Input label="Title" {...form.register('title')} />
-      <Input label="Subtitle" {...form.register('subtitle')} />
+      <Input label={t('label_title', 'Title')} {...form.register('title')} />
+      <Input
+        label={t('label_subtitle', 'Subtitle')}
+        {...form.register('subtitle')}
+      />
       <Canonical
         date={date}
-        label="Canonical Link"
+        label={t('label_canonical_link', 'Canonical Link')}
         {...form.register('canonical')}
       />
       <div>
         <MediumPublications {...form.register('publication')} />
       </div>
       <div>
-        <MediumTags label="Topics" {...form.register('tags')} />
+        <MediumTags
+          label={t('label_topics', 'Topics')}
+          {...form.register('tags')}
+        />
       </div>
     </>
   );
