@@ -592,7 +592,7 @@ export const Subscription = () => {
         window.location.reload();
       }
     },
-    []
+    [fetch, t]
   );
   return (
     <Select

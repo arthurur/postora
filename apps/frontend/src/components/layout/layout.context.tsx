@@ -123,7 +123,7 @@ function LayoutContextInner(params: { children: ReactNode }) {
       }
       return true;
     },
-    [isSecured, t]
+    [isSecured, isGeneral, returnUrl, t]
   );
   return (
     <FetchWrapperComponent baseUrl={backendUrl} afterRequest={afterRequest}>
