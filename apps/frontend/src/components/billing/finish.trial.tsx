@@ -69,7 +69,7 @@ export const FinishTrial: FC<{ close: () => void }> = (props) => {
                       You trial has been successfully finished and you have been charged.
                     </div>
                     <div className="flex gap-[10px] mt-[20px]">
-                      <Button className="flex-1" onClick={() => window.close()}>Close window</Button>
+                      <Button secondary className="flex-1" onClick={() => window.close()}>Close window</Button>
                       <Button className="flex-1" onClick={() => props.close()}>Close dialog</Button>
                     </div>
                   </div>

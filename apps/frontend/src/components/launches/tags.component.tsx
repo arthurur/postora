@@ -502,7 +502,7 @@ const ConfirmDeleteModal: FC<{
             resolve(true);
             close();
           }}
-          className="bg-red-500 hover:bg-red-600"
+          secondary
         >
           {t('delete', 'Delete')}
         </Button>

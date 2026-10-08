@@ -17,7 +17,10 @@ import { useSWRConfig } from 'swr';
 import { useUser } from '@gitroom/frontend/components/layout/user.context';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
-import { useModals } from '@gitroom/frontend/components/layout/new-modal';
+import {
+  areYouSure,
+  useModals,
+} from '@gitroom/frontend/components/layout/new-modal';
 import { Textarea } from '@gitroom/react/form/textarea';
 import { useFireEvents } from '@gitroom/helpers/utils/use.fire.events';
 import { useUtmUrl } from '@gitroom/helpers/utils/utm.saver';
@@ -159,7 +162,7 @@ const Accept: FC<{ resolve: (res: boolean) => void }> = ({ resolve }) => {
         <Button loading={loading} onClick={apply}>
           Apply 50% discount for 3 months
         </Button>
-        <Button onClick={() => resolve(false)} className="!bg-red-800">
+        <Button secondary onClick={() => resolve(false)}>
           Cancel my subscription
         </Button>
       </div>
@@ -374,7 +377,10 @@ export const MainBillingComponent: FC<{
         }
         if (
           messages.length &&
-          !(await deleteDialog(messages.join(', '), 'Yes, continue'))
+          !(await areYouSure({
+            description: messages.join(', '),
+            approveLabel: t('yes_continue', 'Yes, continue'),
+          }))
         ) {
           return;
         }
@@ -392,14 +398,15 @@ export const MainBillingComponent: FC<{
         ).json();
         if (blocked) {
           setLoading(false);
-          await deleteDialog(
-            t(
+          await areYouSure({
+            description: t(
               'billing_other_account_subscribed',
               'Another account with this email already has an active subscription. Please log off and sign in to that account to manage your subscription.'
             ),
-            t('ok', 'OK'),
-            t('already_subscribed', 'Already subscribed')
-          );
+            approveLabel: t('ok', 'OK'),
+            title: t('already_subscribed', 'Already subscribed'),
+            onlyApprove: true,
+          });
           return;
         }
         if (url) {
@@ -414,11 +421,14 @@ export const MainBillingComponent: FC<{
         }
         if (portal) {
           if (
-            await deleteDialog(
-              'We could not charge your credit card, please update your payment method',
-              'Update',
-              'Payment Method Required'
-            )
+            await areYouSure({
+              description: t(
+                'could_not_charge_credit_card',
+                'We could not charge your credit card, please update your payment method'
+              ),
+              approveLabel: t('update', 'Update'),
+              title: t('payment_method_required', 'Payment Method Required'),
+            })
           ) {
             window.open(portal);
           }
