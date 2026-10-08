@@ -9,7 +9,10 @@ import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
 import { setCookie } from '@gitroom/frontend/components/layout/layout.context';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
-import { useModals } from '@gitroom/frontend/components/layout/new-modal';
+import {
+  areYouSure,
+  useModals,
+} from '@gitroom/frontend/components/layout/new-modal';
 import { useToaster } from '@gitroom/react/toaster/toaster';
 import { Button } from '@gitroom/react/form/button';
 import { ImportDebugPostModal } from '@gitroom/frontend/components/launches/import-debug-post.modal';
@@ -304,14 +307,18 @@ const ApplyCouponModal: FC<{ close: () => void }> = ({ close }) => {
           )}
           {!!error && <div className="text-red-400 text-[12px]">{error}</div>}
           <div className="flex gap-[12px] justify-end">
-            <Button onClick={close} className="rounded-[4px]">
+            <Button
+              secondary={info.supported}
+              onClick={close}
+              className="rounded-[4px]"
+            >
               {t('close', 'Close')}
             </Button>
             {info.supported && (
               <Button
                 onClick={handleApply}
                 loading={applying}
-                className="!bg-blue-700 rounded-[4px]"
+                className="rounded-[4px]"
               >
                 {t('apply', 'Apply')}
               </Button>
@@ -568,10 +575,13 @@ export const Subscription = () => {
     async (e) => {
       const value = e.target.value;
       if (
-        await deleteDialog(
-          'Are you sure you want to add a user subscription?',
-          'Add'
-        )
+        await areYouSure({
+          description: t(
+            'confirm_add_subscription',
+            'Are you sure you want to add a user subscription?'
+          ),
+          approveLabel: t('add', 'Add'),
+        })
       ) {
         await fetch('/billing/add-subscription', {
           method: 'POST',

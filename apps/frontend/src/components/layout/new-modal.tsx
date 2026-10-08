@@ -14,6 +14,7 @@ import React, {
 import { Button } from '@gitroom/react/form/button';
 import { useHotkeys } from 'react-hotkeys-hook';
 import clsx from 'clsx';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 import { EventEmitter } from 'events';
 
 interface OpenModalInterface {
@@ -104,7 +105,7 @@ export const Component: FC<{
   const decision = useDecisionModal();
   const closeModalFunction = useCallback(async () => {
     if (modal.askClose) {
-      const open = await decision.open();
+      const open = await decision.open({ destructive: true });
       if (!open) {
         return;
       }
@@ -332,18 +333,28 @@ export const ModalManagerEmitter: FC = () => {
 };
 
 export const DecisionModal: FC<{
-  description: string;
+  description: ReactNode;
+  destructive?: boolean;
   approveLabel: string;
   cancelLabel: string;
   onlyApprove: boolean;
   resolution: (value: boolean) => void;
-}> = ({ description, cancelLabel, approveLabel, resolution, onlyApprove }) => {
+}> = ({
+  description,
+  cancelLabel,
+  approveLabel,
+  resolution,
+  onlyApprove,
+  destructive = false,
+}) => {
   const { closeCurrent } = useModals();
   return (
     <div className="flex flex-col">
       <div className="max-w-[600px]">{description}</div>
-      <div className="flex gap-[12px] mt-[16px]">
+      <div className="flex flex-wrap gap-[12px] mt-[16px]">
         <Button
+          secondary={destructive && !onlyApprove}
+          className="w-full sm:w-auto"
           onClick={() => {
             resolution(true);
             closeCurrent();
@@ -353,6 +364,8 @@ export const DecisionModal: FC<{
         </Button>
         {!onlyApprove && (
           <Button
+            secondary={!destructive}
+            className="w-full sm:w-auto"
             onClick={() => {
               resolution(false);
               closeCurrent();
@@ -368,20 +381,20 @@ export const DecisionModal: FC<{
 
 export const decisionModalEmitter = new EventEmitter();
 
-export const areYouSure = ({
-  title = 'Are you sure?',
-  description = 'Are you sure you want to close this modal?' as any,
-  approveLabel = 'Yes',
-  cancelLabel = 'No',
-} = {}): Promise<boolean> => {
+interface DecisionModalOptions {
+  title?: ReactNode;
+  description?: ReactNode;
+  approveLabel?: string;
+  cancelLabel?: string;
+  onlyApprove?: boolean;
+  destructive?: boolean;
+}
+
+export const areYouSure = (
+  options: DecisionModalOptions = {}
+): Promise<boolean> => {
   return new Promise<boolean>((newRes) => {
-    decisionModalEmitter.emit('open', {
-      title,
-      description,
-      approveLabel,
-      cancelLabel,
-      newRes,
-    });
+    decisionModalEmitter.emit('open', { ...options, newRes });
   });
 };
 
@@ -389,30 +402,44 @@ export const DecisionEverywhere: FC = () => {
   const decision = useDecisionModal();
   useEffect(() => {
     decisionModalEmitter.on('open', decision.open);
-  }, []);
+    return () => {
+      decisionModalEmitter.off('open', decision.open);
+    };
+  }, [decision.open]);
   return null;
 };
 
 export const useDecisionModal = () => {
   const modals = useModals();
+  const t = useT();
   const open = useCallback(
     ({
-      title = 'Are you sure?',
-      description = 'Are you sure you want to close this modal?' as any,
+      title = t('are_you_sure', 'Are you sure?'),
+      description = t(
+        'are_you_sure_close_modal',
+        'Are you sure you want to close this modal?'
+      ),
       onlyApprove = false,
-      approveLabel = 'Yes',
-      cancelLabel = 'No',
-      newRes = undefined as any,
-    } = {}) => {
+      approveLabel = t('yes', 'Yes'),
+      cancelLabel = t('no_cancel', 'No, cancel!'),
+      destructive = false,
+      newRes,
+    }: DecisionModalOptions & { newRes?: (value: boolean) => void } = {}) => {
       return new Promise<boolean>((res) => {
+        const resolve = (value: boolean) => {
+          newRes?.(value);
+          res(value);
+        };
         modals.openModal({
           title,
           askClose: false,
-          onClose: () => res(false),
+          size: 'min(664px, calc(100vw - 32px))',
+          onClose: () => resolve(false),
           children: (
             <DecisionModal
               onlyApprove={onlyApprove}
-              resolution={(value) => (newRes ? newRes(value) : res(value))}
+              destructive={destructive}
+              resolution={resolve}
               description={description}
               approveLabel={approveLabel}
               cancelLabel={cancelLabel}
@@ -421,7 +448,7 @@ export const useDecisionModal = () => {
         });
       });
     },
-    [modals]
+    [modals, t]
   );
 
   return { open };

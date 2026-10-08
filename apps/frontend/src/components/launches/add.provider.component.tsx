@@ -299,7 +299,8 @@ const ExtensionNotFound: FC = () => {
         </Button>
         <Button
           type="button"
-          className="flex-1 !bg-transparent border border-tableBorder text-textColor"
+          secondary
+          className="flex-1"
           onClick={() => modals.closeCurrent()}
         >
           {t('cancel', 'Cancel')}
@@ -363,7 +364,8 @@ const ChromeExtensionWarning: FC<{
         </Button>
         <Button
           type="button"
-          className="flex-1 !bg-transparent border border-tableBorder text-textColor"
+          secondary
+          className="flex-1"
           onClick={() => {
             modals.closeCurrent();
             onCancel();

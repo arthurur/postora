@@ -522,6 +522,7 @@ const PublicApiContent = () => {
 
   const rotateKey = useCallback(async () => {
     const approved = await decision.open({
+      destructive: true,
       title: t('rotate_api_key', 'Rotate API Key?'),
       description: t(
         'rotate_api_key_description',
