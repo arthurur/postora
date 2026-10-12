@@ -1010,6 +1010,7 @@
   "delay_12_hours": "12 horas",
   "delay_15_hours": "15 horas",
   "delay_24_hours": "24 horas",
+  "no_available_accounts": "Nenhuma conta disponível",
   "thumbnail_capture_frame_failed": "Não foi possível capturar o quadro. Isso pode ser causado por restrições de CORS na origem do vídeo.",
   "thumbnail_capturing": "Capturando...",
   "thumbnail_select_this_frame": "Selecionar este quadro",

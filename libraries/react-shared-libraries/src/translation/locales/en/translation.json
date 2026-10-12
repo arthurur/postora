@@ -1012,6 +1012,7 @@
   "delay_12_hours": "12 hours",
   "delay_15_hours": "15 hours",
   "delay_24_hours": "24 hours",
+  "no_available_accounts": "No available accounts",
   "thumbnail_capture_frame_failed": "Unable to capture frame. This might be due to CORS restrictions on the video source.",
   "thumbnail_capturing": "Capturing...",
   "thumbnail_select_this_frame": "Select This Frame",

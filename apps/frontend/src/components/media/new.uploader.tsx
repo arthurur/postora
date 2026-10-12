@@ -291,5 +291,5 @@ export function useUppyUploader(props: {
       });
     });
     return uppy2;
-  }, [t]);
+  }, []);
 }
