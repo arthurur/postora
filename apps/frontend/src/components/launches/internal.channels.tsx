@@ -12,37 +12,37 @@ import { Textarea } from '@gitroom/react/form/textarea';
 import { useSettings } from '@gitroom/frontend/components/launches/helpers/use.values';
 import clsx from 'clsx';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
-const delayOptions = [
+const getDelayOptions = (t: (key: string, fallback: string) => string) => [
   {
-    name: 'Immediately',
+    name: t('delay_immediately', 'Immediately'),
     value: 0,
   },
   {
-    name: '1 hour',
+    name: t('delay_1_hour', '1 hour'),
     value: 3600000,
   },
   {
-    name: '2 hours',
+    name: t('delay_2_hours', '2 hours'),
     value: 7200000,
   },
   {
-    name: '3 hours',
+    name: t('delay_3_hours', '3 hours'),
     value: 10800000,
   },
   {
-    name: '8 hours',
+    name: t('delay_8_hours', '8 hours'),
     value: 28800000,
   },
   {
-    name: '12 hours',
+    name: t('delay_12_hours', '12 hours'),
     value: 43200000,
   },
   {
-    name: '15 hours',
+    name: t('delay_15_hours', '15 hours'),
     value: 54000000,
   },
   {
-    name: '24 hours',
+    name: t('delay_24_hours', '24 hours'),
     value: 86400000,
   },
 ];
@@ -178,15 +178,9 @@ const Plug: FC<{
               hideErrors={true}
               {...register(`plug--${plug.identifier}--delay`)}
             >
-              {delayOptions.map((p) => (
-                <option key={p.name} value={p.value}>
-                  {p.value === 0
-                    ? t('delay_immediately', 'Immediately')
-                    : p.value === 3600000
-                    ? t('delay_one_hour', '1 hour')
-                    : t('delay_hours', '{{hours}} hours', {
-                        hours: p.value / 3600000,
-                      })}
+              {getDelayOptions(t).map((p) => (
+                <option key={p.value} value={p.value}>
+                  {p.name}
                 </option>
               ))}
             </Select>

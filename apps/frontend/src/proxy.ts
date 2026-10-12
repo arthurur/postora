@@ -2,11 +2,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getCookieUrlFromDomain } from '@gitroom/helpers/subdomain/subdomain.management';
 import { internalFetch } from '@gitroom/helpers/utils/internal.fetch';
-import {
-  cookieName,
-  defaultLng,
-  headerName,
-} from '@gitroom/react/translation/i18n.config';
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
@@ -15,16 +10,8 @@ export async function proxy(request: NextRequest) {
     request.cookies.get('auth') ||
     request.headers.get('auth') ||
     nextUrl.searchParams.get('loggedAuth');
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set(headerName, defaultLng);
 
-  const topResponse = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
-
-  topResponse.headers.set(cookieName, defaultLng);
+  const topResponse = NextResponse.next();
 
   if (nextUrl.pathname.startsWith('/modal/') && !authCookie) {
     return NextResponse.redirect(new URL(`/auth/login-required`, nextUrl.href));
