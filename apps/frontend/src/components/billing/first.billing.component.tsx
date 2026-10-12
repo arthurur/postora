@@ -6,7 +6,6 @@ import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { OrganizationSelector } from '@gitroom/frontend/components/layout/organization.selector';
-import { LanguageComponent } from '@gitroom/frontend/components/layout/language.component';
 import { AttachToFeedbackIcon } from '@gitroom/frontend/components/new-layout/sentry.feedback.component';
 import NotificationComponent from '@gitroom/frontend/components/notifications/notification.component';
 import dynamic from 'next/dynamic';
@@ -81,12 +80,15 @@ export const FirstBillingComponent = () => {
 
   const showYouTube = () => {
     modals.openModal({
-      title: 'Grow Fast With Postiz (Play the video)',
+      title: t(
+        'grow_fast_with_postora_play_video',
+        'Grow Fast With Postora (Play the video)'
+      ),
       children: (
         <iframe
           className="h-full aspect-video min-w-[800px]"
           src="https://www.youtube.com/embed/BdsCVvEYgHU?si=vvhaZJ8I5oXXvVJS?autoplay=1"
-          title="Postiz Tutorial"
+          title="Postora Tutorial"
           allow="autoplay"
           allowFullScreen
         />
@@ -122,7 +124,7 @@ export const FirstBillingComponent = () => {
           {t('billing_who_use', 'who use')}{' '}
           {t(
             'billing_postiz_grow_social',
-            'Postiz To Grow Their Social Presence'
+            'Postora To Grow Their Social Presence'
           )}
         </div>
 
@@ -137,7 +139,12 @@ export const FirstBillingComponent = () => {
                 alt="YouTube"
               />
             </div>
-            <div>See the power of Postiz (click here)</div>
+            <div>
+              {t(
+                'see_the_power_of_postora',
+                'See the power of Postora (click here)'
+              )}
+            </div>
           </div>
         </div>
 
@@ -186,8 +193,6 @@ export const FirstBillingComponent = () => {
             <div className="hover:text-newTextColor">
               <ModeComponent />
             </div>
-            <div className="w-[1px] h-[20px] bg-blockSeparator" />
-            <LanguageComponent />
             <div className="w-[1px] h-[20px] bg-blockSeparator" />
             <AttachToFeedbackIcon />
             <DeveloperIconComponent />

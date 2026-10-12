@@ -13,6 +13,7 @@ import { useVariables } from '@gitroom/react/helpers/variable.context';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import useSWR from 'swr';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 
 export const ChatbaseComponent: FC = () => {
   const { isChatBase } = useVariables();
@@ -50,6 +51,7 @@ export const ChatbaseComponentLoad: FC = () => {
 
 const ChatBaseCode: FC<{ token: string }> = ({ token }) => {
   const fetch = useFetch();
+  const t = useT();
 
   useEffect(() => {
     if (!window.chatbase || window.chatbase('getState') !== 'initialized') {
@@ -111,13 +113,17 @@ const ChatBaseCode: FC<{ token: string }> = ({ token }) => {
           }
 
           const approved = await deleteDialog(
-            `You are cancelling your ${
-              preview.tier || ''
-            } subscription and will receive a refund of ${preview.amount} ${(
-              preview.currency || ''
-            ).toUpperCase()}. Do you approve?`,
-            'Yes, cancel and refund',
-            'Cancel subscription'
+            t(
+              'chatbase_refund_confirmation',
+              'You are cancelling your {{tier}} subscription and will receive a refund of {{amount}} {{currency}}. Do you approve?',
+              {
+                tier: preview.tier || '',
+                amount: preview.amount,
+                currency: (preview.currency || '').toUpperCase(),
+              }
+            ),
+            t('yes_cancel_and_refund', 'Yes, cancel and refund'),
+            t('cancel_subscription_1', 'Cancel subscription')
           );
 
           if (!approved) {
