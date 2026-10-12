@@ -3,6 +3,10 @@ import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Allow the configured frontend hostname when using a local reverse proxy.
+  allowedDevOrigins: process.env.FRONTEND_URL
+    ? [new URL(process.env.FRONTEND_URL).hostname]
+    : [],
   experimental: {
     proxyTimeout: 90_000,
   },
