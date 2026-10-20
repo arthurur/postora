@@ -18,13 +18,13 @@ import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import copy from 'copy-to-clipboard';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
 
-const roles = [
+const getRoles = (t: (key: string, fallback: string) => string) => [
   {
-    name: 'User',
+    name: t('user', 'User'),
     value: 'USER',
   },
   {
-    name: 'Admin',
+    name: t('admin', 'Admin'),
     value: 'ADMIN',
   },
 ];
@@ -32,6 +32,7 @@ export const AddMember = () => {
   const modals = useModals();
   const fetch = useFetch();
   const toast = useToaster();
+  const t = useT();
   const resolver = useMemo(() => {
     return classValidatorResolver(AddTeamMemberDto);
   }, []);
@@ -65,10 +66,10 @@ export const AddMember = () => {
       modals.closeAll();
       toast.show(t('link_copied_to_clipboard', 'Link copied to clipboard'));
     },
-    []
+    [fetch, modals, t, toast]
   );
 
-  const t = useT();
+  const roles = getRoles(t);
 
   return (
     <FormProvider {...form}>
@@ -135,7 +136,7 @@ export const TeamsComponent = () => {
       withCloseButton: true,
       children: <AddMember />,
     });
-  }, [t]);
+  }, [modals, t]);
   const { data, mutate } = useSWR('/api/teams', loadTeam, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -160,7 +161,7 @@ export const TeamsComponent = () => {
         });
         await mutate();
       },
-    [t]
+    [fetch, mutate, t]
   );
 
   return (

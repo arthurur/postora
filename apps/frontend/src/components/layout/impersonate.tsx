@@ -114,7 +114,7 @@ const ApplyCouponModal: FC<{ close: () => void }> = ({ close }) => {
     } finally {
       setCancelling(false);
     }
-  }, []);
+  }, [t]);
 
   const handleApply = useCallback(async () => {
     if (!info) {
@@ -187,7 +187,7 @@ const ApplyCouponModal: FC<{ close: () => void }> = ({ close }) => {
     } finally {
       setApplying(false);
     }
-  }, [info, type, value, months]);
+  }, [info, type, value, months, t]);
 
   return (
     <div className="flex flex-col gap-[16px]">
@@ -351,7 +351,7 @@ const ChargesModal: FC<{ close: () => void }> = ({ close }) => {
       maxSize: 600,
       children: (closeCoupon) => <ApplyCouponModal close={closeCoupon} />,
     });
-  }, []);
+  }, [t]);
 
   const handleRefund = useCallback(async () => {
     if (!selected.size) return;
@@ -359,7 +359,8 @@ const ChargesModal: FC<{ close: () => void }> = ({ close }) => {
       !(await deleteDialog(
         t(
           'refund_selected_confirm',
-          `Are you sure you want to refund ${selected.size} charge(s)? This cannot be undone.`
+          'Are you sure you want to refund {{count}} charge(s)? This cannot be undone.',
+          { count: selected.size }
         ),
         t('yes_refund', 'Yes, refund'),
         t('confirm_refund', 'Confirm Refund'),
@@ -379,7 +380,7 @@ const ChargesModal: FC<{ close: () => void }> = ({ close }) => {
     } finally {
       setRefunding(false);
     }
-  }, [selected]);
+  }, [selected, t]);
 
   const handleCancel = useCallback(async () => {
     if (
@@ -405,7 +406,7 @@ const ChargesModal: FC<{ close: () => void }> = ({ close }) => {
     } catch {
       setCancelling(false);
     }
-  }, []);
+  }, [t]);
 
   return (
     <div className="flex flex-col gap-[16px] min-w-[500px]">
@@ -548,7 +549,7 @@ const ManageBilling = () => {
       title: t('manage_billing', 'Manage Billing'),
       children: (close) => <ChargesModal close={close} />,
     });
-  }, []);
+  }, [t]);
 
   return (
     <div
@@ -606,16 +607,29 @@ export const Subscription = () => {
     </Select>
   );
 };
-const colorOptions = [
-  { value: 'INFO', label: 'Info (Blue)', className: 'bg-blue-600' },
-  { value: 'WARNING', label: 'Warning (Amber)', className: 'bg-amber-600' },
-  { value: 'ERROR', label: 'Error (Red)', className: 'bg-red-600' },
+const getColorOptions = (t: (key: string, fallback: string) => string) => [
+  {
+    value: 'INFO',
+    label: t('announcement_color_info', 'Info (Blue)'),
+    className: 'bg-blue-600',
+  },
+  {
+    value: 'WARNING',
+    label: t('announcement_color_warning', 'Warning (Amber)'),
+    className: 'bg-amber-600',
+  },
+  {
+    value: 'ERROR',
+    label: t('announcement_color_error', 'Error (Red)'),
+    className: 'bg-red-600',
+  },
 ];
 
 const AddAnnouncementModal: FC<{ close: () => void }> = ({ close }) => {
   const fetch = useFetch();
   const { mutate } = useSWRConfig();
   const t = useT();
+  const colorOptions = getColorOptions(t);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [color, setColor] = useState('INFO');
@@ -701,7 +715,7 @@ const AddAnnouncement = () => {
       title: t('add_announcement', 'Add Announcement'),
       children: (close) => <AddAnnouncementModal close={close} />,
     });
-  }, []);
+  }, [t]);
 
   return (
     <div
@@ -752,7 +766,7 @@ const AddTeamMemberModal: FC<{ close: () => void }> = ({ close }) => {
         setSaving(false);
       }
     },
-    []
+    [t]
   );
 
   return (
@@ -787,7 +801,7 @@ const AddTeamMember = () => {
       title: t('add_team_member', 'Add Team Member'),
       children: (close) => <AddTeamMemberModal close={close} />,
     });
-  }, []);
+  }, [t]);
 
   return (
     <div
@@ -839,7 +853,7 @@ const ImportDebugPost = () => {
       maxSize: 800,
       children: (close) => <ImportDebugPostModal close={close} />,
     });
-  }, []);
+  }, [t]);
 
   return (
     <div
@@ -925,7 +939,8 @@ const SwitchUser = () => {
       !(await deleteDialog(
         t(
           'switch_user_confirm',
-          `This will replace the current account's login with ${selected.email}. All data and the subscription stay with the account — only the login changes, and the new login gains its full access. Switch back to revert.`
+          "This will replace the current account's login with {{email}}. All data and the subscription stay with the account — only the login changes, and the new login gains its full access. Switch back to revert.",
+          { email: selected.email }
         ),
         t('yes_switch', 'Yes, switch'),
         t('switch_user_title', 'Switch User?'),
@@ -952,7 +967,7 @@ const SwitchUser = () => {
         'warning'
       );
     }
-  }, [selected]);
+  }, [selected, t]);
 
   return (
     <div className="relative flex items-center gap-[10px]">
@@ -1103,7 +1118,7 @@ export const Impersonate = () => {
                 <div className="flex-1">
                   <Input
                     autoComplete="off"
-                    placeholder="Write the user details"
+                    placeholder={t('write_the_user_details', 'Write the user details')}
                     name="impersonate"
                     disableForm={true}
                     label=""

@@ -43,7 +43,7 @@ export const Webhooks: FC = () => {
         await deleteDialog(
           t(
             'are_you_sure_you_want_to_delete',
-            `Are you sure you want to delete ${data.name}?`,
+            'Are you sure you want to delete {{name}}?',
             { name: data.name }
           )
         )
@@ -55,7 +55,7 @@ export const Webhooks: FC = () => {
         toaster.show(t('webhook_deleted_successfully', 'Webhook deleted successfully'), 'success');
       }
     },
-    []
+    [t]
   );
 
   return (
@@ -66,7 +66,7 @@ export const Webhooks: FC = () => {
       <div className="text-customColor18 mt-[4px]">
         {t(
           'webhooks_are_a_way_to_get_notified_when_something_happens_in_postiz_via_an_http_request',
-          'Webhooks are a way to get notified when something happens in Postiz via\n        an HTTP request.'
+          'Webhooks are a way to get notified when something happens in Postora via\n        an HTTP request.'
         )}
       </div>
       <div className="my-[16px] mt-[16px] bg-sixth border-fifth items-center border rounded-[4px] p-[24px] flex gap-[24px]">
@@ -194,7 +194,7 @@ export const AddOrEditWebhook: FC<{
       modal.closeAll();
       reload();
     },
-    [data, integrations]
+    [data, integrations, t]
   );
   const sendTest = useCallback(async () => {
     const url = form.getValues('url');
@@ -216,7 +216,7 @@ export const AddOrEditWebhook: FC<{
               id: 'cm6s4uyou0001i2r47pxix6z1',
               name: 'test',
               providerIdentifier: 'instagram',
-              picture: 'https://uploads.gitroom.com/F6LSCD8wrrQ.jpeg',
+              picture: 'https://example.com/picture.jpeg',
               type: 'social',
             },
           },
@@ -230,7 +230,7 @@ export const AddOrEditWebhook: FC<{
               id: 'cm6s4uyou0001i2r47pxix6z1',
               name: 'test2',
               providerIdentifier: 'facebook',
-              picture: 'https://uploads.gitroom.com/F6LSCD8wrrQ.jpeg',
+              picture: 'https://example.com/picture.jpeg',
               type: 'social',
             },
           },
@@ -239,7 +239,7 @@ export const AddOrEditWebhook: FC<{
     } catch (e: any) {
       /** empty **/
     }
-  }, []);
+  }, [t]);
 
   return (
     <FormProvider {...form}>

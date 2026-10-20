@@ -9,7 +9,9 @@ import { SkoolGroupSelect } from '@gitroom/frontend/components/new-launch/provid
 import { SkoolLabelSelect } from '@gitroom/frontend/components/new-launch/providers/skool/skool.label.select';
 import { useSettings } from '@gitroom/frontend/components/launches/helpers/use.values';
 import { Input } from '@gitroom/react/form/input';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 const SkoolComponent: FC = () => {
+  const t = useT();
   const form = useSettings();
   const [selectedGroup, setSelectedGroup] = useState<string | undefined>(
     form.getValues().group
@@ -21,7 +23,7 @@ const SkoolComponent: FC = () => {
   };
   return (
     <div>
-      <Input label="Title" {...form.register('title')} />
+      <Input label={t('label_title', 'Title')} {...form.register('title')} />
       <SkoolGroupSelect {...groupRegister} onChange={onGroupChange} />
       <SkoolLabelSelect {...form.register('label')} groupId={selectedGroup} />
     </div>

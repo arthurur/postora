@@ -52,6 +52,7 @@ export const LinkedinCompanyPop: FC<{
   addText: (value: any) => void;
 }> = (props) => {
   const current = useLaunchStore((state) => state.current);
+  const t = useT();
   return (
     <svg
       onClick={() => {
@@ -63,7 +64,7 @@ export const LinkedinCompanyPop: FC<{
         });
       }}
       data-tooltip-id="tooltip"
-      data-tooltip-content="Add a LinkedIn Company"
+      data-tooltip-content={t('add_linkedin_company', 'Add a LinkedIn Company')}
       className="mx-[10px] cursor-pointer"
       width="20"
       height="20"
@@ -125,7 +126,10 @@ export const LinkedinCompany: FC<{
       onSelect(options.value);
       onClose();
     } catch (e) {
-      toast.show('Failed to load profile', 'warning');
+      toast.show(
+        t('failed_to_load_profile', 'Failed to load profile'),
+        'warning'
+      );
     }
   };
   return (
@@ -160,10 +164,10 @@ export const LinkedinCompany: FC<{
           <Input
             name="url"
             disableForm={true}
-            label="URL"
+            label={t('label_url', 'URL')}
             value={company}
             onChange={(e) => setCompany(e.target.value)}
-            placeholder="https://www.linkedin.com/company/gitroom"
+            placeholder="https://www.linkedin.com/company/your-company"
           />
           <Button onClick={getCompany}>{t('add', 'Add')}</Button>
         </div>

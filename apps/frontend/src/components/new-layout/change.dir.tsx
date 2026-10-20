@@ -1,16 +1,11 @@
 'use client';
 
-import useCookie from 'react-use-cookie';
-import {
-  cookieName,
-  fallbackLng,
-} from '@gitroom/react/translation/i18n.config';
+import { defaultLng } from '@gitroom/react/translation/i18n.config';
 import i18next from 'i18next';
 import { FC, useEffect } from 'react';
 
 export const ChangeDir: FC = () => {
-  const currentLanguage = i18next.resolvedLanguage || fallbackLng;
-  const [language] = useCookie(cookieName, currentLanguage || fallbackLng);
+  const language = i18next.resolvedLanguage || defaultLng;
 
   useEffect(() => {
     const rtlLanguages = ['he', 'ar'];

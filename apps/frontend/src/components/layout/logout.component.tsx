@@ -30,7 +30,7 @@ export const LogoutComponent: FC<{ isIcon?: boolean }> = ({ isIcon }) => {
       }
       window.location.href = '/';
     }
-  }, []);
+  }, [t]);
   return (
     <>
       <div className="cursor-pointer" onClick={logout}>
@@ -44,7 +44,7 @@ export const LogoutComponent: FC<{ isIcon?: boolean }> = ({ isIcon }) => {
             data-tooltip-id="tooltip"
             data-tooltip-content={`
             ${t('logout_from', 'Logout from')}${' '}
-            ${isGeneral ? ' Postiz' : ' Gitroom'}
+            ${isGeneral ? ' Postora' : ' Gitroom'}
             `}
           >
             <path
@@ -55,7 +55,7 @@ export const LogoutComponent: FC<{ isIcon?: boolean }> = ({ isIcon }) => {
         ) : (
           <span className="text-red-400">
             {t('logout_from', 'Logout from')}
-            {isGeneral ? ' Postiz' : ' Gitroom'}
+            {isGeneral ? ' Postora' : ' Gitroom'}
           </span>
         )}
       </div>

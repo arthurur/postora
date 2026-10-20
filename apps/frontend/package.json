@@ -1,10 +1,10 @@
 {
-  "name": "postiz-frontend",
+  "name": "postora-frontend",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "dotenv -e ../../.env -- next dev -p 4200",
+    "dev": "dotenv -e ../../.env -- next dev -p ${FRONTEND_PORT:-4200}",
     "fetch-gtm": "node scripts/fetch-gtm.mjs",
     "postinstall": "node scripts/fetch-gtm.mjs",
     "build": "next build",

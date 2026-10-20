@@ -17,10 +17,12 @@ import { InstagramPreview } from '@gitroom/frontend/components/new-launch/provid
 const postType = [
   {
     value: 'post',
+    key: 'instagram_post_type_post_reel',
     label: 'Post / Reel',
   },
   {
     value: 'story',
+    key: 'post_type_story',
     label: 'Story',
   },
 ];
@@ -28,10 +30,12 @@ const postType = [
 const graduationStrategies = [
   {
     value: 'MANUAL',
+    key: 'instagram_graduation_manual',
     label: 'Manual',
   },
   {
     value: 'SS_PERFORMANCE',
+    key: 'instagram_graduation_auto',
     label: 'Auto (based on performance)',
   },
 ];
@@ -48,7 +52,7 @@ const InstagramCollaborators: FC<{
   return (
     <>
       <Select
-        label="Post Type"
+        label={t('label_post_type', 'Post Type')}
         {...register('post_type', {
           value: 'post',
         })}
@@ -56,14 +60,17 @@ const InstagramCollaborators: FC<{
         <option value="">{t('select_post_type', 'Select Post Type...')}</option>
         {postType.map((item) => (
           <option key={item.value} value={item.value}>
-            {item.label}
+            {t(item.key, item.label)}
           </option>
         ))}
       </Select>
 
       {postCurrentType !== 'story' && (
         <InstagramCollaboratorsTags
-          label="Collaborators (max 3) - accounts can't be private"
+          label={t(
+            'instagram_collaborators_label',
+            "Collaborators (max 3) - accounts can't be private"
+          )}
           {...register('collaborators', {
             value: [],
           })}
@@ -94,14 +101,17 @@ const InstagramCollaborators: FC<{
 
           {isTrialReel && (
             <Select
-              label="Graduation Strategy"
+              label={t(
+                'instagram_graduation_strategy_label',
+                'Graduation Strategy'
+              )}
               {...register('graduation_strategy', {
                 value: 'MANUAL',
               })}
             >
               {graduationStrategies.map((item) => (
                 <option key={item.value} value={item.value}>
-                  {item.label}
+                  {t(item.key, item.label)}
                 </option>
               ))}
             </Select>

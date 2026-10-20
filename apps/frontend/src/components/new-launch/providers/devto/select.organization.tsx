@@ -42,7 +42,7 @@ export const SelectOrganization: FC<{
   return (
     <Select
       name={name}
-      label="Select organization"
+      label={t('label_select_organization', 'Select organization')}
       onChange={onChangeInner}
       value={currentMedia}
     >
