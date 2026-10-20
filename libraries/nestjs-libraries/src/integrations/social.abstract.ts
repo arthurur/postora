@@ -8,6 +8,7 @@ import {
   getSsrfSafeDispatcher,
 } from '@gitroom/nestjs-libraries/dtos/webhooks/ssrf.safe.dispatcher';
 import sharp from 'sharp';
+import { AxiosInstance } from 'axios';
 import { createReadStream, statSync } from 'fs';
 import { Readable } from 'stream';
 
@@ -158,7 +159,7 @@ export abstract class SocialAbstract {
   // axios flavor of the SSRF-safe dispatcher that `this.fetch` applies - for
   // providers that need axios (form-data / stream uploads). Never call plain
   // axios with a user-influenced URL.
-  protected getSsrfSafeAxios() {
+  protected getSsrfSafeAxios(): AxiosInstance {
     return getSsrfSafeAxios();
   }
 

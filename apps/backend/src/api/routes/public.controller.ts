@@ -40,7 +40,9 @@ export class PublicController {
     private _subscriptionService: SubscriptionService
   ) {}
   @Post('/agent')
-  async createAgent(@Body() body: { text: string; apiKey: string }) {
+  async createAgent(
+    @Body() body: { text: string; apiKey: string }
+  ): Promise<unknown> {
     if (
       !body.apiKey ||
       !process.env.AGENT_API_KEY ||

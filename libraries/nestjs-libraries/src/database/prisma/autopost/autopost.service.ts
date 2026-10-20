@@ -277,8 +277,8 @@ export class AutopostService {
         settings: {
           __type: i.providerIdentifier as any,
           title: '',
-          tags: [],
-          subreddit: [],
+          tags: [] as any[],
+          subreddit: [] as any[],
         },
         group: makeId(10),
         integration: { id: i.id },

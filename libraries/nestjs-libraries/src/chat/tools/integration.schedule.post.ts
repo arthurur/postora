@@ -148,7 +148,7 @@ If the tools return errors, you would need to rerun it with the right parameters
           // Same server-side validation as the dashboard / public API
           // (settings DTO + media checkValidity + empty / too-long content).
           const settings = platform.settings.reduce(
-            (acc: AllProvidersSettings, s: { key: string; value: any }) => ({
+            (acc: AllProvidersSettings, s: { key?: string; value?: any }) => ({
               ...acc,
               [s.key]: s.value,
             }),
@@ -217,7 +217,7 @@ If the tools return errors, you would need to rerun it with the right parameters
                 integration,
                 group: makeId(10),
                 settings: post.settings.reduce(
-                  (acc: AllProvidersSettings, s: { key: string; value: any }) => ({
+                  (acc: AllProvidersSettings, s: { key?: string; value?: any }) => ({
                     ...acc,
                     [s.key]: s.value,
                   }),

@@ -66,7 +66,7 @@ export class GenerateVideoTool implements AgentToolInterface {
             type: inputData.identifier,
             output: inputData.output,
             customParams: inputData.customParams.reduce(
-              (all: Record<string, any>, current: { key: string; value: any }) => ({
+              (all: Record<string, any>, current: { key?: string; value?: any }) => ({
                 ...all,
                 [current.key]: current.value,
               }),
