@@ -64,7 +64,7 @@ If the tool returns errors, rerun it with the right parameters, don't ask again,
         ).id;
 
         const settings = (inputData.settings || []).reduce(
-          (acc: Record<string, any>, s: { key: string; value: any }) => ({
+          (acc: Record<string, any>, s) => ({
             ...acc,
             [s.key]: s.value,
           }),

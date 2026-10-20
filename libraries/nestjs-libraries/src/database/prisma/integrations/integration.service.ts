@@ -113,7 +113,7 @@ export class IntegrationService {
     const uploadedPicture = picture
       ? picture?.indexOf('imagedelivery.net') > -1
         ? picture
-        : await this.storage.uploadSimple(picture).catch((err) => {
+        : await this.storage.uploadSimple(picture).catch((err): undefined => {
             console.log('Failed to upload profile picture:', picture, err);
             return undefined;
           })

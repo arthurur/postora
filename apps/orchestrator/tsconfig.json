@@ -5,7 +5,8 @@
     "declaration": true,
     "removeComments": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "target": "es2024",
+    "lib": ["es2024", "dom", "dom.iterable"],
     "sourceMap": true
   }
 }

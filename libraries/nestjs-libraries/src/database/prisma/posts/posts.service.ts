@@ -1253,7 +1253,7 @@ export class PostsService {
                     id: '',
                     content: l.post,
                     delay: 0,
-                    image: [],
+                    image: [] as any[],
                   })),
                   {
                     id: '',

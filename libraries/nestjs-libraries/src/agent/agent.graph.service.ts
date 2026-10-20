@@ -9,6 +9,8 @@ import { ChatOpenAI, DallEAPIWrapper } from '@langchain/openai';
 import { TavilySearch } from '@langchain/tavily';
 import { ToolNode } from '@langchain/langgraph/prebuilt';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
+import { IterableReadableStream } from '@langchain/core/utils/stream';
+import { StreamEvent } from '@langchain/core/tracers/log_stream';
 import dayjs from 'dayjs';
 import { PostsService } from '@gitroom/nestjs-libraries/database/prisma/posts/posts.service';
 import { z } from 'zod';
@@ -375,7 +377,10 @@ export class AgentGraphService {
     return { date: await this._postsService.findFreeDateTime(state.orgId) };
   }
 
-  start(orgId: string, body: GeneratorDto) {
+  start(
+    orgId: string,
+    body: GeneratorDto
+  ): IterableReadableStream<StreamEvent> {
     const state = AgentGraphService.state();
     const workflow = state
       .addNode('agent', this.startCall.bind(this))
