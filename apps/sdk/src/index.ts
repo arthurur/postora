@@ -56,7 +56,7 @@ export default class Postiz {
         ? 'image/jpeg'
         : 'image/jpeg';
 
-    const blob = new Blob([file], { type });
+    const blob = new Blob([file as BlobPart], { type });
     formData.append('file', blob, extension);
 
     return (
