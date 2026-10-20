@@ -9,8 +9,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { CopilotChat, CopilotKitCSSProperties } from '@copilotkit/react-ui';
 import {
+  CopilotChat,
+  CopilotKitCSSProperties,
   InputProps,
   UserMessageProps,
 } from '@copilotkit/react-ui';

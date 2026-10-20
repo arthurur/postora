@@ -42,7 +42,7 @@ export class PublicController {
   @Post('/agent')
   async createAgent(
     @Body() body: { text: string; apiKey: string }
-  ): Promise<unknown> {
+  ): Promise<any> {
     if (
       !body.apiKey ||
       !process.env.AGENT_API_KEY ||

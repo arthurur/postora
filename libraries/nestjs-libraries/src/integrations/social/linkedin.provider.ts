@@ -407,7 +407,7 @@ export class LinkedinProvider extends SocialAbstract implements SocialProvider {
           },
           // Only videos arrive as a { path } descriptor; images and documents
           // are always a Buffer.
-          body: picture as Buffer as BodyInit,
+          body: picture as BodyInit,
         },
         'linkedin',
         0,
