@@ -11,6 +11,7 @@ import { ApiKeyDto } from '@gitroom/nestjs-libraries/dtos/integrations/api.key.d
 import { useRouter } from 'next/navigation';
 import { TopTitle } from '@gitroom/frontend/components/launches/helpers/top.title.component';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
+import { chromeExtensionUrl } from '@gitroom/frontend/components/layout/chrome.extension.component';
 import { useToaster } from '@gitroom/react/toaster/toaster';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -276,28 +277,33 @@ export const CustomVariables: FC<{
 const ExtensionNotFound: FC = () => {
   const modals = useModals();
   const t = useT();
+  const { extensionId } = useVariables();
   return (
     <div className="flex flex-col gap-[16px] pt-[8px]">
       <p className="text-[14px] text-textColor/80">
-        {t(
-          'extension_not_available',
-          'The Postora browser extension is not installed. You need to install it before connecting this channel.'
-        )}
+        {extensionId
+          ? t(
+              'extension_not_available',
+              'The Postora browser extension is not installed. You need to install it before connecting this channel.'
+            )
+          : t(
+              'extension_not_configured',
+              'This channel needs the Postora browser extension, which is not available yet.'
+            )}
       </p>
       <div className="flex gap-[10px]">
-        <Button
-          type="button"
-          className="flex-1"
-          onClick={() => {
-            window.open(
-              'https://chromewebstore.google.com/detail/postiz/cidhffagahknaeodkplfbcpfeielnkjl?hl=en',
-              '_blank'
-            );
-            modals.closeCurrent();
-          }}
-        >
-          {t('install_extension', 'Install Extension')}
-        </Button>
+        {!!extensionId && (
+          <Button
+            type="button"
+            className="flex-1"
+            onClick={() => {
+              window.open(chromeExtensionUrl(extensionId), '_blank');
+              modals.closeCurrent();
+            }}
+          >
+            {t('install_extension', 'Install Extension')}
+          </Button>
+        )}
         <Button
           type="button"
           className="flex-1 !bg-transparent border border-tableBorder text-textColor"
