@@ -167,7 +167,7 @@ export const LinkedinCompany: FC<{
             label={t('label_url', 'URL')}
             value={company}
             onChange={(e) => setCompany(e.target.value)}
-            placeholder="https://www.linkedin.com/company/gitroom"
+            placeholder="https://www.linkedin.com/company/your-company"
           />
           <Button onClick={getCompany}>{t('add', 'Add')}</Button>
         </div>

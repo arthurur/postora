@@ -45,7 +45,7 @@ export const OnboardingModal: FC<OnboardingModalProps> = ({ onClose }) => {
         </button>
         <div className="flex-1 flex p-[40px]">
           <div className="flex flex-col gap-[24px] flex-1">
-            <OnboardingChannels onNext={onClose} />
+            <OnboardingChannels onFinish={onClose} />
           </div>
         </div>
       </div>
@@ -53,7 +53,9 @@ export const OnboardingModal: FC<OnboardingModalProps> = ({ onClose }) => {
   );
 };
 
-const OnboardingChannels: FC<{ onNext: () => void }> = ({ onNext }) => {
+const OnboardingChannels: FC<{ onFinish: () => void }> = ({
+  onFinish,
+}) => {
   const fetch = useFetch();
   const t = useT();
 
@@ -154,7 +156,7 @@ const OnboardingChannels: FC<{ onNext: () => void }> = ({ onNext }) => {
       {/* Action buttons */}
       <div className="flex justify-end pt-[24px] mt-[8px]">
         <button
-          onClick={onNext}
+          onClick={onFinish}
           className="group flex items-center gap-[12px] bg-gradient-to-r from-[#622aff] to-[#8b5cf6] hover:from-[#7c3aff] hover:to-[#9d6eff] text-white font-semibold px-[32px] py-[14px] rounded-[12px] text-[16px] transition-all shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
         >
           {sortedIntegrations.length > 0
