@@ -159,7 +159,8 @@ export class MediaController {
     @Param('endpoint') endpoint: string
   ) {
     const upload = await handleR2Upload(endpoint, req, res);
-    if (endpoint !== 'complete-multipart-upload') {
+    // A rejected upload has already sent its error response
+    if (endpoint !== 'complete-multipart-upload' || res.headersSent) {
       return upload;
     }
 

@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import {
   CustomFileValidationPipe,
+  detectFileType,
   getMaxSize,
 } from '@gitroom/nestjs-libraries/upload/custom.upload.validation';
 import { ApiTags } from '@nestjs/swagger';
@@ -39,8 +40,6 @@ import { NotificationService } from '@gitroom/nestjs-libraries/database/prisma/n
 import { GetNotificationsDto } from '@gitroom/nestjs-libraries/dtos/notifications/get.notifications.dto';
 import { Readable } from 'stream';
 import { ssrfSafeDispatcher } from '@gitroom/nestjs-libraries/dtos/webhooks/ssrf.safe.dispatcher';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { fromBuffer } = require('file-type');
 
 const PUBLIC_API_ALLOWED_MIME = new Set<string>([
   'image/jpeg',
@@ -130,7 +129,7 @@ export class PublicIntegrationsController {
     }
 
     const buffer = Buffer.from(await response.arrayBuffer());
-    const detected = await fromBuffer(buffer);
+    const detected = await detectFileType(buffer);
     if (!detected || !PUBLIC_API_ALLOWED_MIME.has(detected.mime)) {
       throw new HttpException({ msg: 'Unsupported file type.' }, 400);
     }

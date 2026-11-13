@@ -54,7 +54,7 @@ const TikTokSettings: FC<{
     }
     return t(
       'tiktok_restriction_upload_video',
-      'TikTok restriction: For upload-only video, TikTok does not accept a title or message. The content will default to "#Postiz" and you can edit it inside the TikTok app before publishing.'
+      'TikTok restriction: For upload-only video, TikTok does not accept a title or message. The content will default to "#Postora" and you can edit it inside the TikTok app before publishing.'
     );
   }, [hasMedia, isUploadMode, isVideo, t]);
 
@@ -125,7 +125,13 @@ const TikTokSettings: FC<{
           <div>{tiktokRestrictionNotice}</div>
         </div>
       )}
-      {isTitle && <Input label="Title" {...register('title')} maxLength={89} />}
+      {isTitle && (
+        <Input
+          label={t('label_title', 'Title')}
+          {...register('title')}
+          maxLength={89}
+        />
+      )}
       <div className={directPostOnly}>
         <Select
           label={t('label_who_can_see_this_video', 'Who can see this video?')}
@@ -162,7 +168,14 @@ const TikTokSettings: FC<{
           </option>
         ))}
       </Select>
-      {isUploadMode && <div className="-mt-[23px] mb-[23px] text-red-600">After posting you fill find a notification inside your Inbox about your post (not content studio)</div>}
+      {isUploadMode && (
+        <div className="-mt-[23px] mb-[23px] text-red-600">
+          {t(
+            'tiktok_upload_inbox_notice',
+            'After posting you fill find a notification inside your Inbox about your post (not content studio)'
+          )}
+        </div>
+      )}
       <div className={clsx('flex flex-col', directPostOnly)}>
         <Select
           label={t('label_auto_add_music', 'Auto add music')}

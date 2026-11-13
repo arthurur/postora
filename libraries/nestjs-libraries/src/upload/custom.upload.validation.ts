@@ -17,6 +17,28 @@ const ALLOWED_MIME_TYPES = new Set<string>([
   'video/mp4',
 ]);
 
+// QuickTime and M4V share the MP4 box structure, and Macs often save
+// recordings as `.mp4` with a QuickTime brand. Providers detect videos by the
+// `.mp4` extension, so store these as MP4 instead of rejecting them.
+const MP4_COMPATIBLE_MIME_TYPES = new Set<string>([
+  'video/quicktime',
+  'video/x-m4v',
+]);
+
+export async function detectFileType(
+  buffer: Buffer
+): Promise<{ ext: string; mime: string } | undefined> {
+  const detected = await fromBuffer(buffer);
+  if (
+    detected &&
+    (detected.mime === 'video/mp4' ||
+      MP4_COMPATIBLE_MIME_TYPES.has(detected.mime))
+  ) {
+    return { ext: 'mp4', mime: 'video/mp4' };
+  }
+  return detected;
+}
+
 @Injectable()
 export class CustomFileValidationPipe implements PipeTransform {
   async transform(value: any) {
@@ -33,7 +55,7 @@ export class CustomFileValidationPipe implements PipeTransform {
       throw new BadRequestException('Invalid file upload.');
     }
 
-    const detected = await fromBuffer(value.buffer);
+    const detected = await detectFileType(value.buffer);
     if (!detected || !ALLOWED_MIME_TYPES.has(detected.mime)) {
       throw new BadRequestException('Unsupported file type.');
     }

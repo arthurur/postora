@@ -9,12 +9,14 @@ import { useUser } from '@gitroom/frontend/components/layout/user.context';
 import { Input } from '@gitroom/react/form/input';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 export const CommentBox: FC<{
   value?: string;
   type: 'textarea' | 'input';
   onChange: (comment: string) => void;
 }> = (props) => {
   const { value, onChange, type } = props;
+  const t = useT();
   const Component = type === 'textarea' ? Textarea : Input;
   const [newComment, setNewComment] = useState(value || '');
   const newCommentFunc = useCallback(
@@ -40,8 +42,8 @@ export const CommentBox: FC<{
     >
       <div className={clsx(type === 'input' && 'flex-1')}>
         <Component
-          label={type === 'textarea' ? 'Add comment' : ''}
-          placeholder={type === 'input' ? 'Add comment' : ''}
+          label={type === 'textarea' ? t('add_comment', 'Add comment') : ''}
+          placeholder={type === 'input' ? t('add_comment', 'Add comment') : ''}
           name="comment"
           disableForm={true}
           value={newComment}
@@ -53,7 +55,7 @@ export const CommentBox: FC<{
         onClick={changeIt}
         className={clsx(type === 'input' && 'mb-[27px]')}
       >
-        {value ? 'Update' : 'Add comment'}
+        {value ? t('update', 'Update') : t('add_comment', 'Add comment')}
       </Button>
     </div>
   );
@@ -73,6 +75,7 @@ export const EditableCommentComponent: FC<{
   onDelete: () => void;
 }> = (props) => {
   const { comment, onEdit, onDelete } = props;
+  const t = useT();
   const [commentContent, setCommentContent] = useState(comment.content);
   const [editMode, setEditMode] = useState(false);
   const user = useUser();
@@ -86,13 +89,16 @@ export const EditableCommentComponent: FC<{
   const deleteCommentFunction = useCallback(async () => {
     if (
       await deleteDialog(
-        'Are you sure you want to delete this comment?',
-        'Yes, Delete'
+        t(
+          'are_you_sure_you_want_to_delete_this_comment',
+          'Are you sure you want to delete this comment?'
+        ),
+        t('yes_delete', 'Yes, delete')
       )
     ) {
       onDelete();
     }
-  }, []);
+  }, [t]);
   if (editMode) {
     return (
       <CommentBox

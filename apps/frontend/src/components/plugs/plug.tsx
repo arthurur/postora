@@ -84,6 +84,7 @@ export const PlugPop: FC<{
   const { closeAll } = useModals();
   const fetch = useFetch();
   const toaster = useToaster();
+  const t = useT();
   const values = useMemo(() => {
     if (!data?.data) {
       return {};
@@ -102,34 +103,35 @@ export const PlugPop: FC<{
           ...acc,
           [field.name]: field.validation
             ? string().matches(convertBackRegex(field.validation), {
-                message: 'Invalid value',
+                message: t('invalid_value', 'Invalid value'),
               })
             : null,
         };
       }, {})
     );
-  }, []);
+  }, [t]);
   const form = useForm({
     resolver: yupResolver(yupSchema),
     values,
     mode: 'all',
   });
-  const submit: SubmitHandler<any> = useCallback(async (data) => {
-    await fetch(`/integrations/${settings.providerId}/plugs`, {
-      method: 'POST',
-      body: JSON.stringify({
-        func: plug.methodName,
-        fields: Object.keys(data).map((key) => ({
-          name: key,
-          value: data[key],
-        })),
-      }),
-    });
-    toaster.show('Plug updated', 'success');
-    closeAll();
-  }, []);
-
-  const t = useT();
+  const submit: SubmitHandler<any> = useCallback(
+    async (data) => {
+      await fetch(`/integrations/${settings.providerId}/plugs`, {
+        method: 'POST',
+        body: JSON.stringify({
+          func: plug.methodName,
+          fields: Object.keys(data).map((key) => ({
+            name: key,
+            value: data[key],
+          })),
+        }),
+      });
+      toaster.show(t('plug_updated', 'Plug updated'), 'success');
+      closeAll();
+    },
+    [t]
+  );
 
   return (
     <FormProvider {...form}>
@@ -174,6 +176,7 @@ export const PlugItem: FC<{
   };
 }> = (props) => {
   const { plug, addPlug, data } = props;
+  const t = useT();
   const [activated, setActivated] = useState(!!data?.activated);
   useEffect(() => {
     setActivated(!!data?.activated);
@@ -214,7 +217,9 @@ export const PlugItem: FC<{
           )}
         </div>
         <div className="flex-1">{plug.description}</div>
-        <Button>{!data ? 'Set Plug' : 'Edit Plug'}</Button>
+        <Button>
+          {!data ? t('set_plug', 'Set Plug') : t('edit_plug', 'Edit Plug')}
+        </Button>
       </div>
     </div>
   );
@@ -223,6 +228,7 @@ export const Plug = () => {
   const plug = usePlugs();
   const modals = useModals();
   const fetch = useFetch();
+  const t = useT();
   const load = useCallback(async () => {
     return (await fetch(`/integrations/${plug.providerId}/plugs`)).json();
   }, [plug.providerId]);
@@ -243,7 +249,9 @@ export const Plug = () => {
             mutate();
           },
           size: '500px',
-          title: `Auto Plug: ${p.title}`,
+          title: t('top_title_auto_plug', 'Auto Plug: {{title}}', {
+            title: p.title,
+          }),
           children: (
             <PlugPop
               plug={p}
@@ -257,7 +265,7 @@ export const Plug = () => {
           ),
         });
       },
-    [data]
+    [data, t]
   );
   if (isLoading) {
     return null;

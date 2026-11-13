@@ -93,10 +93,12 @@ function LayoutContextInner(params: { children: ReactNode }) {
       if (response.status === 406) {
         if (
           await areYouSure({
-            description:
-              'You are currently on trial, in order to use the feature you must finish the trial',
+            description: t(
+              'trial_must_finish_to_use_feature',
+              'You are currently on trial, in order to use the feature you must finish the trial'
+            ),
             approveLabel: t(
-              'finish_trial_charge_now',
+              'finish_trial_charge_me_now',
               'Finish the trial, charge me now'
             ),
             title: t('trial', 'Trial'),

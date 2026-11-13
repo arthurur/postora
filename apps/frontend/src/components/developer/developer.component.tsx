@@ -34,12 +34,18 @@ const CopyButton = ({
   label: string;
 }) => {
   const toaster = useToaster();
+  const t = useT();
   return (
     <button
       type="button"
       onClick={() => {
         copy(text);
-        toaster.show(`${label} copied to clipboard`, 'success');
+        toaster.show(
+          t('label_copied_to_clipboard', '{{label}} copied to clipboard', {
+            label,
+          }),
+          'success'
+        );
       }}
       className="cursor-pointer px-[16px] h-[36px] bg-btnSimple hover:bg-boxHover transition-colors rounded-[8px] text-[13px] font-[600] flex items-center gap-[6px]"
     >
@@ -115,7 +121,13 @@ export const DeveloperComponent: FC = () => {
 
   const createApp = useCallback(async () => {
     if (!name || !redirectUrl) {
-      toaster.show('Name and Redirect URL are required', 'warning');
+      toaster.show(
+        t(
+          'oauth_app_name_and_redirect_required',
+          'Name and Redirect URL are required'
+        ),
+        'warning'
+      );
       return;
     }
     try {
@@ -134,16 +146,22 @@ export const DeveloperComponent: FC = () => {
       if (result.clientSecret) {
         setPlaintextSecret(result.clientSecret);
         toaster.show(
-          'App created! Copy your client secret now - it will only be shown once.',
+          t(
+            'oauth_app_created_copy_secret',
+            'App created! Copy your client secret now - it will only be shown once.'
+          ),
           'success'
         );
       }
       setCreating(false);
       mutate();
     } catch {
-      toaster.show('Failed to create app', 'warning');
+      toaster.show(
+        t('oauth_app_failed_to_create', 'Failed to create app'),
+        'warning'
+      );
     }
-  }, [name, description, redirectUrl, pictureId]);
+  }, [name, description, redirectUrl, pictureId, t]);
 
   const updateApp = useCallback(async () => {
     try {
@@ -156,22 +174,27 @@ export const DeveloperComponent: FC = () => {
           pictureId,
         }),
       });
-      toaster.show('App updated', 'success');
+      toaster.show(t('oauth_app_updated', 'App updated'), 'success');
       setEditing(false);
       mutate();
     } catch {
-      toaster.show('Failed to update app', 'warning');
+      toaster.show(
+        t('oauth_app_failed_to_update', 'Failed to update app'),
+        'warning'
+      );
     }
-  }, [name, description, redirectUrl, pictureId]);
+  }, [name, description, redirectUrl, pictureId, t]);
 
   const rotateSecret = useCallback(async () => {
     const approved = await decision.open({
       destructive: true,
-      title: 'Rotate Client Secret?',
-      description:
-        'This will generate a new client secret and invalidate the current one. Any integrations using the old secret will stop working.',
-      approveLabel: 'Rotate',
-      cancelLabel: 'Cancel',
+      title: t('oauth_app_rotate_secret_title', 'Rotate Client Secret?'),
+      description: t(
+        'oauth_app_rotate_secret_description',
+        'This will generate a new client secret and invalidate the current one. Any integrations using the old secret will stop working.'
+      ),
+      approveLabel: t('rotate', 'Rotate'),
+      cancelLabel: t('cancel', 'Cancel'),
     });
     if (!approved) return;
     try {
@@ -181,35 +204,46 @@ export const DeveloperComponent: FC = () => {
       if (result.clientSecret) {
         setPlaintextSecret(result.clientSecret);
         toaster.show(
-          'Secret rotated! Copy your new client secret now.',
+          t(
+            'oauth_app_secret_rotated',
+            'Secret rotated! Copy your new client secret now.'
+          ),
           'success'
         );
         mutate();
       }
     } catch {
-      toaster.show('Failed to rotate secret', 'warning');
+      toaster.show(
+        t('oauth_app_failed_to_rotate_secret', 'Failed to rotate secret'),
+        'warning'
+      );
     }
-  }, [decision]);
+  }, [decision, t]);
 
   const deleteApp = useCallback(async () => {
     const approved = await decision.open({
       destructive: true,
-      title: 'Delete OAuth App?',
-      description:
-        'This will delete the OAuth application and revoke all user authorizations. This action cannot be undone.',
-      approveLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('oauth_app_delete_title', 'Delete OAuth App?'),
+      description: t(
+        'oauth_app_delete_description',
+        'This will delete the OAuth application and revoke all user authorizations. This action cannot be undone.'
+      ),
+      approveLabel: t('delete', 'Delete'),
+      cancelLabel: t('cancel', 'Cancel'),
     });
     if (!approved) return;
     try {
       await fetch('/user/oauth-app', { method: 'DELETE' });
-      toaster.show('OAuth app deleted', 'success');
+      toaster.show(t('oauth_app_deleted', 'OAuth app deleted'), 'success');
       setPlaintextSecret(null);
       mutate();
     } catch {
-      toaster.show('Failed to delete app', 'warning');
+      toaster.show(
+        t('oauth_app_failed_to_delete', 'Failed to delete app'),
+        'warning'
+      );
     }
-  }, [decision]);
+  }, [decision, t]);
 
   if (app === undefined) {
     return null;
@@ -222,12 +256,12 @@ export const DeveloperComponent: FC = () => {
         <div className="text-[14px] text-textColor leading-[1.7]">
           {t(
             'oauth_app_note_line1',
-            'Create an OAuth App to let other Postiz users authorize your product to post on their behalf.'
+            'Create an OAuth App to let other Postora users authorize your product to post on their behalf.'
           )}
           <br />
           {t(
             'oauth_app_note_line2',
-            'After a user completes the OAuth2 flow, you receive a pos_ prefixed token that works everywhere an API Key does — API, MCP, and CLI.'
+            'After a user completes the OAuth2 flow, you receive a pos_ prefixed token that works everywhere an API Key does: the API and MCP.'
           )}
         </div>
         <div className="bg-newBgColorInner rounded-[12px] border border-newBorder overflow-hidden">
@@ -239,19 +273,9 @@ export const DeveloperComponent: FC = () => {
               <div className="text-[13px] text-customColor18 mt-[2px]">
                 {t(
                   'create_an_oauth_application',
-                  'Create an OAuth application to allow third-party integrations with Postiz on behalf of your users.'
+                  'Create an OAuth application to allow third-party integrations with Postora on behalf of your users.'
                 )}
               </div>
-            </div>
-            <div className="flex gap-[6px] shrink-0 pt-[2px]">
-              <a
-                className="cursor-pointer px-[16px] h-[36px] bg-[#612BD3] hover:bg-[#5520CB] text-white transition-colors rounded-[8px] text-[13px] font-[600] flex items-center gap-[6px]"
-                href="https://docs.postiz.com/public-api/oauth"
-                target="_blank"
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-                {t('read_the_docs', 'Docs')}
-              </a>
             </div>
           </div>
           <div className="p-[20px]">
@@ -275,12 +299,12 @@ export const DeveloperComponent: FC = () => {
         <div className="text-[14px] text-textColor leading-[1.7]">
           {t(
             'oauth_app_note_line1',
-            'Create an OAuth App to let other Postiz users authorize your product to post on their behalf.'
+            'Create an OAuth App to let other Postora users authorize your product to post on their behalf.'
           )}
           <br />
           {t(
             'oauth_app_note_line2',
-            'After a user completes the OAuth2 flow, you receive a pos_ prefixed token that works everywhere an API Key does — API, MCP, and CLI.'
+            'After a user completes the OAuth2 flow, you receive a pos_ prefixed token that works everywhere an API Key does: the API and MCP.'
           )}
         </div>
         <div className="bg-newBgColorInner rounded-[12px] border border-newBorder overflow-hidden">
@@ -304,7 +328,7 @@ export const DeveloperComponent: FC = () => {
                 className="bg-newBgColorInner border border-newBorder rounded-[8px] px-[16px] h-[44px] text-textColor outline-none"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="My Application"
+                placeholder={t('oauth_app_name_placeholder', 'My Application')}
                 maxLength={100}
               />
             </div>
@@ -316,7 +340,10 @@ export const DeveloperComponent: FC = () => {
                 className="bg-newBgColorInner border border-newBorder rounded-[8px] p-[16px] text-textColor outline-none min-h-[80px]"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe what your app does"
+                placeholder={t(
+                  'oauth_app_description_placeholder',
+                  'Describe what your app does'
+                )}
                 maxLength={500}
               />
             </div>
@@ -328,7 +355,7 @@ export const DeveloperComponent: FC = () => {
                 {picturePath ? (
                   <img
                     src={picturePath}
-                    alt="App picture"
+                    alt={t('oauth_app_picture', 'App picture')}
                     className="w-[48px] h-[48px] rounded-full object-cover"
                   />
                 ) : (
@@ -384,12 +411,12 @@ export const DeveloperComponent: FC = () => {
       <div className="text-[14px] text-textColor leading-[1.7]">
         {t(
           'oauth_app_note_line1',
-          'Create an OAuth App to let other Postiz users authorize your product to post on their behalf.'
+          'Create an OAuth App to let other Postora users authorize your product to post on their behalf.'
         )}
         <br />
         {t(
           'oauth_app_note_line2',
-          'After a user completes the OAuth2 flow, you receive a pos_ prefixed token that works everywhere an API Key does — API, MCP, and CLI.'
+          'After a user completes the OAuth2 flow, you receive a pos_ prefixed token that works everywhere an API Key does: the API and MCP.'
         )}
       </div>
       {/* App details / edit */}
@@ -406,16 +433,6 @@ export const DeveloperComponent: FC = () => {
               )}
             </div>
           </div>
-          <div className="flex gap-[6px] shrink-0 pt-[2px]">
-            <a
-              className="cursor-pointer px-[16px] h-[36px] bg-[#612BD3] hover:bg-[#5520CB] text-white transition-colors rounded-[8px] text-[13px] font-[600] flex items-center gap-[6px]"
-              href="https://docs.postiz.com/public-api/oauth"
-              target="_blank"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-              {t('read_the_docs', 'Docs')}
-            </a>
-          </div>
         </div>
 
         {editing ? (
@@ -428,7 +445,7 @@ export const DeveloperComponent: FC = () => {
                 className="bg-newBgColorInner border border-newBorder rounded-[8px] px-[16px] h-[44px] text-textColor outline-none"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="My Application"
+                placeholder={t('oauth_app_name_placeholder', 'My Application')}
                 maxLength={100}
               />
             </div>
@@ -440,7 +457,10 @@ export const DeveloperComponent: FC = () => {
                 className="bg-newBgColorInner border border-newBorder rounded-[8px] p-[16px] text-textColor outline-none min-h-[80px]"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe what your app does"
+                placeholder={t(
+                  'oauth_app_description_placeholder',
+                  'Describe what your app does'
+                )}
                 maxLength={500}
               />
             </div>
@@ -452,7 +472,7 @@ export const DeveloperComponent: FC = () => {
                 {picturePath ? (
                   <img
                     src={picturePath}
-                    alt="App picture"
+                    alt={t('oauth_app_picture', 'App picture')}
                     className="w-[48px] h-[48px] rounded-full object-cover"
                   />
                 ) : (

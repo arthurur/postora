@@ -3,8 +3,7 @@ import { mkdirSync, unlink, writeFileSync } from 'fs';
 import { isSafePublicHttpsUrl } from '@gitroom/nestjs-libraries/dtos/webhooks/webhook.url.validator';
 import { ssrfSafeDispatcher } from '@gitroom/nestjs-libraries/dtos/webhooks/ssrf.safe.dispatcher';
 import { parseDataUrl } from '@gitroom/nestjs-libraries/upload/data.url';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { fromBuffer } = require('file-type');
+import { detectFileType } from '@gitroom/nestjs-libraries/upload/custom.upload.validation';
 
 const LOCAL_STORAGE_ALLOWED_MIME = new Set<string>([
   'image/jpeg',
@@ -45,7 +44,7 @@ export class LocalStorage implements IUploadProvider {
     // only accept the allow-list, otherwise an attacker could write an
     // arbitrary file (e.g. .html/.svg with embedded script) into the
     // publicly served uploads directory on the app's own origin.
-    const detected = await fromBuffer(body);
+    const detected = await detectFileType(body);
     if (!detected || !LOCAL_STORAGE_ALLOWED_MIME.has(detected.mime)) {
       throw new Error('Unsupported file type.');
     }
@@ -75,7 +74,7 @@ export class LocalStorage implements IUploadProvider {
 
   async uploadFile(file: Express.Multer.File): Promise<any> {
     try {
-      const detected = await fromBuffer(file.buffer);
+      const detected = await detectFileType(file.buffer);
       if (!detected || !LOCAL_STORAGE_ALLOWED_MIME.has(detected.mime)) {
         throw new Error('Unsupported file type.');
       }

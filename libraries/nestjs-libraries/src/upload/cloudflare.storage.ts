@@ -9,8 +9,7 @@ import axios from 'axios';
 import { isSafePublicHttpsUrl } from '@gitroom/nestjs-libraries/dtos/webhooks/webhook.url.validator';
 import { ssrfSafeDispatcher } from '@gitroom/nestjs-libraries/dtos/webhooks/ssrf.safe.dispatcher';
 import { parseDataUrl } from '@gitroom/nestjs-libraries/upload/data.url';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { fromBuffer } = require('file-type');
+import { detectFileType } from '@gitroom/nestjs-libraries/upload/custom.upload.validation';
 
 const ALLOWED_MIME_TYPES = new Set<string>([
   'image/jpeg',
@@ -93,7 +92,7 @@ class CloudflareStorage implements IUploadProvider {
       });
       body = Buffer.from(await loadImage.arrayBuffer());
     }
-    const detected = await fromBuffer(body);
+    const detected = await detectFileType(body);
     if (!detected || !ALLOWED_MIME_TYPES.has(detected.mime)) {
       throw new Error('Unsupported file type.');
     }
@@ -117,7 +116,7 @@ class CloudflareStorage implements IUploadProvider {
 
   async uploadFile(file: Express.Multer.File): Promise<any> {
     try {
-      const detected = await fromBuffer(file.buffer);
+      const detected = await detectFileType(file.buffer);
       if (!detected || !ALLOWED_MIME_TYPES.has(detected.mime)) {
         throw new Error('Unsupported file type.');
       }

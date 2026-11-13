@@ -12,37 +12,37 @@ import { Textarea } from '@gitroom/react/form/textarea';
 import { useSettings } from '@gitroom/frontend/components/launches/helpers/use.values';
 import clsx from 'clsx';
 import { useT } from '@gitroom/react/translation/get.transation.service.client';
-const delayOptions = [
+const getDelayOptions = (t: (key: string, fallback: string) => string) => [
   {
-    name: 'Immediately',
+    name: t('delay_immediately', 'Immediately'),
     value: 0,
   },
   {
-    name: '1 hour',
+    name: t('delay_1_hour', '1 hour'),
     value: 3600000,
   },
   {
-    name: '2 hours',
+    name: t('delay_2_hours', '2 hours'),
     value: 7200000,
   },
   {
-    name: '3 hours',
+    name: t('delay_3_hours', '3 hours'),
     value: 10800000,
   },
   {
-    name: '8 hours',
+    name: t('delay_8_hours', '8 hours'),
     value: 28800000,
   },
   {
-    name: '12 hours',
+    name: t('delay_12_hours', '12 hours'),
     value: 43200000,
   },
   {
-    name: '15 hours',
+    name: t('delay_15_hours', '15 hours'),
     value: 54000000,
   },
   {
-    name: '24 hours',
+    name: t('delay_24_hours', '24 hours'),
     value: 86400000,
   },
 ];
@@ -164,7 +164,7 @@ const Plug: FC<{
       </div>
       <div className="w-full max-w-[600px] overflow-y-auto pb-[10px] text-[12px] flex flex-col gap-[10px]">
         {!allowedIntegrations.length ? (
-          'No available accounts'
+          t('no_available_accounts', 'No available accounts')
         ) : (
           <div
             className={clsx(
@@ -174,12 +174,12 @@ const Plug: FC<{
           >
             <div>{plug.description}</div>
             <Select
-              label="Delay"
+              label={t('label_delay', 'Delay')}
               hideErrors={true}
               {...register(`plug--${plug.identifier}--delay`)}
             >
-              {delayOptions.map((p) => (
-                <option key={p.name} value={p.value}>
+              {getDelayOptions(t).map((p) => (
+                <option key={p.value} value={p.value}>
                   {p.name}
                 </option>
               ))}
