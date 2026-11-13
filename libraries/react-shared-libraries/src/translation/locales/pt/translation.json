@@ -1194,6 +1194,7 @@
   "file_type_not_allowed": "O tipo de arquivo \"{{fileType}}\" não é permitido. Tipos permitidos: {{allowedTypes}}",
   "image_file_too_large": "O arquivo de imagem é muito grande. O tamanho máximo permitido é 30 MB.",
   "video_file_too_large": "O arquivo de vídeo é muito grande. O tamanho máximo permitido é 1 GB.",
+  "upload_failed_reason": "Falha no envio: {{reason}}",
   "precondition_channel_connected_previously": "Este canal social já foi conectado a outra conta do Postora.\nPara continuar, antecipe o fim do seu período de teste para uma cobrança imediata.\n\n** Atenção: a conta não será elegível para reembolso e a cobrança é definitiva.",
   "fast_track_charge_me_now": "Antecipar: cobrar agora",
   "suspicious_activity_detected": "Atividade suspeita detectada",

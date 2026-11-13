@@ -1196,6 +1196,7 @@
   "file_type_not_allowed": "File type \"{{fileType}}\" is not allowed. Allowed types: {{allowedTypes}}",
   "image_file_too_large": "Image file is too large. Maximum size allowed is 30MB.",
   "video_file_too_large": "Video file is too large. Maximum size allowed is 1GB.",
+  "upload_failed_reason": "Upload failed: {{reason}}",
   "precondition_channel_connected_previously": "This social channel was connected previously to another Postora account.\nTo continue, please fast-track your trial for an immediate charge.\n\n** Please be advised that the account will not eligible for a refund, and the charge is final.",
   "fast_track_charge_me_now": "Fast track - Charge me now",
   "suspicious_activity_detected": "Suspicious activity detected",
