@@ -111,7 +111,7 @@ export const MissingReleaseModal: FC<{
         <Button
           type="button"
           onClick={() => modal.closeAll()}
-          className="bg-transparent border border-tableBorder text-textColor"
+          secondary
         >
           {t('cancel', 'Cancel')}
         </Button>

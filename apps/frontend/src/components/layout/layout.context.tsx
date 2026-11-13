@@ -1,11 +1,11 @@
 'use client';
 
+import { areYouSure } from '@gitroom/frontend/components/layout/new-modal';
+import { useT } from '@gitroom/react/translation/get.transation.service.client';
 import { ReactNode, useCallback } from 'react';
 import { FetchWrapperComponent } from '@gitroom/helpers/utils/custom.fetch';
-import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import { useReturnUrl } from '@gitroom/frontend/app/(app)/auth/return.url.component';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
-import { useT } from '@gitroom/react/translation/get.transation.service.client';
 export default function LayoutContext(params: { children: ReactNode }) {
   if (params?.children) {
     // eslint-disable-next-line react/no-children-prop
@@ -24,8 +24,8 @@ export function setCookie(cname: string, cvalue: string, exdays: number) {
 }
 function LayoutContextInner(params: { children: ReactNode }) {
   const returnUrl = useReturnUrl();
-  const { backendUrl, isGeneral, isSecured } = useVariables();
   const t = useT();
+  const { backendUrl, isGeneral, isSecured } = useVariables();
   const afterRequest = useCallback(
     async (url: string, options: RequestInit, response: Response) => {
       if (
@@ -92,15 +92,17 @@ function LayoutContextInner(params: { children: ReactNode }) {
       }
       if (response.status === 406) {
         if (
-          await deleteDialog(
-            t(
+          await areYouSure({
+            description: t(
               'trial_must_finish_to_use_feature',
               'You are currently on trial, in order to use the feature you must finish the trial'
             ),
-            t('finish_trial_charge_me_now', 'Finish the trial, charge me now'),
-            t('trial', 'Trial'),
-
-          )
+            approveLabel: t(
+              'finish_trial_charge_me_now',
+              'Finish the trial, charge me now'
+            ),
+            title: t('trial', 'Trial'),
+          })
         ) {
           window.open('/billing?finishTrial=true', '_blank');
           return false;
@@ -110,13 +112,11 @@ function LayoutContextInner(params: { children: ReactNode }) {
 
       if (response.status === 402) {
         if (
-          await deleteDialog(
-            (
-              await response.json()
-            ).message,
-            t('move_to_billing', 'Move to billing'),
-            t('payment_required', 'Payment Required')
-          )
+          await areYouSure({
+            description: (await response.json()).message,
+            approveLabel: t('move_to_billing', 'Move to billing'),
+            title: t('payment_required', 'Payment Required'),
+          })
         ) {
           window.open('/billing', '_blank');
           return false;
@@ -125,7 +125,7 @@ function LayoutContextInner(params: { children: ReactNode }) {
       }
       return true;
     },
-    [t]
+    [isSecured, isGeneral, returnUrl, t]
   );
   return (
     <FetchWrapperComponent baseUrl={backendUrl} afterRequest={afterRequest}>

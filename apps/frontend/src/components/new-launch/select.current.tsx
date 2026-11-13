@@ -79,6 +79,7 @@ export const SelectCurrent: FC = () => {
       e.stopPropagation();
       e.preventDefault();
       const open = await modals.open({
+        destructive: true,
         title: t('remove_social_account', 'Remove Social Account'),
         description: t(
           'remove_social_account_description',

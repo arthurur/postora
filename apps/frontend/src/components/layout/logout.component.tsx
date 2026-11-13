@@ -1,7 +1,8 @@
 'use client';
 
+import { areYouSure } from '@gitroom/frontend/components/layout/new-modal';
+
 import React, { FC, useCallback } from 'react';
-import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
 import { setCookie } from '@gitroom/frontend/components/layout/layout.context';
@@ -13,13 +14,13 @@ export const LogoutComponent: FC<{ isIcon?: boolean }> = ({ isIcon }) => {
 
   const logout = useCallback(async () => {
     if (
-      await deleteDialog(
-        t(
+      await areYouSure({
+        description: t(
           'are_you_sure_you_want_to_logout',
           'Are you sure you want to logout?'
         ),
-        t('yes_logout', 'Yes logout')
-      )
+        approveLabel: t('yes_logout', 'Yes logout'),
+      })
     ) {
       if (!isSecured) {
         setCookie('auth', '', -10);

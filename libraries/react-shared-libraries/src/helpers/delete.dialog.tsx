@@ -8,6 +8,7 @@ export const deleteDialog = async (
   cancelButton?: string
 ) => {
   return areYouSure({
+    destructive: true,
     title: title || i18next.t('are_you_sure', 'Are you sure?'),
     description: message,
     approveLabel:

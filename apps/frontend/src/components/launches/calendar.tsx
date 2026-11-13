@@ -712,6 +712,7 @@ export const CalendarColumn: FC<{
                       <Button
                         type="button"
                         className="flex-1"
+                        secondary
                         onClick={() => {
                           modal.closeAll();
                           resolve('schedule');

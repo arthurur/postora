@@ -26,7 +26,7 @@ import { useToaster } from '@gitroom/react/toaster/toaster';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { makeId } from '@gitroom/nestjs-libraries/services/make.is';
-import { useModals } from '@gitroom/frontend/components/layout/new-modal';
+import { areYouSure, useModals } from '@gitroom/frontend/components/layout/new-modal';
 import { capitalize } from 'lodash';
 import { SelectCustomer } from '@gitroom/frontend/components/launches/select.customer';
 import { CopilotPopup } from '@copilotkit/react-ui';
@@ -243,6 +243,7 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
                     <Button
                       type="button"
                       className="flex-1"
+                      secondary
                       onClick={() => resolve('republish')}
                     >
                       {t('republish_the_post', 'Republish the post')}
@@ -397,15 +398,14 @@ export const ManageModal: FC<AddEditModalProps> = (props) => {
             shortLink = true;
           } else {
             // ASK: Show the dialog
-            shortLink = await deleteDialog(
-              t(
+            shortLink = await areYouSure({
+              description: t(
                 'shortlink_urls_question',
                 'Do you want to shortlink the URLs? it will let you get statistics over clicks'
               ),
-              t('yes_shortlink_it', 'Yes, shortlink it!'),
-              undefined,
-              t('no_original_urls', 'No, original URLs')
-            );
+              approveLabel: t('yes_shortlink_it', 'Yes, shortlink it!'),
+              cancelLabel: t('no_original_urls', 'No, original URLs'),
+            });
           }
         }
       }

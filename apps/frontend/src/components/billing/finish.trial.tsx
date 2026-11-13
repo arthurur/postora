@@ -74,7 +74,7 @@ export const FinishTrial: FC<{ close: () => void }> = (props) => {
                       )}
                     </div>
                     <div className="flex gap-[10px] mt-[20px]">
-                      <Button className="flex-1" onClick={() => window.close()}>
+                      <Button secondary className="flex-1" onClick={() => window.close()}>
                         {t('close_window', 'Close window')}
                       </Button>
                       <Button className="flex-1" onClick={() => props.close()}>
