@@ -15,6 +15,12 @@ const fetchUploadApiEndpoint = async (
       'Content-Type': 'application/json',
     },
   });
+  // Throwing lets Uppy report the upload as failed instead of treating the
+  // error body as a finished upload
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body?.message || res.statusText || `HTTP ${res.status}`);
+  }
   return res.json();
 };
 
@@ -98,6 +104,9 @@ export const getUppyUploadPlugin = (
         options: {
           endpoint: `${backendUrl}/media/upload-server`,
           withCredentials: true,
+          // Retrying a rejected file (4xx) only re-sends the same bytes
+          shouldRetry: (xhr: XMLHttpRequest) =>
+            xhr.status === 0 || xhr.status >= 500,
         },
       };
 

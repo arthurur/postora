@@ -351,6 +351,7 @@ export const WeekView = () => {
       const day = weekStart.add(i, 'day');
       days.push({
         name: day.format('dddd'),
+        shortName: day.format('ddd'),
         day: day.format('L'),
         date: day,
       });
@@ -369,7 +370,8 @@ export const WeekView = () => {
               className="p-2 text-center bg-newTableHeader flex justify-center items-center flex-col h-[62px] rounded-[8px] sticky top-0 z-[20]"
             >
               <div className="text-[14px] font-[500] text-newTableText">
-                {day.name}
+                <span className="maxMedia:hidden">{day.name}</span>
+                <span className="hidden maxMedia:inline">{day.shortName}</span>
               </div>
               <div
                 className={clsx(
@@ -830,7 +832,7 @@ export const CalendarColumn: FC<{
       ),
       size: '80%',
     });
-  }, [integrations, getDate, sets, signature]);
+  }, [integrations, getDate, sets, signature, t]);
 
   const addProvider = useAddProvider();
   return (
@@ -860,6 +862,7 @@ export const CalendarColumn: FC<{
             isBeforeNow ? 'flex-1' : 'cursor-pointer',
             isBeforeNow && postList.length === 0 && 'col-calendar'
           )}
+          data-date-passed={t('date_passed', 'Date passed')}
         >
           {loading && (
             <div className="h-full w-full p-[5px] animate-pulse absolute left-0 top-0 z-[50]">

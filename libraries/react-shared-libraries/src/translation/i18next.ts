@@ -1,13 +1,11 @@
 import i18next from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { initReactI18next } from 'react-i18next/initReactI18next';
-import { fallbackLng, languages, defaultNS } from './i18n.config';
+import { defaultLng, fallbackLng, languages, defaultNS } from './i18n.config';
 const runsOnServerSide = typeof window === 'undefined';
 
 i18next
   .use(initReactI18next)
-  .use(LanguageDetector)
   .use(
     resourcesToBackend((language: any, namespace: any) => {
       return import(`./locales/${language}/${namespace}.json`);
@@ -16,11 +14,12 @@ i18next
   .init({
     supportedLngs: languages,
     fallbackLng,
-    lng: undefined,
+    lng: defaultLng,
     fallbackNS: defaultNS,
     defaultNS,
-    detection: {
-      order: ['cookie', 'header'],
+    // React escapes rendered values already; escaping here would show "&amp;".
+    interpolation: {
+      escapeValue: false,
     },
     preload: runsOnServerSide ? languages : [],
   });

@@ -32,7 +32,7 @@ export const ApprovedAppsComponent: FC = () => {
         await deleteDialog(
           t(
             'are_you_sure_revoke_access',
-            `Are you sure you want to revoke access for ${app.oauthApp?.name}?`,
+            'Are you sure you want to revoke access for {{name}}?',
             { name: app.oauthApp?.name }
           )
         )
@@ -51,7 +51,7 @@ export const ApprovedAppsComponent: FC = () => {
         }
       }
     },
-    []
+    [t]
   );
 
   if (apps === undefined) {
@@ -67,7 +67,7 @@ export const ApprovedAppsComponent: FC = () => {
         <div className="text-customColor18 mt-[4px]">
           {t(
             'apps_you_have_authorized',
-            'Applications you have authorized to access your Postiz account.'
+            'Applications you have authorized to access your Postora account.'
           )}
         </div>
       </div>
