@@ -45,7 +45,7 @@ const useCreatorInfo = () => {
 const TikTokSettings: FC<{
   values?: any;
 }> = (props) => {
-  const { watch, register, setValue, getValues } = useSettings();
+  const { watch, register, setValue } = useSettings();
   const { value } = useIntegration();
   const { data } = useCreatorInfo();
   // /integrations/function answers false, or an error body, when the TikTok
@@ -54,19 +54,22 @@ const TikTokSettings: FC<{
     data && Array.isArray(data.privacy_level_options) ? data : undefined;
   const t = useT();
 
-  const isTitle = useMemo(() => {
-    return value?.[0]?.image?.some((p) => (p?.path?.indexOf?.('mp4') ?? -1) === -1);
-  }, [value]);
-
   const hasMedia = (value?.[0]?.image?.length ?? 0) > 0;
-  const isVideo = hasMedia && !isTitle;
   // Same check the backend uses to choose between a photo and a video post.
   const isPhoto =
     hasMedia && !hasExtension(value?.[0]?.image?.[0]?.path, 'mp4');
+  const isVideo = hasMedia && !isPhoto;
 
   const disclose = watch('disclose');
   const brand_content_toggle = watch('brand_content_toggle');
+  const brand_organic_toggle = watch('brand_organic_toggle');
+  const privacy_level = watch('privacy_level');
+  const comment = watch('comment');
+  const duet = watch('duet');
+  const stitch = watch('stitch');
   const content_posting_method = watch('content_posting_method');
+  // The brand options only count while disclose is checked.
+  const isBrandedContent = !!(disclose && brand_content_toggle);
   const isUploadMode = content_posting_method === 'UPLOAD';
 
   // TikTok ignores every setting except the title / content when the posting
@@ -75,26 +78,31 @@ const TikTokSettings: FC<{
   // TikTokDto still requires most of them at save time.
   const directPostOnly = clsx(isUploadMode && 'invisible h-0 overflow-hidden');
 
+  // The effects below correct saved settings that TikTok would reject. They run
+  // after every render, without a dependency list, because the editor resets
+  // the form to the saved settings right after they first run. Each one only
+  // calls setValue when a value is wrong, so they settle after one pass.
+
   // Unchecking disclose hides the brand options, so it clears them too.
   // Otherwise they'd still reach TikTok and keep "Only me" disabled.
   useEffect(() => {
     if (disclose) {
       return;
     }
-    if (getValues('brand_content_toggle')) {
+    if (brand_content_toggle) {
       setValue('brand_content_toggle', false);
     }
-    if (getValues('brand_organic_toggle')) {
+    if (brand_organic_toggle) {
       setValue('brand_organic_toggle', false);
     }
-  }, [disclose, getValues, setValue]);
+  });
 
   // TikTok doesn't allow branded content to be private.
   useEffect(() => {
-    if (brand_content_toggle && getValues('privacy_level') === 'SELF_ONLY') {
+    if (isBrandedContent && privacy_level === 'SELF_ONLY') {
       setValue('privacy_level', '', { shouldValidate: true });
     }
-  }, [brand_content_toggle, getValues, setValue]);
+  });
 
   // Options and interactions the creator turned off in the TikTok app can't
   // be used, even when an existing post saved them earlier.
@@ -102,20 +110,23 @@ const TikTokSettings: FC<{
     if (!creatorInfo) {
       return;
     }
-    const privacy = getValues('privacy_level');
     if (
-      privacy &&
+      privacy_level &&
       creatorInfo.privacy_level_options.length &&
-      !creatorInfo.privacy_level_options.includes(privacy)
+      !creatorInfo.privacy_level_options.includes(privacy_level)
     ) {
       setValue('privacy_level', '', { shouldValidate: true });
     }
-    (['comment', 'duet', 'stitch'] as const).forEach((interaction) => {
-      if (creatorInfo[`${interaction}_disabled`] && getValues(interaction)) {
-        setValue(interaction, false);
-      }
-    });
-  }, [creatorInfo, getValues, setValue]);
+    if (creatorInfo.comment_disabled && comment) {
+      setValue('comment', false);
+    }
+    if (creatorInfo.duet_disabled && duet) {
+      setValue('duet', false);
+    }
+    if (creatorInfo.stitch_disabled && stitch) {
+      setValue('stitch', false);
+    }
+  });
 
   const tiktokRestrictionNotice = useMemo(() => {
     if (!hasMedia || !isVideo) return null;
@@ -160,7 +171,7 @@ const TikTokSettings: FC<{
       value: 'SELF_ONLY',
       label: t('self_only', 'Only me'),
       description: t('self_only_description', 'Visible only to you'),
-      disabled: !!brand_content_toggle,
+      disabled: isBrandedContent,
     },
   ].filter(
     (item) =>
@@ -216,7 +227,7 @@ const TikTokSettings: FC<{
           <div>{tiktokRestrictionNotice}</div>
         </div>
       )}
-      {isTitle && (
+      {isPhoto && (
         <Input
           label={t('label_title', 'Title')}
           {...register('title')}
@@ -419,7 +430,7 @@ const TikTokSettings: FC<{
             'by_posting_you_agree_to_tiktoks',
             "By posting, you agree to TikTok's"
           )}{' '}
-          {brand_content_toggle && (
+          {isBrandedContent && (
             <>
               <a
                 target="_blank"
