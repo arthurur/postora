@@ -394,11 +394,9 @@ export class TiktokProvider extends SocialAbstract implements SocialProvider {
     };
   }
 
-  async maxVideoLength(accessToken: string) {
-    const {
-      data: { max_video_post_duration_sec },
-    } = await (
-      await fetch(
+  private async fetchCreatorInfo(accessToken: string) {
+    const { data } = await (
+      await this.fetch(
         'https://open.tiktokapis.com/v2/post/publish/creator_info/query/',
         {
           method: 'POST',
@@ -410,8 +408,28 @@ export class TiktokProvider extends SocialAbstract implements SocialProvider {
       )
     ).json();
 
+    return data;
+  }
+
+  async maxVideoLength(accessToken: string) {
+    const data = await this.fetchCreatorInfo(accessToken);
+
     return {
-      maxDurationSeconds: max_video_post_duration_sec,
+      maxDurationSeconds: data?.max_video_post_duration_sec,
+    };
+  }
+
+  // Called by the settings form through /integrations/function. TikTok's
+  // content sharing guidelines require the privacy options and the
+  // comment / duet / stitch toggles to follow creator_info for the account.
+  async creatorInfo(accessToken: string) {
+    const data = await this.fetchCreatorInfo(accessToken);
+
+    return {
+      privacy_level_options: (data?.privacy_level_options || []) as string[],
+      comment_disabled: !!data?.comment_disabled,
+      duet_disabled: !!data?.duet_disabled,
+      stitch_disabled: !!data?.stitch_disabled,
     };
   }
 

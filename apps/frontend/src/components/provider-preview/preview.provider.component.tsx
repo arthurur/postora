@@ -130,7 +130,7 @@ export const ProviderPreviewComponent: FC<ProviderPreviewProps> = ({
 
   // When `value` is absent or `{}`, don't feed it to react-hook-form at all —
   // passing an empty object as `values` wipes out DTO-level defaults that the
-  // SettingsComponent relies on (e.g. tiktok privacy = PUBLIC).
+  // SettingsComponent relies on (e.g. tiktok posting method = DIRECT_POST).
   const hasSeededValue =
     !!value && typeof value === 'object' && Object.keys(value).length > 0;
 
