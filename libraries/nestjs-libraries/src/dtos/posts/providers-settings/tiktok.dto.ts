@@ -10,7 +10,8 @@ import { JSONSchema } from 'class-validator-jsonschema';
 // video_made_with_ai / duet / stitch are additionally video-only: TikTok's photo
 // post_info has no is_aigc, disable_duet or disable_stitch field.
 // Fields stay required here (existing clients depend on it); the constraints are
-// documented, not enforced.
+// documented, not enforced. The exception is privacy_level, which is only
+// required on a DIRECT_POST.
 export class TikTokDto {
   @ValidateIf((p) => p.title)
   @MaxLength(90)

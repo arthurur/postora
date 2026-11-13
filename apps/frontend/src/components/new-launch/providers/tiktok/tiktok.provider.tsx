@@ -21,6 +21,7 @@ import { useIntegration } from '@gitroom/frontend/components/launches/helpers/us
 import { Input } from '@gitroom/react/form/input';
 import { TiktokPreview } from '@gitroom/frontend/components/new-launch/providers/tiktok/tiktok.preview';
 import { useCustomProviderFunction } from '@gitroom/frontend/components/launches/helpers/use.custom.provider.function';
+import { hasExtension } from '@gitroom/helpers/utils/has.extension';
 
 type CreatorInfo = {
   privacy_level_options: string[];
@@ -47,7 +48,10 @@ const TikTokSettings: FC<{
   const { watch, register, setValue, getValues } = useSettings();
   const { value } = useIntegration();
   const { data } = useCreatorInfo();
-  const creatorInfo = data || undefined;
+  // /integrations/function answers false, or an error body, when the TikTok
+  // token can't be refreshed. The form then falls back to every option.
+  const creatorInfo =
+    data && Array.isArray(data.privacy_level_options) ? data : undefined;
   const t = useT();
 
   const isTitle = useMemo(() => {
@@ -56,7 +60,9 @@ const TikTokSettings: FC<{
 
   const hasMedia = (value?.[0]?.image?.length ?? 0) > 0;
   const isVideo = hasMedia && !isTitle;
-  const isPhoto = hasMedia && !!isTitle;
+  // Same check the backend uses to choose between a photo and a video post.
+  const isPhoto =
+    hasMedia && !hasExtension(value?.[0]?.image?.[0]?.path, 'mp4');
 
   const disclose = watch('disclose');
   const brand_content_toggle = watch('brand_content_toggle');
@@ -68,6 +74,20 @@ const TikTokSettings: FC<{
   // stay mounted and registered: their values must survive the switch, and
   // TikTokDto still requires most of them at save time.
   const directPostOnly = clsx(isUploadMode && 'invisible h-0 overflow-hidden');
+
+  // Unchecking disclose hides the brand options, so it clears them too.
+  // Otherwise they'd still reach TikTok and keep "Only me" disabled.
+  useEffect(() => {
+    if (disclose) {
+      return;
+    }
+    if (getValues('brand_content_toggle')) {
+      setValue('brand_content_toggle', false);
+    }
+    if (getValues('brand_organic_toggle')) {
+      setValue('brand_organic_toggle', false);
+    }
+  }, [disclose, getValues, setValue]);
 
   // TikTok doesn't allow branded content to be private.
   useEffect(() => {
@@ -90,15 +110,11 @@ const TikTokSettings: FC<{
     ) {
       setValue('privacy_level', '', { shouldValidate: true });
     }
-    if (creatorInfo.comment_disabled && getValues('comment')) {
-      setValue('comment', false);
-    }
-    if (creatorInfo.duet_disabled && getValues('duet')) {
-      setValue('duet', false);
-    }
-    if (creatorInfo.stitch_disabled && getValues('stitch')) {
-      setValue('stitch', false);
-    }
+    (['comment', 'duet', 'stitch'] as const).forEach((interaction) => {
+      if (creatorInfo[`${interaction}_disabled`] && getValues(interaction)) {
+        setValue(interaction, false);
+      }
+    });
   }, [creatorInfo, getValues, setValue]);
 
   const tiktokRestrictionNotice = useMemo(() => {
@@ -397,7 +413,7 @@ const TikTokSettings: FC<{
             )}
           </div>
         </div>
-        {/* TikTok requires this consent above the publish action on every post. */}
+        {/* TikTok requires this consent before publishing every direct post. */}
         <div className="mt-[10px] text-[14px] text-balance">
           {t(
             'by_posting_you_agree_to_tiktoks',
