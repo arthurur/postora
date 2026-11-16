@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  FC,
-  useEffect,
-  useMemo,
-} from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 import {
   PostComment,
@@ -70,18 +66,19 @@ const TikTokSettings: FC<{
   const content_posting_method = watch('content_posting_method');
   // The brand options only count while disclose is checked.
   const isBrandedContent = !!(disclose && brand_content_toggle);
-  const isUploadMode = content_posting_method === 'UPLOAD';
-
-  // TikTok ignores every setting except the title / content when the posting
-  // method is UPLOAD, so we hide them rather than pretend they apply. The fields
-  // stay mounted and registered: their values must survive the switch, and
-  // TikTokDto still requires most of them at save time.
-  const directPostOnly = clsx(isUploadMode && 'invisible h-0 overflow-hidden');
 
   // The effects below correct saved settings that TikTok would reject. They run
   // after every render, without a dependency list, because the editor resets
   // the form to the saved settings right after they first run. Each one only
   // calls setValue when a value is wrong, so they settle after one pass.
+
+  // Direct post is the only posting method. Posts saved with the old UPLOAD
+  // method switch to it, and then need a privacy choice like any new post.
+  useEffect(() => {
+    if (content_posting_method !== 'DIRECT_POST') {
+      setValue('content_posting_method', 'DIRECT_POST');
+    }
+  });
 
   // Unchecking disclose hides the brand options, so it clears them too.
   // Otherwise they'd still reach TikTok and keep "Only me" disabled.
@@ -130,17 +127,11 @@ const TikTokSettings: FC<{
 
   const tiktokRestrictionNotice = useMemo(() => {
     if (!hasMedia || !isVideo) return null;
-    if (!isUploadMode) {
-      return t(
-        'tiktok_restriction_direct_video',
-        'TikTok restriction: For direct post with video, your post content is used as the title. A separate title field is not available.'
-      );
-    }
     return t(
-      'tiktok_restriction_upload_video',
-      'TikTok restriction: For upload-only video, TikTok does not accept a title or message. The content will default to "#Postora" and you can edit it inside the TikTok app before publishing.'
+      'tiktok_restriction_direct_video',
+      'TikTok restriction: For direct post with video, your post content is used as the title. A separate title field is not available.'
     );
-  }, [hasMedia, isUploadMode, isVideo, t]);
+  }, [hasMedia, isVideo, t]);
 
   const privacyLevel = [
     {
@@ -178,22 +169,6 @@ const TikTokSettings: FC<{
       !creatorInfo?.privacy_level_options?.length ||
       creatorInfo.privacy_level_options.includes(item.value)
   );
-  const contentPostingMethod = [
-    {
-      value: 'DIRECT_POST',
-      label: t(
-        'post_content_directly_to_tiktok',
-        'Post content directly to TikTok'
-      ),
-    },
-    {
-      value: 'UPLOAD',
-      label: t(
-        'upload_content_to_tiktok_without_posting',
-        'Upload content to TikTok without posting it'
-      ),
-    },
-  ];
   const yesNo = [
     {
       value: 'yes',
@@ -234,46 +209,14 @@ const TikTokSettings: FC<{
           maxLength={89}
         />
       )}
-      <div className={directPostOnly}>
-        <RadioGroup
-          label={t('label_who_can_see_this_video', 'Who can see this video?')}
-          name="privacy_level"
-          disabled={isUploadMode}
-          options={privacyLevel}
-        />
-      </div>
-      <div className="text-[14px] mt-[10px] mb-[18px] text-balance">
-        {t(
-          'choose_upload_without_posting_description',
-          `Choose upload without posting if you want to review and edit your content within TikTok's app before publishing.
-        This gives you access to TikTok's built-in editing tools and lets you make final adjustments before posting. The additional settings are only available when posting directly to TikTok.`
-        )}
-      </div>
-      <Select
-        label={t('label_content_posting_method', 'Content posting method')}
-        {...register('content_posting_method', {
-          value: 'DIRECT_POST',
-        })}
-      >
-        <option value="">{t('select', 'Select')}</option>
-        {contentPostingMethod.map((item) => (
-          <option key={item.value} value={item.value}>
-            {item.label}
-          </option>
-        ))}
-      </Select>
-      {isUploadMode && (
-        <div className="-mt-[23px] mb-[23px] text-red-600">
-          {t(
-            'tiktok_upload_inbox_notice',
-            'After posting you fill find a notification inside your Inbox about your post (not content studio)'
-          )}
-        </div>
-      )}
-      <div className={clsx('flex flex-col', directPostOnly)}>
+      <RadioGroup
+        label={t('label_who_can_see_this_video', 'Who can see this video?')}
+        name="privacy_level"
+        options={privacyLevel}
+      />
+      <div className="flex flex-col mt-[8px]">
         <Select
           label={t('label_auto_add_music', 'Auto add music')}
-          disabled={isUploadMode}
           {...register('autoAddMusic', {
             value: 'no',
           })}
@@ -302,7 +245,7 @@ const TikTokSettings: FC<{
               <Checkbox
                 variant="hollow"
                 label={t('label_duet', 'Allow Duet')}
-                disabled={isUploadMode || creatorInfo?.duet_disabled}
+                disabled={creatorInfo?.duet_disabled}
                 {...register('duet', {
                   value: false,
                 })}
@@ -312,7 +255,7 @@ const TikTokSettings: FC<{
               <Checkbox
                 label={t('label_stitch', 'Allow Stitch')}
                 variant="hollow"
-                disabled={isUploadMode || creatorInfo?.stitch_disabled}
+                disabled={creatorInfo?.stitch_disabled}
                 {...register('stitch', {
                   value: false,
                 })}
@@ -321,7 +264,6 @@ const TikTokSettings: FC<{
             <Checkbox
               label={t('video_made_with_ai', 'Video made with AI')}
               variant="hollow"
-              disabled={isUploadMode}
               {...register('video_made_with_ai', {
                 value: false,
               })}
@@ -334,7 +276,7 @@ const TikTokSettings: FC<{
             <Checkbox
               label={t('label_comments', 'Allow Comments')}
               variant="hollow"
-              disabled={isUploadMode || creatorInfo?.comment_disabled}
+              disabled={creatorInfo?.comment_disabled}
               {...register('comment', {
                 value: false,
               })}
@@ -343,7 +285,6 @@ const TikTokSettings: FC<{
           <Checkbox
             variant="hollow"
             label={t('label_disclose_video_content', 'Disclose Video Content')}
-            disabled={isUploadMode}
             {...register('disclose', {
               value: false,
             })}
@@ -384,11 +325,15 @@ const TikTokSettings: FC<{
             )}
           </div>
         </div>
-        <div className={clsx(!disclose && 'invisible h-0 overflow-hidden', 'mt-[20px]')}>
+        <div
+          className={clsx(
+            !disclose && 'invisible h-0 overflow-hidden',
+            'mt-[20px]'
+          )}
+        >
           <Checkbox
             variant="hollow"
             label={t('label_your_brand', 'Your brand')}
-            disabled={isUploadMode}
             {...register('brand_organic_toggle', {
               value: false,
             })}
@@ -407,7 +352,6 @@ const TikTokSettings: FC<{
           <Checkbox
             variant="hollow"
             label={t('label_branded_content', 'Branded content')}
-            disabled={isUploadMode}
             {...register('brand_content_toggle', {
               value: false,
             })}
